@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fazla Mesai Hesaplama – Saat Ücreti, %50 Zamlı Mesai ve Bayram Ücreti</title>
+<meta name="description" content="Fazla mesai ücretinizi hesaplayın: brüt maaştan saat ücreti (225'e bölme), %50 zamlı fazla çalışma, %25 fazla sürelerle çalışma ve bayram günü çalışma ücreti. Örnek hesap ve İş Kanunu kuralları.">
+<link rel="canonical" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Fazla Mesai Hesaplama">
+<meta property="og:description" content="Brüt maaştan saat ücreti, %50 zamlı fazla mesai ve bayram ücreti hesaplayıcı.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  p, li { color:var(--text); }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Fazla mesai ücreti nasıl hesaplanır?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Aylık brüt ücret 225'e bölünerek saat ücreti bulunur. Haftalık 45 saati aşan her fazla çalışma saati için bu saat ücretinin yüzde 50 fazlası, yani 1,5 katı ödenir."}},
+    {"@type": "Question", "name": "Fazla mesai saat ücreti neden 225'e bölünerek bulunur?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Aylık ücret 30 günü kapsar. Haftalık 45 saatlik çalışma günlük ortalama 7,5 saate denk gelir; 30 gün × 7,5 saat = 225 saat."}},
+    {"@type": "Question", "name": "Fazla sürelerle çalışma nedir?",
+     "acceptedAnswer": {"@type": "Answer", "text": "İş sözleşmesinde haftalık çalışma süresi 45 saatin altında belirlenmişse, bu sürenin üstünde ve 45 saate kadar yapılan çalışmalardır. Her saati için saat ücretinin yüzde 25 fazlası ödenir."}},
+    {"@type": "Question", "name": "Bayramda çalışınca ne kadar ücret alınır?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Ulusal bayram ve genel tatil günlerinde çalışan işçiye, o gün için ücretine ek olarak çalıştığı her gün için bir günlük ücret daha ödenir."}},
+    {"@type": "Question", "name": "Yılda en fazla kaç saat fazla mesai yapılabilir?",
+     "acceptedAnswer": {"@type": "Answer", "text": "İş Kanunu'na göre fazla çalışmanın toplamı bir yılda 270 saatten fazla olamaz."}}
+  ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Fazla Mesai Hesaplama</h1>
+  <p class="lead">Brüt maaşınızı ve bu ay yaptığınız fazla mesai saatlerini girin; saat ücretinizi, %50 zamlı fazla mesai ücretinizi ve bayram çalışma ücretinizi hemen görün.</p>
+
+  <section class="card" aria-label="Fazla mesai hesaplayıcı">
+    <label for="salary">Aylık brüt maaş (TL)</label>
+    <input id="salary" inputmode="decimal" placeholder="Örn. 30.000" autocomplete="off">
+
+    <div class="grid">
+      <div>
+        <label for="ot50">Fazla mesai saati <span class="hint">(%50 zamlı)</span></label>
+        <input id="ot50" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="ot25">Fazla sürelerle çalışma <span class="hint">(%25 zamlı)</span></label>
+        <input id="ot25" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="holiday">Bayram / genel tatilde çalışılan gün</label>
+        <input id="holiday" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="divisor">Aylık saat <span class="hint">(genelde 225)</span></label>
+        <input id="divisor" inputmode="decimal" value="225">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Normal saat ücreti</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Fazla mesai saat ücreti (1,5 kat)</span><span id="r-hour50">–</span></div>
+      <div class="row"><span>%50 zamlı fazla mesai ücreti</span><span id="r-ot50">–</span></div>
+      <div class="row"><span>%25 zamlı fazla sürelerle çalışma</span><span id="r-ot25">–</span></div>
+      <div class="row"><span>Bayram / genel tatil ek ücreti</span><span id="r-hol">–</span></div>
+      <div class="row total"><span>Toplam ek ücret (brüt)</span><span id="r-total">–</span></div>
+      <p class="note">Tutarlar brüttür. Elinize geçecek net tutar SGK primi, gelir vergisi ve damga vergisi kesildikten sonra daha düşük olur.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Her ay elle hesaplamayın.</strong> Vardiya Mesai Takip vardiyalarınızı takvime işler; fazla mesai, gece zammı, bayram ve vergiyle birlikte aylık net maaşınızı kendisi hesaplar. Ücretsiz.</p>
+      <a class="btn" href="https://apps.apple.com/tr/app/id6821146979">App Store'dan indir</a>
+      <p class="note" style="margin:8px 0 0">Android sürümü yakında Google Play'de.</p>
+    </div>
+  </div>
+
+  <h2>Fazla mesai nasıl hesaplanır?</h2>
+  <p>4857 sayılı İş Kanunu'na göre haftalık çalışma süresi en çok 45 saattir. Bu süreyi aşan çalışmalar <strong>fazla çalışma</strong> (fazla mesai) sayılır ve her saati için normal saat ücretinin <strong>%50 fazlası</strong>, yani <strong>1,5 katı</strong> ödenir (İş Kanunu madde 41).</p>
+  <p>Hesap üç adımdır:</p>
+  <ol>
+    <li>Aylık brüt maaşı 225'e bölerek <strong>saat ücretini</strong> bulun.</li>
+    <li>Saat ücretini 1,5 ile çarparak <strong>fazla mesai saat ücretini</strong> bulun.</li>
+    <li>Bunu ay içinde yaptığınız fazla mesai saatiyle çarpın.</li>
+  </ol>
+
+  <h3>Örnek</h3>
+  <p>Aylık brüt maaşı 30.000 TL olan ve ay içinde 10 saat fazla mesai yapan bir çalışan için:</p>
+  <table>
+    <tr><th>Adım</th><th>Hesap</th><th>Sonuç</th></tr>
+    <tr><td>Saat ücreti</td><td>30.000 ÷ 225</td><td>133,33 TL</td></tr>
+    <tr><td>Fazla mesai saat ücreti</td><td>133,33 × 1,5</td><td>200,00 TL</td></tr>
+    <tr><td>Fazla mesai ücreti</td><td>200,00 × 10 saat</td><td>2.000,00 TL (brüt)</td></tr>
+  </table>
+
+  <h2>Saat ücreti neden 225'e bölünerek bulunur?</h2>
+  <p>Aylık ücret, hafta tatilleri dahil 30 günü kapsar. Haftalık 45 saatlik çalışma günlük ortalama 7,5 saate denk gelir: 30 gün × 7,5 saat = <strong>225 saat</strong>. Bu yüzden aylık maaşla çalışanlarda saat ücreti, aylık brüt ücretin 225'e bölünmesiyle bulunur. İş sözleşmenizde farklı bir aylık saat yazıyorsa hesaplayıcıdaki "Aylık saat" kutusunu değiştirebilirsiniz.</p>
+
+  <h2>Fazla sürelerle çalışma (%25)</h2>
+  <p>İş sözleşmenizde haftalık çalışma süresi 45 saatin altında belirlendiyse (örneğin 40 saat), bu sürenin üstünde ve 45 saate kadar yaptığınız çalışmaya <strong>fazla sürelerle çalışma</strong> denir. Her saati için saat ücretinin <strong>%25 fazlası</strong> (1,25 katı) ödenir. 45 saati aşan kısım ise normal fazla mesai gibi %50 zamlı hesaplanır.</p>
+
+  <h2>Bayram ve genel tatilde çalışma</h2>
+  <p>Ulusal bayram ve genel tatil günlerinde çalışırsanız, o günün ücretine ek olarak çalıştığınız her gün için <strong>bir günlük ücret daha</strong> ödenir (İş Kanunu madde 47). Aylık maaşla çalışanlarda bir günlük ücret, aylık brüt ücretin 30'a bölünmesiyle bulunur. Örneğin 30.000 TL brüt maaşla bayramda çalışılan bir gün için 1.000 TL ek ücret doğar.</p>
+
+  <h2>Gece çalışması</h2>
+  <p>İş Kanunu'nda gece, en geç 20:00'de başlayıp en erken 06:00'ya kadar süren dönemdir ve gece çalışması kural olarak 7,5 saati geçemez (madde 69). Kanunda özel sektör için zorunlu bir <strong>gece zammı</strong> oranı yoktur; toplu iş sözleşmesinde ya da iş sözleşmenizde varsa uygulanır. Vardiya Mesai Takip uygulamasında gece zammı oranınızı ve saatlerini kendiniz girebilirsiniz.</p>
+
+  <h2>Yıllık sınır ve serbest zaman</h2>
+  <ul>
+    <li>Fazla çalışmanın toplamı bir yılda <strong>270 saatten</strong> fazla olamaz.</li>
+    <li>İşçi isterse fazla mesai ücreti yerine serbest zaman kullanabilir: fazla çalışılan her saat için 1 saat 30 dakika, fazla sürelerle çalışılan her saat için 1 saat 15 dakika.</li>
+  </ul>
+
+  <h2>Sık sorulan sorular</h2>
+  <details><summary>Fazla mesai brütten mi netten mi hesaplanır?</summary>
+    <p>Fazla mesai ücreti brüt saat ücreti üzerinden hesaplanır. Bordronuzda bu tutardan SGK primi, gelir vergisi ve damga vergisi kesilir; bu yüzden elinize geçen tutar daha düşüktür.</p></details>
+  <details><summary>Vardiyalı çalışıyorum, haftalık 45 saati nasıl takip ederim?</summary>
+    <p>Vardiyalarınızı her gün not etmek gerekir. Vardiya Mesai Takip uygulamasında vardiya döngünüzü bir kez girersiniz, takvim kendiliğinden dolar; fazla mesai saatlerini güne ekleyip ay sonunda toplam ücreti görürsünüz.</p></details>
+  <details><summary>Hafta sonu çalışınca ücret ne olur?</summary>
+    <p>Cumartesi çoğu iş yerinde normal iş günüdür; haftalık 45 saati aşan çalışma fazla mesai olarak %50 zamlı ödenir. Hafta tatili gününde (genellikle pazar) çalışmanın ücreti ise iş sözleşmesine ve hafta içindeki toplam çalışmaya göre değişir; bordronuzu kontrol edin.</p></details>
+  <details><summary>Yılda en fazla kaç saat fazla mesai yapılabilir?</summary>
+    <p>Bir yılda en fazla 270 saat.</p></details>
+
+  <footer>
+    <p>Bu sayfa genel bilgilendirme amaçlıdır, hukuki danışmanlık değildir. Kendi durumunuz için iş sözleşmenize, toplu iş sözleşmesine ve bordronuza bakın.</p>
+    <p><a href="/">Aziz Aslan Burak – Uygulamalar</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) {
+    var v = ($(id).value || '').trim().replace(/\s/g, '');
+    // Accept "30.000", "30000", "30.000,50" and "30000.5"
+    if (v.indexOf(',') !== -1) v = v.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(v)) v = v.replace(/\./g, '');
+    var n = parseFloat(v);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var tl = function (n) { return n.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' TL'; };
+  function calc() {
+    var salary = num('salary'), divisor = num('divisor') || 225;
+    if (!salary) { ['r-hour','r-hour50','r-ot50','r-ot25','r-hol','r-total'].forEach(function (k) { $(k).textContent = '–'; }); return; }
+    var hour = salary / divisor;
+    var ot50 = hour * 1.5 * num('ot50');
+    var ot25 = hour * 1.25 * num('ot25');
+    var hol = (salary / 30) * num('holiday');
+    $('r-hour').textContent = tl(hour);
+    $('r-hour50').textContent = tl(hour * 1.5);
+    $('r-ot50').textContent = tl(ot50);
+    $('r-ot25').textContent = tl(ot25);
+    $('r-hol').textContent = tl(hol);
+    $('r-total').textContent = tl(ot50 + ot25 + hol);
+  }
+  ['salary','ot50','ot25','holiday','divisor'].forEach(function (id) { $(id).addEventListener('input', calc); });
+})();
+</script>
+</body>
+</html>
