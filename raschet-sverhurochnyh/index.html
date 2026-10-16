@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="ru" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Калькулятор сверхурочных – расчёт переработок, ночных и праздничных по ТК РФ</title>
+<meta name="description" content="Рассчитайте оплату сверхурочной работы: часовая ставка при окладе, первые 2 часа в полуторном размере, далее в двойном, ночные часы и работа в выходные и праздники. Пример и правила ТК РФ.">
+<link rel="canonical" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Калькулятор сверхурочных">
+<meta property="og:description" content="Сверхурочные ×1,5 и ×2, ночные часы, выходные и праздники в одном простом калькуляторе.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Полуторный размер считается за каждый день или за весь месяц?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "За каждый случай сверхурочной работы, то есть за каждый рабочий день: первые два часа в этот день оплачиваются не менее чем в полуторном размере, следующие — не менее чем в двойном. Поэтому в калькуляторе есть поле «Дней с переработкой»."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Сколько сверхурочных часов разрешено?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Не более 4 часов для каждого работника в течение двух дней подряд и не более 120 часов в год (статья 99 ТК РФ)."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Можно ли взять отгул вместо доплаты?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Да, по желанию работника сверхурочную работу можно компенсировать дополнительным временем отдыха, не меньше отработанного сверхурочно. За работу в выходной или праздник можно выбрать оплату в одинарном размере и другой день отдыха."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Я на окладе. Сколько мне доплатят за работу в выходной?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Если работа в выходной или праздник была в пределах месячной нормы рабочего времени, сверх оклада платится не менее одинарной дневной или часовой ставки. Если сверх нормы — не менее двойной."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Работаю по сменному графику. Как не запутаться в часах?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Записывайте начало и конец каждой смены и отмечайте ночные часы. В приложении «Учёт смен и переработок» вы один раз вносите график, календарь заполняется сам, а вы добавляете только переработки за день."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Калькулятор сверхурочных</h1>
+  <p class="lead">Введите оклад и отработанные часы, чтобы сразу увидеть стоимость часа, оплату переработок в полуторном и двойном размере, доплату за ночные часы и за работу в выходные и праздники.</p>
+
+  <section class="card" aria-label="Калькулятор сверхурочных">
+    <div class="grid">
+      <div>
+        <label for="salary">Оклад в месяц (₽)</label>
+        <input id="salary" inputmode="decimal" autocomplete="off" placeholder="Например, 60 000">
+      </div>
+      <div>
+        <label for="norm">Норма часов в месяце <span class="hint">(по производственному календарю)</span></label>
+        <input id="norm" inputmode="decimal" autocomplete="off" placeholder="Например, 160">
+      </div>
+    </div>
+    <p class="sub">Сверхурочные за месяц</p>
+    <div class="grid">
+      <div>
+        <label for="ot">Сверхурочных часов всего</label>
+        <input id="ot" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="otDays">Дней с переработкой <span class="hint">(для расчёта первых 2 часов)</span></label>
+        <input id="otDays" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+    <p class="sub">Ночные часы, выходные и праздники</p>
+    <div class="grid">
+      <div>
+        <label for="night">Часы с 22:00 до 06:00</label>
+        <input id="night" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="nightRate">Надбавка за ночные часы (%) <span class="hint">(не менее 20)</span></label>
+        <input id="nightRate" inputmode="decimal" autocomplete="off" value="20">
+      </div>
+      <div>
+        <label for="wh">Часы в выходные и нерабочие праздничные дни</label>
+        <input id="wh" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Часовая ставка</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Сверхурочные в полуторном размере (×1,5)</span><span id="r-ot15">–</span></div>
+      <div class="row"><span>Сверхурочные в двойном размере (×2)</span><span id="r-ot2">–</span></div>
+      <div class="row"><span>Доплата за ночные часы</span><span id="r-night">–</span></div>
+      <div class="row"><span>Выходные и праздники (×2)</span><span id="r-hol">–</span></div>
+      <div class="row total"><span>Итого за месяц сверх оклада (до удержания налога)</span><span id="r-total">–</span></div>
+      <p class="note">Суммы до удержания налога. Калькулятор считает, что в каждый из указанных дней было не меньше двух сверхурочных часов (без числа дней все часы считаются одним случаем). Выходные и праздники показаны в двойном размере; при окладе в пределах месячной нормы доплата сверх оклада — не менее одинарной ставки. Не вводите одни и те же часы в два поля.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Хватит считать вручную.</strong> Приложение «Учёт смен и переработок» хранит ваш график смен, суммирует переработки и надбавки и показывает, сколько вы получите в конце месяца. Бесплатно.</p>
+      <a class="btn" href="https://apps.apple.com/ru/app/id6821146979">Загрузить в App Store</a>
+      <p class="note" style="margin:8px 0 0">Версия для Android скоро в Google Play.</p>
+    </div>
+  </div>
+
+<h2>Как оплачиваются сверхурочные</h2>
+  <p>По статье 152 Трудового кодекса РФ сверхурочная работа оплачивается <strong>за первые два часа — не менее чем в полуторном размере</strong>, <strong>за последующие часы — не менее чем в двойном</strong>. Это минимум: коллективный договор, локальный акт или трудовой договор могут установить больше.</p>
+  <p>Важно, что деление «два часа по 1,5, остальное по 2» применяется <strong>к каждому случаю</strong> сверхурочной работы, то есть к каждому рабочему дню, а не ко всем часам за месяц сразу.</p>
+  <ol>
+    <li>Найдите часовую ставку: оклад ÷ норма часов месяца.</li>
+    <li>За первые 2 сверхурочных часа каждого дня умножьте ставку на 1,5.</li>
+    <li>За остальные часы того же дня умножьте ставку на 2.</li>
+    <li>Сложите суммы по всем дням месяца.</li>
+  </ol>
+
+  <h2>Как рассчитать часовую ставку при окладе</h2>
+  <p>Если вы получаете оклад, часовая ставка считается так: <strong>месячный оклад ÷ норма рабочего времени этого месяца</strong> по производственному календарю. Норма меняется от месяца к месяцу, поэтому и стоимость часа при одном и том же окладе в разные месяцы разная. Норму на нужный месяц смотрите в производственном календаре на текущий год.</p>
+
+  <h3>Пример</h3>
+  <p>Оклад 60 000 ₽, норма месяца 160 часов, в один из дней вы переработали 5 часов, а за месяц отработали 8 ночных часов (надбавка 20 %):</p>
+  <table>
+    <tr><th>Шаг</th><th>Расчёт</th><th>Результат</th></tr>
+    <tr><td>Часовая ставка</td><td>60 000 ÷ 160</td><td>375,00 ₽</td></tr>
+    <tr><td>Первые 2 часа (×1,5)</td><td>375 × 1,5 = 562,50 × 2 ч</td><td>1 125,00 ₽</td></tr>
+    <tr><td>Следующие 3 часа (×2)</td><td>375 × 2 = 750 × 3 ч</td><td>2 250,00 ₽</td></tr>
+    <tr><td>Ночные часы (20 %)</td><td>375 × 20 % × 8 ч</td><td>600,00 ₽</td></tr>
+    <tr><td>Итого сверх оклада</td><td>1 125 + 2 250 + 600</td><td>3 975,00 ₽</td></tr>
+  </table>
+
+  <h2>Почему важно, сколько часов вы переработали в каждый день</h2>
+  <p>Одни и те же 4 сверхурочных часа при ставке 375 ₽ дают разную сумму:</p>
+  <ul>
+    <li><strong>4 часа за один день:</strong> 2 ч × 562,50 + 2 ч × 750 = 2 625 ₽.</li>
+    <li><strong>По 2 часа в два разных дня:</strong> 4 ч × 562,50 = 2 250 ₽.</li>
+  </ul>
+  <p>Поэтому калькулятор спрашивает и количество дней с переработкой. Записывайте переработки по дням — так проще проверить расчётный листок.</p>
+
+  <h2>Сколько можно работать сверхурочно</h2>
+  <p>Статья 99 ТК РФ ограничивает сверхурочную работу: <strong>не более 4 часов</strong> для каждого работника в течение двух дней подряд и <strong>не более 120 часов в год</strong>.</p>
+
+  <h2>Работа в выходные и нерабочие праздничные дни</h2>
+  <p>По статье 153 ТК РФ такая работа оплачивается <strong>не менее чем в двойном размере</strong>. По желанию работника вместо этого можно получить оплату в одинарном размере и <strong>другой день отдыха</strong>. Сверхурочные тоже можно по желанию работника компенсировать дополнительным отдыхом — не меньше отработанного сверх нормы времени.</p>
+  <p>Для работников на окладе правило уточняется:</p>
+  <ul>
+    <li>если работа в выходной или праздник была <strong>в пределах месячной нормы</strong> рабочего времени — сверх оклада платится не менее одинарной дневной или часовой ставки;</li>
+    <li>если она была <strong>сверх месячной нормы</strong> — сверх оклада платится не менее двойной дневной или часовой ставки.</li>
+  </ul>
+  <p>Калькулятор показывает работу в выходные и праздники в двойном размере. Если вы на окладе и уложились в норму, доплата сверх оклада будет одинарной — то есть половиной показанной суммы.</p>
+
+  <h2>Ночная работа</h2>
+  <p>Ночным считается время <strong>с 22:00 до 06:00</strong> (статья 96 ТК РФ). Каждый час работы ночью оплачивается в повышенном размере — <strong>не менее 20 % часовой ставки</strong>; это минимум, установленный Правительством (статья 154 ТК РФ). Более высокая надбавка может быть закреплена в коллективном договоре, локальном акте или трудовом договоре — укажите в калькуляторе свой процент.</p>
+
+  <h2>Частые вопросы</h2>
+  <details><summary>Полуторный размер считается за каждый день или за весь месяц?</summary>
+    <p>За каждый случай сверхурочной работы, то есть за каждый рабочий день: первые два часа в этот день оплачиваются не менее чем в полуторном размере, следующие — не менее чем в двойном. Поэтому в калькуляторе есть поле «Дней с переработкой».</p></details>
+  <details><summary>Сколько сверхурочных часов разрешено?</summary>
+    <p>Не более 4 часов для каждого работника в течение двух дней подряд и не более 120 часов в год (статья 99 ТК РФ).</p></details>
+  <details><summary>Можно ли взять отгул вместо доплаты?</summary>
+    <p>Да, по желанию работника сверхурочную работу можно компенсировать дополнительным временем отдыха, не меньше отработанного сверхурочно. За работу в выходной или праздник можно выбрать оплату в одинарном размере и другой день отдыха.</p></details>
+  <details><summary>Я на окладе. Сколько мне доплатят за работу в выходной?</summary>
+    <p>Если работа в выходной или праздник была в пределах месячной нормы рабочего времени, сверх оклада платится не менее одинарной дневной или часовой ставки. Если сверх нормы — не менее двойной.</p></details>
+  <details><summary>Работаю по сменному графику. Как не запутаться в часах?</summary>
+    <p>Записывайте начало и конец каждой смены и отмечайте ночные часы. В приложении «Учёт смен и переработок» вы один раз вносите график, календарь заполняется сам, а вы добавляете только переработки за день.</p></details>
+
+  <footer>
+    <p>Эта страница носит справочный характер и не заменяет юридическую консультацию. Сверяйтесь со своим трудовым договором, коллективным договором, локальными актами работодателя и расчётным листком.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ",";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("ru-RU", { style: 'currency', currency: "RUB" }); };
+  var OUT = ["r-hour", "r-ot15", "r-ot2", "r-night", "r-hol", "r-total"];
+  function calc(v) {
+    var salary = v('salary'), norm = v('norm');
+    if (!salary || !norm) return null;
+    var hour = salary / norm;
+    var ot = v('ot'), days = v('otDays');
+    var cap = days > 0 ? 2 * days : 2;
+    var h15 = Math.min(ot, cap);
+    var h2 = ot - h15;
+    var ot15 = hour * 1.5 * h15;
+    var ot2 = hour * 2 * h2;
+    var night = hour * v('nightRate') / 100 * v('night');
+    var hol = hour * 2 * v('wh');
+    return { 'r-hour': hour, 'r-ot15': ot15, 'r-ot2': ot2, 'r-night': night, 'r-hol': hol, 'r-total': ot15 + ot2 + night + hol };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["salary", "norm", "ot", "otDays", "night", "nightRate", "wh"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

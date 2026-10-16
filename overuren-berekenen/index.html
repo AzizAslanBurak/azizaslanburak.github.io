@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="nl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overuren berekenen – uurloon, overwerktoeslag en ORT uitrekenen</title>
+<meta name="description" content="Overuren berekenen: reken je bruto maandloon om naar een uurloon en zie wat je overuren opleveren met de overwerktoeslag uit je cao of contract, plus je onregelmatigheidstoeslag (ORT).">
+<link rel="canonical" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Overuren berekenen">
+<meta property="og:description" content="Uurloon, overuren met toeslag en ORT in één eenvoudige rekenhulp.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/overuren-berekenen/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Bestaat er een wettelijke overwerktoeslag in Nederland?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Nee. De wet schrijft geen overwerktoeslag voor. Of overuren worden uitbetaald, met een toeslag worden uitbetaald of worden gecompenseerd in vrije tijd, regelt je arbeidsovereenkomst of cao."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Hoe reken ik mijn maandloon om naar een uurloon?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Een gebruikelijke formule is: bruto maandloon gedeeld door (uren per week × 4,33). De factor 4,33 is het gemiddelde aantal weken per maand (52 ÷ 12)."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Hoeveel uur mag ik maximaal werken?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Volgens de Arbeidstijdenwet maximaal 12 uur per dienst en 60 uur per week, en gemiddeld maximaal 48 uur per week over 16 weken."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Worden overuren belast?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Ja. Overwerkloon is gewoon belast loon. De bedragen in deze rekenhulp zijn bruto; wat je netto krijgt, zie je op je loonstrook."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Ik werk in wisselende diensten. Hoe houd ik mijn overuren bij?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Noteer per dienst je begin- en eindtijd. In de app Diensten & Overuren Tracker zet je je rooster één keer in, vult de kalender zich vanzelf en voeg je per dag alleen je extra uren toe."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Overuren berekenen</h1>
+  <p class="lead">Vul je bruto maandloon en je uren in en zie meteen je uurloon, wat je overuren opleveren en hoeveel onregelmatigheidstoeslag je krijgt.</p>
+
+  <section class="card" aria-label="Overuren berekenen">
+    <div class="grid">
+      <div>
+        <label for="salary">Bruto maandloon (€)</label>
+        <input id="salary" inputmode="decimal" autocomplete="off" placeholder="bijv. 3.000">
+      </div>
+      <div>
+        <label for="week">Contracturen per week</label>
+        <input id="week" inputmode="decimal" autocomplete="off" value="40">
+      </div>
+      <div>
+        <label for="ot">Overuren deze maand</label>
+        <input id="ot" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="otRate">Overwerktoeslag (%) <span class="hint">(volgens cao/contract)</span></label>
+        <input id="otRate" inputmode="decimal" autocomplete="off" value="0">
+      </div>
+    </div>
+    <p class="sub">Onregelmatigheidstoeslag (ORT)</p>
+    <div class="grid">
+      <div>
+        <label for="ortHours">Uren op onregelmatige tijden</label>
+        <input id="ortHours" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="ortRate">ORT (%) <span class="hint">(volgens cao)</span></label>
+        <input id="ortRate" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Uurloon</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Vergoeding overuren</span><span id="r-ot">–</span></div>
+      <div class="row"><span>Onregelmatigheidstoeslag (ORT)</span><span id="r-ort">–</span></div>
+      <div class="row total"><span>Extra deze maand (bruto)</span><span id="r-total">–</span></div>
+      <p class="note">Brutobedragen. Overwerkloon en toeslagen zijn gewoon belast loon, dus netto houd je minder over. Kijk in je cao of contract welke toeslagpercentages voor jou gelden.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Nooit meer zelf rekenen.</strong> De app Diensten &amp; Overuren Tracker bewaart je rooster, telt je overuren en toeslagen bij elkaar op en laat zien wat je aan het eind van de maand krijgt. Gratis.</p>
+      <a class="btn" href="https://apps.apple.com/nl/app/id6821146979">Download in de App Store</a>
+      <p class="note" style="margin:8px 0 0">Android-versie binnenkort in Google Play.</p>
+    </div>
+  </div>
+
+<h2>Heb je recht op een overwerktoeslag?</h2>
+  <p><strong>Niet automatisch.</strong> De Nederlandse wet kent geen wettelijke overwerktoeslag. Of je overuren worden uitbetaald, uitbetaald mét een toeslag of gecompenseerd in vrije tijd, staat in je <strong>arbeidsovereenkomst</strong> of in de <strong>cao</strong> van je sector. Veel cao's werken met een vast percentage, bijvoorbeeld 25%, maar dat verschilt per cao. Zoek in jouw cao op wat er staat onder ‘overwerk’.</p>
+
+  <h2>Zo reken je je uurloon uit</h2>
+  <p>Een veelgebruikte formule is <strong>bruto maandloon ÷ (uren per week × 4,33)</strong>. De factor 4,33 is het gemiddelde aantal weken in een maand (52 weken ÷ 12 maanden).</p>
+  <ol>
+    <li>Reken je maandloon om naar een <strong>uurloon</strong>.</li>
+    <li>Tel de <strong>overwerktoeslag</strong> uit je cao of contract erbij op. Bij 25% vermenigvuldig je het uurloon met 1,25.</li>
+    <li>Vermenigvuldig met het aantal <strong>overuren</strong> van die maand.</li>
+  </ol>
+
+  <h3>Voorbeeld</h3>
+  <p>€ 3.000 bruto per maand, een contract van 40 uur per week en 10 overuren met 25% toeslag volgens de cao:</p>
+  <table>
+    <tr><th>Stap</th><th>Berekening</th><th>Uitkomst</th></tr>
+    <tr><td>Uurloon</td><td>3.000 ÷ (40 × 4,33)</td><td>€ 17,32</td></tr>
+    <tr><td>Overuur met 25%</td><td>17,32 × 1,25</td><td>€ 21,65</td></tr>
+    <tr><td>Vergoeding overuren</td><td>21,65 × 10 uur</td><td>€ 216,51</td></tr>
+  </table>
+  <p>De rekenhulp rekent met onafgeronde bedragen, daarom kan de laatste cent afwijken van een berekening met afgeronde tussenstappen.</p>
+
+  <h2>Onregelmatigheidstoeslag (ORT)</h2>
+  <p>Werk je in ploegendienst, ’s avonds, ’s nachts of in het weekend, dan krijg je in veel sectoren een <strong>onregelmatigheidstoeslag</strong>. Ook die staat niet in de wet maar in je cao of contract. Daar lees je voor welke uren ORT geldt en welk percentage erbij hoort. Vul in de rekenhulp het aantal uren en het percentage uit je cao in.</p>
+  <p>Let op: ORT en overwerktoeslag zijn twee verschillende dingen. Hoe ze samenvallen als je overuren op onregelmatige tijden maakt, regelt je cao.</p>
+
+  <h2>Uitbetalen of tijd voor tijd?</h2>
+  <p>Niet elke werkgever betaalt overuren uit. Vaak worden ze gecompenseerd met vrije tijd, ook wel <strong>tijd voor tijd</strong> genoemd. Wat er voor jou geldt, staat in je contract of cao. Houd je overuren daarom altijd zelf bij, zodat je kunt controleren of ze goed op je loonstrook of in je verlofsaldo terechtkomen.</p>
+
+  <h2>Hoeveel mag je werken? (Arbeidstijdenwet)</h2>
+  <p>De Arbeidstijdenwet stelt grenzen aan je werktijd, ook als je overwerkt:</p>
+  <ul>
+    <li>maximaal <strong>12 uur per dienst</strong>;</li>
+    <li>maximaal <strong>60 uur per week</strong>;</li>
+    <li>gemiddeld maximaal <strong>48 uur per week</strong> over een periode van 16 weken.</li>
+  </ul>
+
+  <h2>Belasting op overuren</h2>
+  <p>Overwerkloon is <strong>gewoon belast loon</strong>. Er wordt dus loonheffing op ingehouden, net als op je gewone salaris. De bedragen in de rekenhulp zijn bruto; wat je netto overhoudt, zie je op je loonstrook.</p>
+
+  <h2>Veelgestelde vragen</h2>
+  <details><summary>Bestaat er een wettelijke overwerktoeslag in Nederland?</summary>
+    <p>Nee. De wet schrijft geen overwerktoeslag voor. Of overuren worden uitbetaald, met een toeslag worden uitbetaald of worden gecompenseerd in vrije tijd, regelt je arbeidsovereenkomst of cao.</p></details>
+  <details><summary>Hoe reken ik mijn maandloon om naar een uurloon?</summary>
+    <p>Een gebruikelijke formule is: bruto maandloon gedeeld door (uren per week × 4,33). De factor 4,33 is het gemiddelde aantal weken per maand (52 ÷ 12).</p></details>
+  <details><summary>Hoeveel uur mag ik maximaal werken?</summary>
+    <p>Volgens de Arbeidstijdenwet maximaal 12 uur per dienst en 60 uur per week, en gemiddeld maximaal 48 uur per week over 16 weken.</p></details>
+  <details><summary>Worden overuren belast?</summary>
+    <p>Ja. Overwerkloon is gewoon belast loon. De bedragen in deze rekenhulp zijn bruto; wat je netto krijgt, zie je op je loonstrook.</p></details>
+  <details><summary>Ik werk in wisselende diensten. Hoe houd ik mijn overuren bij?</summary>
+    <p>Noteer per dienst je begin- en eindtijd. In de app Diensten &amp; Overuren Tracker zet je je rooster één keer in, vult de kalender zich vanzelf en voeg je per dag alleen je extra uren toe.</p></details>
+
+  <footer>
+    <p>Deze pagina is alleen bedoeld als algemene informatie en is geen juridisch of fiscaal advies. Wat voor jou geldt, staat in je arbeidsovereenkomst, je cao en je loonstrook.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ",";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("nl-NL", { style: 'currency', currency: "EUR" }); };
+  var OUT = ["r-hour", "r-ot", "r-ort", "r-total"];
+  function calc(v) {
+    var salary = v('salary'), week = v('week');
+    if (!salary || !week) return null;
+    var hour = salary / (week * 4.33);
+    var ot = hour * (1 + v('otRate') / 100) * v('ot');
+    var ort = hour * v('ortRate') / 100 * v('ortHours');
+    return { 'r-hour': hour, 'r-ot': ot, 'r-ort': ort, 'r-total': ot + ort };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["salary", "week", "ot", "otRate", "ortHours", "ortRate"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

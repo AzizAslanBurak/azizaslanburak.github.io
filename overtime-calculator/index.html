@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Overtime Calculator – Time and a Half and Double Time Pay</title>
+<meta name="description" content="Calculate your overtime pay: time and a half for hours over 40 in a workweek under the FLSA, optional double time for state rules such as California, and your total pay for the week. Step-by-step example.">
+<link rel="canonical" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Overtime Calculator">
+<meta property="og:description" content="Time and a half, double time and your total weekly pay in one simple calculator.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/overtime-calculator/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "How do I calculate time and a half?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Multiply your hourly rate by 1.5. At $20 an hour, your overtime rate is $30. Multiply that by the hours you worked over 40 in the workweek and add it to your regular pay for the first 40 hours."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can my employer average my hours over two weeks?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. Under the FLSA each workweek is a fixed period of 168 hours and stands on its own. Hours are not averaged over two or more weeks, even if you are paid every two weeks."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do I get overtime for working on a weekend or holiday?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Not automatically. Federal law does not require extra pay for weekend, holiday or night work as such; that depends on your agreement with your employer. Those hours do count toward the 40-hour overtime threshold."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "What is double time?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Double time is pay at 2 times your regular rate. Federal law does not require it, but some states do. In California, hours over 12 in a workday are paid at double time."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "I work rotating shifts. How do I keep track of my hours?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Write down when each shift starts and ends, and add up your hours for each workweek separately. In the Shift & Overtime Tracker app you enter your schedule once, the calendar fills itself in, and you only add the extra hours on the days you stay late."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Overtime Calculator</h1>
+  <p class="lead">Enter your hourly rate and the hours you worked this week to see your regular pay, your time-and-a-half overtime and your total pay for the week.</p>
+
+  <section class="card" aria-label="Overtime calculator">
+    <div class="grid">
+      <div>
+        <label for="rate">Hourly rate ($)</label>
+        <input id="rate" inputmode="decimal" autocomplete="off" placeholder="e.g. 20">
+      </div>
+      <div>
+        <label for="hours">Hours worked this week</label>
+        <input id="hours" inputmode="decimal" autocomplete="off" placeholder="e.g. 45">
+      </div>
+    </div>
+    <p class="sub">State rules (optional)</p>
+    <div class="grid">
+      <div>
+        <label for="dt">Double-time hours <span class="hint">(e.g. California)</span></label>
+        <input id="dt" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Regular pay (up to 40 hours)</span><span id="r-reg">–</span></div>
+      <div class="row"><span>Overtime rate (1.5×)</span><span id="r-otrate">–</span></div>
+      <div class="row"><span>Overtime pay</span><span id="r-ot">–</span></div>
+      <div class="row"><span>Double-time pay (2×)</span><span id="r-dt">–</span></div>
+      <div class="row total"><span>Total pay for the week (gross)</span><span id="r-total">–</span></div>
+      <p class="note">Gross amounts, before taxes and other deductions. The calculator applies the federal 40-hour weekly rule. Double-time hours are taken out of your overtime hours so no hour is counted twice. If your state has daily overtime, your pay may be higher; check your state rules and your pay stub.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Stop doing the math every payday.</strong> The Shift &amp; Overtime Tracker app keeps your shift schedule, adds up your overtime and shows what you should see on your next paycheck. Free.</p>
+      <a class="btn" href="https://apps.apple.com/us/app/id6821146979">Download on the App Store</a>
+      <p class="note" style="margin:8px 0 0">Android version coming soon to Google Play.</p>
+    </div>
+  </div>
+
+<h2>How overtime works under federal law</h2>
+  <p>The federal <strong>Fair Labor Standards Act (FLSA)</strong> says that non-exempt employees must be paid at least <strong>1.5 times their regular rate of pay</strong> for every hour worked over <strong>40 in a workweek</strong>. That is what people call “time and a half.” Your employer can pay more, but not less.</p>
+  <p>Working out your overtime takes three steps:</p>
+  <ol>
+    <li>Multiply your hourly rate by the hours you worked, up to 40. That is your <strong>regular pay</strong>.</li>
+    <li>Multiply your hourly rate by 1.5 to get your <strong>overtime rate</strong>.</li>
+    <li>Multiply the overtime rate by the hours you worked over 40, then add it to your regular pay.</li>
+  </ol>
+
+  <h3>Example</h3>
+  <p>You earn $20 an hour and worked 45 hours this week:</p>
+  <table>
+    <tr><th>Step</th><th>Calculation</th><th>Result</th></tr>
+    <tr><td>Regular pay</td><td>40 × $20</td><td>$800.00</td></tr>
+    <tr><td>Overtime rate</td><td>$20 × 1.5</td><td>$30.00</td></tr>
+    <tr><td>Overtime pay</td><td>5 hours × $30</td><td>$150.00</td></tr>
+    <tr><td>Total for the week</td><td>$800 + $150</td><td>$950.00</td></tr>
+  </table>
+
+  <h2>What counts as a workweek?</h2>
+  <p>A workweek is a <strong>fixed, regularly recurring period of 168 hours</strong>, which means seven consecutive 24-hour periods. Because it is fixed and recurring, your workweek starts on the same day and at the same time every week.</p>
+  <p>Every workweek stands on its own. Hours are <strong>not averaged</strong> over two or more weeks. If you work 50 hours one week and 30 the next, you are owed 10 hours of overtime for the first week, even though the two weeks add up to 80 hours. This matters a lot on rotating shift schedules, where long and short weeks alternate.</p>
+
+  <h2>Weekends, holidays and night shifts</h2>
+  <p>The FLSA does <strong>not</strong> require extra pay just because you work on a weekend, a holiday or at night. Premium pay for those shifts, such as a night shift differential or holiday pay, is a matter of agreement between you and your employer. Check your offer letter, your employee handbook or your union contract to see what you have been promised.</p>
+  <p>Those hours still count toward your 40. A Saturday shift that takes you past 40 hours for the week is overtime under federal law, whether or not your employer pays a weekend premium on top.</p>
+
+  <h2>Daily overtime and double time in some states</h2>
+  <p>Some states have stricter overtime rules than the FLSA, for example <strong>daily overtime</strong>. <strong>California</strong> is the best-known case:</p>
+  <ul>
+    <li>Hours over <strong>8 in a workday</strong> are paid at 1.5 times the regular rate.</li>
+    <li>Hours over <strong>12 in a workday</strong> are paid at 2 times the regular rate (“double time”).</li>
+  </ul>
+  <p>So in California, a single 14-hour shift is paid as 8 regular hours, 4 hours at time and a half and 2 hours at double time. If your state has rules like these, enter your double-time hours in the optional field above. Rules differ from state to state, so check the labor department of the state where you work.</p>
+
+  <h2>Who is not entitled to overtime?</h2>
+  <p><strong>Exempt</strong> employees are not entitled to overtime under the FLSA. This covers certain salaried executive, administrative and professional employees. Not every salaried employee is exempt; it depends on the rules for each exemption. If you are not sure whether you are exempt or non-exempt, ask your HR department or check with the U.S. Department of Labor.</p>
+
+  <h2>Frequently asked questions</h2>
+  <details><summary>How do I calculate time and a half?</summary>
+    <p>Multiply your hourly rate by 1.5. At $20 an hour, your overtime rate is $30. Multiply that by the hours you worked over 40 in the workweek and add it to your regular pay for the first 40 hours.</p></details>
+  <details><summary>Can my employer average my hours over two weeks?</summary>
+    <p>No. Under the FLSA each workweek is a fixed period of 168 hours and stands on its own. Hours are not averaged over two or more weeks, even if you are paid every two weeks.</p></details>
+  <details><summary>Do I get overtime for working on a weekend or holiday?</summary>
+    <p>Not automatically. Federal law does not require extra pay for weekend, holiday or night work as such; that depends on your agreement with your employer. Those hours do count toward the 40-hour overtime threshold.</p></details>
+  <details><summary>What is double time?</summary>
+    <p>Double time is pay at 2 times your regular rate. Federal law does not require it, but some states do. In California, hours over 12 in a workday are paid at double time.</p></details>
+  <details><summary>I work rotating shifts. How do I keep track of my hours?</summary>
+    <p>Write down when each shift starts and ends, and add up your hours for each workweek separately. In the Shift &amp; Overtime Tracker app you enter your schedule once, the calendar fills itself in, and you only add the extra hours on the days you stay late.</p></details>
+
+  <footer>
+    <p>This page is for general information only and is not legal or tax advice. Your employment agreement, any union contract, your state law and your pay stub are what count.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ".";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("en-US", { style: 'currency', currency: "USD" }); };
+  var OUT = ["r-reg", "r-otrate", "r-ot", "r-dt", "r-total"];
+  function calc(v) {
+var rate = v("rate"), hours = v("hours");
+if (!rate || !hours) return null;
+var dt = Math.min(v("dt"), hours);
+var regHours = Math.min(hours - dt, 40);
+var otHours = Math.max(0, hours - 40 - dt);
+var reg = regHours * rate;
+var otRate = rate * 1.5;
+var ot = otHours * otRate;
+var dtPay = dt * rate * 2;
+return { "r-reg": reg, "r-otrate": otRate, "r-ot": ot, "r-dt": dtPay, "r-total": reg + ot + dtPay };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["rate", "hours", "dt"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

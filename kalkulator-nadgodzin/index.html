@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="pl" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kalkulator nadgodzin – dodatek 50% i 100% oraz dodatek nocny</title>
+<meta name="description" content="Kalkulator nadgodzin: oblicz stawkę godzinową z wynagrodzenia zasadniczego, wynagrodzenie za godziny nadliczbowe z dodatkiem 50% i 100% według Kodeksu pracy oraz dodatek za pracę w nocy.">
+<link rel="canonical" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Kalkulator nadgodzin">
+<meta property="og:description" content="Stawka godzinowa, nadgodziny z dodatkiem 50% i 100% oraz dodatek nocny w jednym prostym kalkulatorze.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Ile wynosi dodatek za nadgodziny?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Za każdą godzinę nadliczbową przysługuje normalne wynagrodzenie plus dodatek: 100% za nadgodziny w nocy, w niedziele i święta niebędące dla pracownika dniami pracy, w dniu wolnym udzielonym za pracę w niedzielę lub święto oraz za przekroczenie przeciętnej tygodniowej normy czasu pracy; 50% w pozostałych przypadkach."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Jak obliczyć stawkę godzinową do nadgodzin?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Podziel miesięczne wynagrodzenie zasadnicze przez wymiar czasu pracy w danym miesiącu, np. 6000 zł ÷ 168 godzin = 35,71 zł. Godzina z dodatkiem 50% to stawka × 1,5, a z dodatkiem 100% to stawka × 2."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Ile nadgodzin można przepracować w roku?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "150 godzin w roku kalendarzowym, chyba że układ zbiorowy pracy, regulamin pracy lub umowa o pracę ustalają inny limit. Przeciętny tygodniowy czas pracy łącznie z nadgodzinami nie może przekraczać 48 godzin."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Jak obliczyć dodatek za pracę w nocy?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Dodatek wynosi 20% stawki godzinowej obliczonej z minimalnego wynagrodzenia za każdą godzinę pracy w nocy. Stawkę liczy się jako minimalne wynagrodzenie ÷ wymiar czasu pracy w danym miesiącu."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Pracuję na zmiany. Jak nie pogubić się w nadgodzinach?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Zapisuj początek i koniec każdej zmiany oraz to, czy nadgodziny wypadły w nocy, w niedzielę lub w święto. W aplikacji Grafik Zmian i Nadgodziny wpisujesz grafik raz, kalendarz uzupełnia się sam, a Ty dodajesz tylko nadgodziny z danego dnia."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Kalkulator nadgodzin</h1>
+  <p class="lead">Wpisz swoje wynagrodzenie zasadnicze i godziny z danego miesiąca, a od razu zobaczysz stawkę godzinową, wynagrodzenie za nadgodziny z dodatkiem 50% i 100% oraz dodatek za pracę w nocy.</p>
+
+  <section class="card" aria-label="Kalkulator nadgodzin">
+    <div class="grid">
+      <div>
+        <label for="pay">Wynagrodzenie zasadnicze (zł) <span class="hint">(brutto, miesięcznie)</span></label>
+        <input id="pay" inputmode="decimal" autocomplete="off" placeholder="np. 6000">
+      </div>
+      <div>
+        <label for="hours">Wymiar czasu pracy w miesiącu (h)</label>
+        <input id="hours" inputmode="decimal" autocomplete="off" value="168">
+      </div>
+    </div>
+    <p class="sub">Godziny w miesiącu</p>
+    <div class="grid">
+      <div>
+        <label for="ot50">Nadgodziny z dodatkiem 50% <span class="hint">(pozostałe przypadki)</span></label>
+        <input id="ot50" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="ot100">Nadgodziny z dodatkiem 100% <span class="hint">(noc, niedziele, święta)</span></label>
+        <input id="ot100" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="night">Godziny przepracowane w nocy</label>
+        <input id="night" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="minWage">Minimalne wynagrodzenie (zł) <span class="hint">(aktualna płaca minimalna)</span></label>
+        <input id="minWage" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Stawka godzinowa</span><span id="r-rate">–</span></div>
+      <div class="row"><span>Nadgodziny z dodatkiem 50%</span><span id="r-ot50">–</span></div>
+      <div class="row"><span>Nadgodziny z dodatkiem 100%</span><span id="r-ot100">–</span></div>
+      <div class="row"><span>Dodatek za pracę w nocy</span><span id="r-night">–</span></div>
+      <div class="row total"><span>Razem dodatkowo w miesiącu (brutto)</span><span id="r-total">–</span></div>
+      <p class="note">Kwoty brutto. Każda nadgodzina to normalne wynagrodzenie plus dodatek (stawka × 1,5 lub × 2). Dodatek nocny liczy się od minimalnego wynagrodzenia – wpisz jego aktualną wysokość, inaczej wynosi 0.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Koniec z liczeniem na kartce.</strong> Aplikacja Grafik Zmian i Nadgodziny zapamiętuje Twój grafik, sumuje nadgodziny i dodatki i pokazuje, ile dostaniesz na koniec miesiąca. Za darmo.</p>
+      <a class="btn" href="https://apps.apple.com/pl/app/id6821146979">Pobierz z App Store</a>
+      <p class="note" style="margin:8px 0 0">Wersja na Androida wkrótce w Google Play.</p>
+    </div>
+  </div>
+
+<h2>Jak obliczyć nadgodziny?</h2>
+  <p>Zgodnie z Kodeksem pracy za każdą <strong>godzinę nadliczbową</strong> przysługuje Ci normalne wynagrodzenie oraz <strong>dodatek</strong> w wysokości 50% albo 100%. Obliczenie ma trzy kroki:</p>
+  <ol>
+    <li>Podziel wynagrodzenie zasadnicze przez <strong>wymiar czasu pracy</strong> w danym miesiącu, np. 168 godzin. Tak otrzymasz stawkę godzinową.</li>
+    <li>Pomnóż stawkę przez <strong>1,5</strong> (dodatek 50%) albo przez <strong>2</strong> (dodatek 100%).</li>
+    <li>Pomnóż wynik przez liczbę nadgodzin w miesiącu.</li>
+  </ol>
+
+  <h3>Przykład</h3>
+  <p>Wynagrodzenie zasadnicze 6000 zł, wymiar czasu pracy 168 godzin, 10 nadgodzin z dodatkiem 50% i 4 nadgodziny z dodatkiem 100%:</p>
+  <table>
+    <tr><th>Krok</th><th>Obliczenie</th><th>Wynik</th></tr>
+    <tr><td>Stawka godzinowa</td><td>6000 ÷ 168</td><td>35,71 zł</td></tr>
+    <tr><td>Nadgodzina z dodatkiem 50%</td><td>35,71 × 1,5</td><td>53,57 zł</td></tr>
+    <tr><td>10 nadgodzin z dodatkiem 50%</td><td>53,57 × 10</td><td>535,71 zł</td></tr>
+    <tr><td>Nadgodzina z dodatkiem 100%</td><td>35,71 × 2</td><td>71,43 zł</td></tr>
+    <tr><td>4 nadgodziny z dodatkiem 100%</td><td>71,43 × 4</td><td>285,71 zł</td></tr>
+    <tr><td><strong>Razem</strong></td><td>535,71 + 285,71</td><td><strong>821,43 zł</strong></td></tr>
+  </table>
+  <p>Kalkulator liczy na pełnych, niezaokrąglonych wartościach i zaokrągla dopiero wynik, dlatego ostatni grosz może się różnić od obliczeń na zaokrąglonych kwotach.</p>
+
+  <h2>Kiedy dodatek 100%, a kiedy 50%?</h2>
+  <table>
+    <tr><th>Nadgodziny</th><th>Dodatek</th></tr>
+    <tr><td>w nocy</td><td>100%</td></tr>
+    <tr><td>w niedziele i święta, które nie są dla Ciebie dniami pracy</td><td>100%</td></tr>
+    <tr><td>w dniu wolnym udzielonym w zamian za pracę w niedzielę lub święto</td><td>100%</td></tr>
+    <tr><td>za przekroczenie przeciętnej tygodniowej normy czasu pracy</td><td>100%</td></tr>
+    <tr><td>we wszystkich pozostałych przypadkach</td><td>50%</td></tr>
+  </table>
+  <p>Przy pracy zmianowej warto zapisywać, które nadgodziny wypadły w nocy, w niedzielę lub w święto – od tego zależy, czy dostaniesz dodatek 50%, czy 100%.</p>
+
+  <h2>Dodatek za pracę w nocy</h2>
+  <p>Za każdą godzinę pracy w nocy przysługuje <strong>dodatek w wysokości 20%</strong> stawki godzinowej obliczonej z <strong>minimalnego wynagrodzenia</strong>. Stawkę tę liczy się tak: minimalne wynagrodzenie ÷ wymiar czasu pracy w danym miesiącu. Podstawą jest płaca minimalna, a nie Twoje wynagrodzenie zasadnicze, dlatego wpisz w kalkulatorze jej aktualną wysokość. Jakie godziny są u Ciebie porą nocną, sprawdź w regulaminie pracy lub układzie zbiorowym.</p>
+
+  <h2>Czas wolny zamiast dodatku</h2>
+  <p>Zamiast dodatku za nadgodziny pracodawca może udzielić Ci czasu wolnego:</p>
+  <ul>
+    <li>na Twój <strong>wniosek</strong> – 1 godzina wolna za 1 godzinę nadliczbową;</li>
+    <li>z <strong>inicjatywy pracodawcy</strong> – 1,5 godziny wolnego za 1 godzinę nadliczbową.</li>
+  </ul>
+
+  <h2>Limit nadgodzin</h2>
+  <p>Liczba godzin nadliczbowych nie może przekroczyć <strong>150 w roku kalendarzowym</strong>, chyba że układ zbiorowy pracy, regulamin pracy lub umowa o pracę ustalają inny limit. Przeciętny tygodniowy czas pracy łącznie z nadgodzinami nie może przekraczać <strong>48 godzin</strong>.</p>
+
+  <h2>Najczęściej zadawane pytania</h2>
+  <details><summary>Ile wynosi dodatek za nadgodziny?</summary>
+    <p>Za każdą godzinę nadliczbową przysługuje normalne wynagrodzenie plus dodatek: 100% za nadgodziny w nocy, w niedziele i święta niebędące dla pracownika dniami pracy, w dniu wolnym udzielonym za pracę w niedzielę lub święto oraz za przekroczenie przeciętnej tygodniowej normy czasu pracy; 50% w pozostałych przypadkach.</p></details>
+  <details><summary>Jak obliczyć stawkę godzinową do nadgodzin?</summary>
+    <p>Podziel miesięczne wynagrodzenie zasadnicze przez wymiar czasu pracy w danym miesiącu, np. 6000 zł ÷ 168 godzin = 35,71 zł. Godzina z dodatkiem 50% to stawka × 1,5, a z dodatkiem 100% to stawka × 2.</p></details>
+  <details><summary>Ile nadgodzin można przepracować w roku?</summary>
+    <p>150 godzin w roku kalendarzowym, chyba że układ zbiorowy pracy, regulamin pracy lub umowa o pracę ustalają inny limit. Przeciętny tygodniowy czas pracy łącznie z nadgodzinami nie może przekraczać 48 godzin.</p></details>
+  <details><summary>Jak obliczyć dodatek za pracę w nocy?</summary>
+    <p>Dodatek wynosi 20% stawki godzinowej obliczonej z minimalnego wynagrodzenia za każdą godzinę pracy w nocy. Stawkę liczy się jako minimalne wynagrodzenie ÷ wymiar czasu pracy w danym miesiącu.</p></details>
+  <details><summary>Pracuję na zmiany. Jak nie pogubić się w nadgodzinach?</summary>
+    <p>Zapisuj początek i koniec każdej zmiany oraz to, czy nadgodziny wypadły w nocy, w niedzielę lub w święto. W aplikacji Grafik Zmian i Nadgodziny wpisujesz grafik raz, kalendarz uzupełnia się sam, a Ty dodajesz tylko nadgodziny z danego dnia.</p></details>
+
+  <footer>
+    <p>Ta strona ma charakter wyłącznie informacyjny i nie zastępuje porady prawnej ani podatkowej. Wiążące są Twoja umowa o pracę, regulamin pracy, układ zbiorowy pracy i pasek wynagrodzenia.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ",";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("pl-PL", { style: 'currency', currency: "PLN" }); };
+  var OUT = ["r-rate", "r-ot50", "r-ot100", "r-night", "r-total"];
+  function calc(v) {
+    var pay = v('pay'), hours = v('hours');
+    if (!pay || !hours) return null;
+    var rate = pay / hours;
+    var ot50 = rate * 1.5 * v('ot50');
+    var ot100 = rate * 2 * v('ot100');
+    var minWage = v('minWage');
+    var night = minWage ? 0.2 * (minWage / hours) * v('night') : 0;
+    return { 'r-rate': rate, 'r-ot50': ot50, 'r-ot100': ot100, 'r-night': night, 'r-total': ot50 + ot100 + night };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["pay", "hours", "ot50", "ot100", "night", "minWage"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

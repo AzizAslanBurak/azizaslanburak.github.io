@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="it" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcolo straordinari – paga oraria, maggiorazione e lavoro notturno</title>
+<meta name="description" content="Calcola il tuo straordinario: paga oraria dallo stipendio lordo con il divisore del CCNL, maggiorazione dello straordinario e maggiorazione notturna. Esempio passo per passo e regole del D.Lgs. 66/2003.">
+<link rel="canonical" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Calcolo straordinari">
+<meta property="og:description" content="Paga oraria, straordinari e maggiorazione notturna in un unico calcolatore.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/calcolo-straordinari/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "Quando scatta lo straordinario?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Quando lavori oltre l’orario normale. Per il D.Lgs. 66/2003 l’orario normale è di 40 ore settimanali, ma il tuo CCNL può prevederne uno più breve."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Qual è la maggiorazione per lo straordinario?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "La legge non fissa una percentuale: lo straordinario va pagato con le maggiorazioni previste dai contratti collettivi. Controlla il tuo CCNL."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Come si calcola la paga oraria?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Dividi la retribuzione mensile per il divisore orario del tuo CCNL. In molti contratti a 40 ore il divisore è 173, altri usano 168 o valori diversi. Con 1.800 € e divisore 173 la paga oraria è di circa 10,40 €."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quante ore di straordinario posso fare in un anno?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Se il CCNL non lo regola, lo straordinario è ammesso solo con un accordo tra datore di lavoro e lavoratore e fino a 250 ore all’anno. In ogni caso la media settimanale, straordinari compresi, non può superare le 48 ore nel periodo di riferimento."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Lavoro su turni. Come tengo il conto delle ore?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Annota ogni giorno inizio e fine del turno e tieni separate le ore notturne. Con l’app Turni e Straordinari inserisci i turni una volta sola, il calendario si compila da solo e aggiungi soltanto le ore in più."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Calcolo straordinari</h1>
+  <p class="lead">Inserisci la retribuzione lorda mensile, il divisore del tuo CCNL e le ore fatte nel mese per vedere subito la tua paga oraria, quanto ti spetta per gli straordinari e la maggiorazione notturna.</p>
+
+  <section class="card" aria-label="Calcolatore degli straordinari">
+    <div class="grid">
+      <div>
+        <label for="salary">Retribuzione lorda mensile (€)</label>
+        <input id="salary" inputmode="decimal" autocomplete="off" placeholder="es. 1.800">
+      </div>
+      <div>
+        <label for="divisor">Divisore orario <span class="hint">(secondo il tuo CCNL)</span></label>
+        <input id="divisor" inputmode="decimal" autocomplete="off" value="173">
+      </div>
+    </div>
+    <p class="sub">Straordinari nel mese</p>
+    <div class="grid">
+      <div>
+        <label for="ot">Ore di straordinario</label>
+        <input id="ot" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="otRate">Maggiorazione (%) <span class="hint">(secondo il tuo CCNL)</span></label>
+        <input id="otRate" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+    <p class="sub">Lavoro notturno nel mese</p>
+    <div class="grid">
+      <div>
+        <label for="night">Ore notturne</label>
+        <input id="night" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+      <div>
+        <label for="nightRate">Maggiorazione notturna (%) <span class="hint">(secondo il tuo CCNL)</span></label>
+        <input id="nightRate" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Paga oraria</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Paga oraria straordinaria</span><span id="r-othour">–</span></div>
+      <div class="row"><span>Totale straordinari</span><span id="r-ot">–</span></div>
+      <div class="row"><span>Maggiorazione notturna</span><span id="r-night">–</span></div>
+      <div class="row total"><span>Totale in più nel mese (lordo)</span><span id="r-total">–</span></div>
+      <p class="note">Importi lordi, prima di tasse e contributi. La legge non fissa una percentuale per gli straordinari: inserisci le maggiorazioni previste dal tuo CCNL. La maggiorazione notturna è calcolata come quota aggiuntiva sulla paga oraria.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Basta conti a mano ogni mese.</strong> L’app Turni e Straordinari salva i tuoi turni, somma straordinari e ore notturne e ti mostra quanto dovresti ricevere a fine mese. Gratis.</p>
+      <a class="btn" href="https://apps.apple.com/it/app/id6821146979">Scarica dall’App Store</a>
+      <p class="note" style="margin:8px 0 0">Versione Android presto su Google Play.</p>
+    </div>
+  </div>
+
+<h2>Che cos’è il lavoro straordinario</h2>
+  <p>Secondo il <strong>D.Lgs. 66/2003</strong>, l’orario normale di lavoro è di <strong>40 ore settimanali</strong>. Il contratto collettivo (<strong>CCNL</strong>) può prevedere un orario normale più breve. Tutto il lavoro prestato oltre l’orario normale è <strong>lavoro straordinario</strong>.</p>
+
+  <h2>Quanto vale un’ora di straordinario?</h2>
+  <p>Lo straordinario va pagato con le <strong>maggiorazioni previste dai contratti collettivi</strong>. La legge non fissa una percentuale: la trovi nel tuo CCNL. Il calcolo ha tre passaggi:</p>
+  <ol>
+    <li>Dividi la retribuzione mensile per il <strong>divisore orario</strong> del tuo CCNL e ottieni la <strong>paga oraria</strong>.</li>
+    <li>Aumenta la paga oraria della maggiorazione prevista dal CCNL: è la <strong>paga oraria straordinaria</strong>.</li>
+    <li>Moltiplicala per le ore di straordinario fatte nel mese.</li>
+  </ol>
+
+  <h3>Esempio</h3>
+  <p>Retribuzione di 1.800 € lordi al mese, divisore 173, 10 ore di straordinario con una maggiorazione del 25% prevista dal CCNL:</p>
+  <table>
+    <tr><th>Passaggio</th><th>Calcolo</th><th>Risultato</th></tr>
+    <tr><td>Paga oraria</td><td>1.800 ÷ 173</td><td>10,40 €</td></tr>
+    <tr><td>Paga oraria straordinaria</td><td>(1.800 ÷ 173) × 1,25</td><td>13,01 €</td></tr>
+    <tr><td>Totale straordinari</td><td>(1.800 ÷ 173) × 1,25 × 10 ore</td><td>130,06 €</td></tr>
+  </table>
+  <p>Gli importi sono calcolati senza arrotondamenti intermedi e arrotondati al centesimo solo alla fine.</p>
+
+  <h2>Quale divisore orario usare?</h2>
+  <p>Il divisore trasforma la retribuzione mensile in paga oraria e dipende dal tuo contratto. In molti CCNL con orario di 40 ore settimanali è <strong>173</strong>; altri usano <strong>168</strong> o valori diversi. Controlla il tuo CCNL o chiedi all’ufficio del personale: un divisore sbagliato cambia tutti i risultati.</p>
+
+  <h2>Limiti allo straordinario</h2>
+  <ul>
+    <li>La durata media dell’orario di lavoro, <strong>compresi gli straordinari</strong>, non può superare le <strong>48 ore settimanali</strong> nel periodo di riferimento.</li>
+    <li>Se il CCNL non disciplina lo straordinario, questo è ammesso solo previo <strong>accordo tra datore di lavoro e lavoratore</strong> e per non più di <strong>250 ore all’anno</strong>.</li>
+  </ul>
+  <p>Il periodo di riferimento e le regole precise sullo straordinario dipendono dal tuo CCNL: verificale lì.</p>
+
+  <h2>Lavoro notturno</h2>
+  <p>Il <strong>periodo notturno</strong> dura almeno <strong>7 ore consecutive</strong> e comprende l’intervallo <strong>tra la mezzanotte e le 5 del mattino</strong>. La maggiorazione per il lavoro notturno non è fissata dalla legge ma dal <strong>CCNL</strong>. Se fai i turni di notte, inserisci nel calcolatore le ore notturne del mese e la percentuale del tuo contratto.</p>
+
+  <h2>Domande frequenti</h2>
+  <details><summary>Quando scatta lo straordinario?</summary>
+    <p>Quando lavori oltre l’orario normale. Per il D.Lgs. 66/2003 l’orario normale è di 40 ore settimanali, ma il tuo CCNL può prevederne uno più breve.</p></details>
+  <details><summary>Qual è la maggiorazione per lo straordinario?</summary>
+    <p>La legge non fissa una percentuale: lo straordinario va pagato con le maggiorazioni previste dai contratti collettivi. Controlla il tuo CCNL.</p></details>
+  <details><summary>Come si calcola la paga oraria?</summary>
+    <p>Dividi la retribuzione mensile per il divisore orario del tuo CCNL. In molti contratti a 40 ore il divisore è 173, altri usano 168 o valori diversi. Con 1.800 € e divisore 173 la paga oraria è di circa 10,40 €.</p></details>
+  <details><summary>Quante ore di straordinario posso fare in un anno?</summary>
+    <p>Se il CCNL non lo regola, lo straordinario è ammesso solo con un accordo tra datore di lavoro e lavoratore e fino a 250 ore all’anno. In ogni caso la media settimanale, straordinari compresi, non può superare le 48 ore nel periodo di riferimento.</p></details>
+  <details><summary>Lavoro su turni. Come tengo il conto delle ore?</summary>
+    <p>Annota ogni giorno inizio e fine del turno e tieni separate le ore notturne. Con l’app Turni e Straordinari inserisci i turni una volta sola, il calendario si compila da solo e aggiungi soltanto le ore in più.</p></details>
+
+  <footer>
+    <p>Questa pagina ha solo scopo informativo e non sostituisce una consulenza legale o fiscale. Fanno fede il tuo contratto di lavoro, il CCNL applicato e la tua busta paga.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ",";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("it-IT", { style: 'currency', currency: "EUR" }); };
+  var OUT = ["r-hour", "r-othour", "r-ot", "r-night", "r-total"];
+  function calc(v) {
+var salary = v("salary"), divisor = v("divisor");
+if (!salary || !divisor) return null;
+var hour = salary / divisor;
+var otHour = hour * (1 + v("otRate") / 100);
+var ot = otHour * v("ot");
+var night = hour * v("nightRate") / 100 * v("night");
+return { "r-hour": hour, "r-othour": otHour, "r-ot": ot, "r-night": night, "r-total": ot + night };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["salary", "divisor", "ot", "otRate", "night", "nightRate"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

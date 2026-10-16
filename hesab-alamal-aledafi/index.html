@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حساب العمل الإضافي في السعودية – حاسبة أجر الساعة الإضافية وفق نظام العمل</title>
+<meta name="description" content="احسب أجر العمل الإضافي وفق نظام العمل السعودي: أجر الساعة مع البدلات، وأجر الساعة الأساسي، وأجر ساعة العمل الإضافي (أجر الساعة + 50% من الأجر الأساسي). مثال محلول وساعات العمل في رمضان.">
+<link rel="canonical" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="حساب العمل الإضافي">
+<meta property="og:description" content="أجر الساعة وأجر ساعة العمل الإضافي وإجمالي الشهر في حاسبة بسيطة وفق نظام العمل السعودي.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+  th, td { text-align:right; }
+  .row span:last-child { text-align:left; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "هل تدخل البدلات في حساب العمل الإضافي؟",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "نعم، تدخل في أجر الساعة الذي يُدفع كاملاً عن كل ساعة إضافية. أما الزيادة البالغة 50% فتُحسب على الأجر الأساسي فقط."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "لماذا نقسم الراتب على 30 ثم على 8؟",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "هذه هي الطريقة الشائعة لاستخراج أجر الساعة من الراتب الشهري: 30 يوماً في الشهر و8 ساعات في اليوم. إذا كانت جهة عملك تعتمد طريقة مختلفة فراجع عقدك أو مسيّر الرواتب."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "هل العمل يوم الجمعة أو في العيد عمل إضافي؟",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "نعم. العمل في أيام الأعياد والعطلات الرسمية وفي يوم الراحة الأسبوعية يُعدّ عملاً إضافياً. ويوم الراحة الأسبوعية هو الجمعة من حيث الأصل، ويجوز لصاحب العمل تحديد يوم آخر لبعض العمال."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "كم ساعات العمل في رمضان؟",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "تُخفَّض ساعات العمل للعمال المسلمين في رمضان إلى 6 ساعات في اليوم أو 36 ساعة في الأسبوع كحد أقصى."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "أعمل في دولة عربية أخرى، هل تناسبني هذه الحاسبة؟",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "هذه الحاسبة مبنية على نظام العمل السعودي. القواعد تختلف من دولة إلى أخرى، لذا راجع قانون العمل في بلدك وعقد عملك."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>حساب العمل الإضافي</h1>
+  <p class="lead">أدخل أجرك الأساسي والبدلات وعدد الساعات الإضافية لترى فوراً أجر الساعة وأجر ساعة العمل الإضافي وإجمالي ما تستحقه عن الشهر وفق نظام العمل السعودي.</p>
+
+  <section class="card" aria-label="حاسبة العمل الإضافي">
+    <div class="grid">
+      <div>
+        <label for="basic">الأجر الأساسي الشهري (ريال)</label>
+        <input id="basic" inputmode="decimal" autocomplete="off" placeholder="مثال: 6000">
+      </div>
+      <div>
+        <label for="allow">البدلات الشهرية (ريال) <span class="hint">(سكن، نقل…)</span></label>
+        <input id="allow" inputmode="decimal" autocomplete="off" placeholder="مثال: 2000">
+      </div>
+      <div>
+        <label for="ot">ساعات العمل الإضافي في الشهر <span class="hint">(تشمل الجمعة والأعياد والعطلات الرسمية)</span></label>
+        <input id="ot" inputmode="decimal" autocomplete="off" placeholder="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>أجر الساعة (الأساسي + البدلات)</span><span id="r-hour">–</span></div>
+      <div class="row"><span>أجر الساعة الأساسي</span><span id="r-basic">–</span></div>
+      <div class="row"><span>أجر ساعة العمل الإضافي</span><span id="r-othour">–</span></div>
+      <div class="row total"><span>إجمالي أجر العمل الإضافي في الشهر</span><span id="r-total">–</span></div>
+      <p class="note">المبالغ إجمالية قبل أي استقطاعات. أجر الساعة = الأجر الشهري ÷ 30 ÷ 8، وأجر ساعة العمل الإضافي = أجر الساعة + 50% من أجر الساعة الأساسي. إذا كانت جهة عملك تحسب أجر الساعة بطريقة أخرى فراجع عقدك.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>توقّف عن الحساب اليدوي كل شهر.</strong> تطبيق «متتبع الورديات والعمل الإضافي» يحفظ جدول وردياتك، ويجمع ساعاتك الإضافية، ويُظهر لك ما ستتقاضاه في نهاية الشهر. مجاناً.</p>
+      <a class="btn" href="https://apps.apple.com/sa/app/id6821146979">حمّله من App Store</a>
+      <p class="note" style="margin:8px 0 0">نسخة أندرويد قريباً على Google Play.</p>
+    </div>
+  </div>
+
+<h2>كيف يُحسب أجر العمل الإضافي في السعودية؟</h2>
+  <p>وفق نظام العمل السعودي يدفع صاحب العمل عن كل ساعة عمل إضافية <strong>أجر الساعة كاملاً مضافاً إليه 50% من الأجر الأساسي</strong>. أي أن البدلات تدخل في أجر الساعة نفسه، بينما تُحسب الزيادة البالغة 50% على الأجر الأساسي وحده. ويتم الحساب في ثلاث خطوات:</p>
+  <ol>
+    <li>احسب <strong>أجر الساعة</strong>: (الأجر الأساسي + البدلات) ÷ 30 ÷ 8.</li>
+    <li>احسب <strong>أجر الساعة الأساسي</strong>: الأجر الأساسي ÷ 30 ÷ 8، ثم خذ نصفه.</li>
+    <li>اجمع الرقمين لتحصل على <strong>أجر ساعة العمل الإضافي</strong>، ثم اضربه في عدد الساعات الإضافية في الشهر.</li>
+  </ol>
+  <p>القسمة على 30 ثم على 8 (أي على 240) هي الطريقة الشائعة لاستخراج أجر الساعة من الراتب الشهري. إذا كانت جهة عملك تعتمد طريقة أخرى فراجع عقدك أو مسيّر الرواتب.</p>
+
+  <h3>مثال</h3>
+  <p>أجر أساسي 6,000 ريال، وبدلات (سكن ونقل) 2,000 ريال، و10 ساعات عمل إضافي في الشهر:</p>
+  <table>
+    <tr><th>الخطوة</th><th>الحساب</th><th>النتيجة</th></tr>
+    <tr><td>أجر الساعة</td><td>(6,000 + 2,000) ÷ 240</td><td>33.33 ريال</td></tr>
+    <tr><td>أجر الساعة الأساسي</td><td>6,000 ÷ 240</td><td>25.00 ريال</td></tr>
+    <tr><td>أجر ساعة العمل الإضافي</td><td>33.33 + (25.00 × 50%)</td><td>45.83 ريال</td></tr>
+    <tr><td>إجمالي أجر العمل الإضافي</td><td>45.83 × 10 ساعات (دون تقريب وسيط)</td><td>458.33 ريال</td></tr>
+  </table>
+
+  <h2>ساعات العمل العادية</h2>
+  <p>ساعات العمل العادية هي <strong>8 ساعات في اليوم</strong> كحد أقصى إذا اعتُمد المعيار اليومي، أو <strong>48 ساعة في الأسبوع</strong> إذا اعتُمد المعيار الأسبوعي. وما يزيد على ساعات العمل العادية هو عمل إضافي يستحق الأجر الموضح أعلاه.</p>
+  <h3>في شهر رمضان</h3>
+  <p>تُخفَّض ساعات العمل للعمال المسلمين في رمضان بحيث لا تزيد على <strong>6 ساعات في اليوم</strong> أو <strong>36 ساعة في الأسبوع</strong>. لذلك سجّل ساعاتك في رمضان بدقة، لأن ساعات العمل العادية فيه أقل من باقي السنة.</p>
+
+  <h2>العمل في الأعياد والعطلات الرسمية ويوم الراحة الأسبوعية</h2>
+  <p>العمل في <strong>أيام الأعياد والعطلات الرسمية</strong> وفي <strong>يوم الراحة الأسبوعية</strong> يُعدّ عملاً إضافياً. ويوم الراحة الأسبوعية للعمال هو <strong>الجمعة</strong> من حيث الأصل، ويجوز لصاحب العمل أن يحدد يوماً آخر لبعض العمال.</p>
+  <p>إذا عملت في أحد هذه الأيام فأضف ساعاتها إلى خانة ساعات العمل الإضافي في الحاسبة.</p>
+
+  <h2>نصيحة لمن يعمل بنظام الورديات</h2>
+  <p>مع الورديات المتغيرة يصعب تذكّر عدد الساعات الإضافية في نهاية الشهر. سجّل بداية كل وردية ونهايتها، ودوّن الأيام التي عملت فيها يوم الجمعة أو في عطلة رسمية. في تطبيق «متتبع الورديات والعمل الإضافي» تُدخل جدول وردياتك مرة واحدة، ثم تضيف الساعات الإضافية لكل يوم فقط.</p>
+
+  <h2>هل تعمل خارج السعودية؟</h2>
+  <p>تتبع هذه الصفحة <strong>نظام العمل السعودي</strong>. تختلف قواعد ساعات العمل والعمل الإضافي من دولة عربية إلى أخرى، فإذا كنت تعمل في بلد آخر فراجع قانون العمل في بلدك وعقد عملك قبل الاعتماد على هذه الأرقام.</p>
+
+  <h2>الأسئلة الشائعة</h2>
+  <details><summary>هل تدخل البدلات في حساب العمل الإضافي؟</summary>
+    <p>نعم، تدخل في أجر الساعة الذي يُدفع كاملاً عن كل ساعة إضافية. أما الزيادة البالغة 50% فتُحسب على الأجر الأساسي فقط.</p></details>
+  <details><summary>لماذا نقسم الراتب على 30 ثم على 8؟</summary>
+    <p>هذه هي الطريقة الشائعة لاستخراج أجر الساعة من الراتب الشهري: 30 يوماً في الشهر و8 ساعات في اليوم. إذا كانت جهة عملك تعتمد طريقة مختلفة فراجع عقدك أو مسيّر الرواتب.</p></details>
+  <details><summary>هل العمل يوم الجمعة أو في العيد عمل إضافي؟</summary>
+    <p>نعم. العمل في أيام الأعياد والعطلات الرسمية وفي يوم الراحة الأسبوعية يُعدّ عملاً إضافياً. ويوم الراحة الأسبوعية هو الجمعة من حيث الأصل، ويجوز لصاحب العمل تحديد يوم آخر لبعض العمال.</p></details>
+  <details><summary>كم ساعات العمل في رمضان؟</summary>
+    <p>تُخفَّض ساعات العمل للعمال المسلمين في رمضان إلى 6 ساعات في اليوم أو 36 ساعة في الأسبوع كحد أقصى.</p></details>
+  <details><summary>أعمل في دولة عربية أخرى، هل تناسبني هذه الحاسبة؟</summary>
+    <p>هذه الحاسبة مبنية على نظام العمل السعودي. القواعد تختلف من دولة إلى أخرى، لذا راجع قانون العمل في بلدك وعقد عملك.</p></details>
+
+  <footer>
+    <p>هذه الصفحة للمعلومات العامة فقط ولا تُغني عن الاستشارة القانونية. المرجع هو عقد عملك ولائحة تنظيم العمل لدى جهة عملك ومسيّر رواتبك.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcul-heures-supplementaires/" hreflang="fr" lang="fr">Français</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ".";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("ar-SA-u-nu-latn", { style: 'currency', currency: "SAR" }); };
+  var OUT = ["r-hour", "r-basic", "r-othour", "r-total"];
+  function calc(v) {
+    var basic = v('basic');
+    if (!basic) return null;
+    var hour = (basic + v('allow')) / 240;
+    var basicHour = basic / 240;
+    var otHour = hour + basicHour * 0.5;
+    return { 'r-hour': hour, 'r-basic': basicHour, 'r-othour': otHour, 'r-total': otHour * v('ot') };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["basic", "allow", "ot"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>

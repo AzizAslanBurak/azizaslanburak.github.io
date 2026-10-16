@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul des heures supplémentaires – majoration 25 % et 50 %</title>
+<meta name="description" content="Calculez vos heures supplémentaires : taux horaire à partir du salaire brut (151,67 h), majoration de 25 % de la 36e à la 43e heure et de 50 % à partir de la 44e. Exemple pas à pas et règles du Code du travail.">
+<link rel="canonical" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="en" href="https://azizaslanburak.github.io/overtime-calculator/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<link rel="alternate" hreflang="fr" href="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<link rel="alternate" hreflang="it" href="https://azizaslanburak.github.io/calcolo-straordinari/">
+<link rel="alternate" hreflang="nl" href="https://azizaslanburak.github.io/overuren-berekenen/">
+<link rel="alternate" hreflang="pl" href="https://azizaslanburak.github.io/kalkulator-nadgodzin/">
+<link rel="alternate" hreflang="ru" href="https://azizaslanburak.github.io/raschet-sverhurochnyh/">
+<link rel="alternate" hreflang="ar" href="https://azizaslanburak.github.io/hesab-alamal-aledafi/">
+<link rel="alternate" hreflang="x-default" href="https://azizaslanburak.github.io/overtime-calculator/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Calcul des heures supplémentaires">
+<meta property="og:description" content="Taux horaire, majorations de 25 % et 50 % et total de vos heures sup en un seul calcul.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/calcul-heures-supplementaires/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "À partir de combien d’heures parle-t-on d’heures supplémentaires ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "À partir de la 36e heure. La durée légale du travail est de 35 heures par semaine ; chaque heure travaillée au-delà dans la semaine est une heure supplémentaire."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Quelle est la majoration des heures supplémentaires ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Sauf accord collectif différent : 25 % pour les 8 premières heures (de la 36e à la 43e) et 50 % à partir de la 44e. Un accord d’entreprise ou de branche peut fixer un autre taux, sans descendre sous 10 %."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Comment trouver mon taux horaire à partir du salaire mensuel ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Pour un temps plein, divisez le salaire brut mensuel par 151,67 heures (35 h × 52 semaines ÷ 12 mois). Avec 2 000 € brut, le taux horaire est d’environ 13,19 €."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Les heures supplémentaires sont-elles imposables ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Elles sont exonérées d’impôt sur le revenu dans la limite de 7 500 € nets par an et bénéficient d’une réduction des cotisations sociales salariales."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Je travaille en horaires décalés. Comment suivre mes heures ?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Notez chaque jour votre heure d’arrivée et de départ, et faites le total semaine par semaine. Dans l’application Suivi Horaires & Heures Sup, vous saisissez votre planning une fois, le calendrier se remplit tout seul et vous ajoutez seulement les heures en plus."
+   }
+  }
+ ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Calcul des heures supplémentaires</h1>
+  <p class="lead">Indiquez votre salaire brut mensuel et les heures travaillées dans la semaine pour voir tout de suite votre taux horaire et le montant de vos heures supplémentaires majorées.</p>
+
+  <section class="card" aria-label="Calculateur d’heures supplémentaires">
+    <div class="grid">
+      <div>
+        <label for="salary">Salaire brut mensuel (€) <span class="hint">(temps plein)</span></label>
+        <input id="salary" inputmode="decimal" autocomplete="off" placeholder="ex. 2 000">
+      </div>
+      <div>
+        <label for="hours">Heures travaillées dans la semaine</label>
+        <input id="hours" inputmode="decimal" autocomplete="off" placeholder="ex. 45">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Taux horaire (salaire ÷ 151,67 h)</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Taux horaire majoré de 25 %</span><span id="r-rate25">–</span></div>
+      <div class="row"><span>Taux horaire majoré de 50 %</span><span id="r-rate50">–</span></div>
+      <div class="row"><span>Heures majorées à 25 % (36e à 43e heure)</span><span id="r-pay25">–</span></div>
+      <div class="row"><span>Heures majorées à 50 % (à partir de la 44e)</span><span id="r-pay50">–</span></div>
+      <div class="row total"><span>Total des heures sup de la semaine (brut)</span><span id="r-total">–</span></div>
+      <p class="note">Montants bruts, pour un salarié à temps plein. Le calcul applique les taux prévus par le Code du travail à défaut d’accord (25 % puis 50 %). Un accord d’entreprise ou de branche peut fixer un autre taux, au minimum 10 % : vérifiez le vôtre.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Arrêtez de tout recalculer à la main.</strong> L’application Suivi Horaires &amp; Heures Sup garde votre planning (postes, roulements, nuits), additionne vos heures supplémentaires et vous montre ce que vous devriez toucher en fin de mois. Gratuite.</p>
+      <a class="btn" href="https://apps.apple.com/fr/app/id6821146979">Télécharger sur l’App Store</a>
+      <p class="note" style="margin:8px 0 0">Version Android bientôt sur Google Play.</p>
+    </div>
+  </div>
+
+<h2>Quand parle-t-on d’heures supplémentaires ?</h2>
+  <p>La durée légale du travail est de <strong>35 heures par semaine</strong>. Toute heure travaillée au-delà de 35 heures dans la semaine est une <strong>heure supplémentaire</strong>. On raisonne semaine par semaine : c’est le total de la semaine qui compte, pas celui de la journée.</p>
+
+  <h2>Les taux de majoration</h2>
+  <p>Sauf accord collectif prévoyant autre chose, les heures supplémentaires sont payées avec une majoration de :</p>
+  <table>
+    <tr><th>Heures de la semaine</th><th>Majoration</th></tr>
+    <tr><td>De la 36e à la 43e heure (les 8 premières heures sup)</td><td>25 %</td></tr>
+    <tr><td>À partir de la 44e heure</td><td>50 %</td></tr>
+  </table>
+  <p>Un <strong>accord d’entreprise</strong> ou un <strong>accord de branche</strong> peut fixer un autre taux, mais jamais en dessous de <strong>10 %</strong>. Regardez votre convention collective ou demandez à vos représentants du personnel quel taux s’applique chez vous.</p>
+
+  <h2>Comment calculer ses heures supplémentaires</h2>
+  <ol>
+    <li>Divisez votre salaire brut mensuel par <strong>151,67</strong> pour obtenir votre <strong>taux horaire</strong>. Ce chiffre correspond à 35 h × 52 semaines ÷ 12 mois.</li>
+    <li>Multipliez le taux horaire par <strong>1,25</strong> pour les 8 premières heures sup, et par <strong>1,5</strong> pour les suivantes.</li>
+    <li>Multipliez chaque taux majoré par le nombre d’heures concernées, puis additionnez.</li>
+  </ol>
+
+  <h3>Exemple</h3>
+  <p>Salaire de 2 000 € brut par mois à temps plein, 45 heures travaillées dans la semaine, soit 10 heures supplémentaires :</p>
+  <table>
+    <tr><th>Étape</th><th>Calcul</th><th>Résultat</th></tr>
+    <tr><td>Taux horaire</td><td>2 000 ÷ 151,67</td><td>13,19 €</td></tr>
+    <tr><td>Taux majoré de 25 %</td><td>(2 000 ÷ 151,67) × 1,25</td><td>16,48 €</td></tr>
+    <tr><td>Taux majoré de 50 %</td><td>(2 000 ÷ 151,67) × 1,5</td><td>19,78 €</td></tr>
+    <tr><td>8 heures à 25 % (36e à 43e)</td><td>taux à 25 % × 8 h</td><td>131,87 €</td></tr>
+    <tr><td>2 heures à 50 % (44e et 45e)</td><td>taux à 50 % × 2 h</td><td>39,56 €</td></tr>
+    <tr><td>Total de la semaine</td><td>131,87 + 39,56</td><td>171,42 €</td></tr>
+  </table>
+  <p>Les montants sont calculés sans arrondi intermédiaire, puis arrondis au centime. C’est pour cela que 16,48 × 8 ne donne pas tout à fait 131,87.</p>
+
+  <h2>Le contingent annuel d’heures supplémentaires</h2>
+  <p>Par défaut, chaque salarié peut effectuer jusqu’à <strong>220 heures supplémentaires par an</strong> : c’est le contingent annuel. Un accord d’entreprise ou de branche peut fixer un autre chiffre. Si vous travaillez en équipes ou en horaires décalés, gardez une trace de vos heures pour savoir où vous en êtes.</p>
+
+  <h2>Impôt et cotisations</h2>
+  <p>La rémunération des heures supplémentaires est <strong>exonérée d’impôt sur le revenu</strong> dans la limite de <strong>7 500 € nets par an</strong>. Elle bénéficie aussi d’une <strong>réduction des cotisations sociales salariales</strong>. Votre bulletin de paie indique le détail.</p>
+
+  <h2>Nuits, dimanches et jours fériés</h2>
+  <p>Le calculateur ne traite que les heures supplémentaires. Si vous travaillez de nuit, le dimanche ou un jour férié, d’éventuelles majorations ou compensations dépendent de votre <strong>convention collective</strong>, d’un accord d’entreprise ou de votre contrat. Vérifiez ces textes : ils s’ajoutent souvent au calcul ci-dessus.</p>
+
+  <h2>Questions fréquentes</h2>
+  <details><summary>À partir de combien d’heures parle-t-on d’heures supplémentaires ?</summary>
+    <p>À partir de la 36e heure. La durée légale du travail est de 35 heures par semaine ; chaque heure travaillée au-delà dans la semaine est une heure supplémentaire.</p></details>
+  <details><summary>Quelle est la majoration des heures supplémentaires ?</summary>
+    <p>Sauf accord collectif différent : 25 % pour les 8 premières heures (de la 36e à la 43e) et 50 % à partir de la 44e. Un accord d’entreprise ou de branche peut fixer un autre taux, sans descendre sous 10 %.</p></details>
+  <details><summary>Comment trouver mon taux horaire à partir du salaire mensuel ?</summary>
+    <p>Pour un temps plein, divisez le salaire brut mensuel par 151,67 heures (35 h × 52 semaines ÷ 12 mois). Avec 2 000 € brut, le taux horaire est d’environ 13,19 €.</p></details>
+  <details><summary>Les heures supplémentaires sont-elles imposables ?</summary>
+    <p>Elles sont exonérées d’impôt sur le revenu dans la limite de 7 500 € nets par an et bénéficient d’une réduction des cotisations sociales salariales.</p></details>
+  <details><summary>Je travaille en horaires décalés. Comment suivre mes heures ?</summary>
+    <p>Notez chaque jour votre heure d’arrivée et de départ, et faites le total semaine par semaine. Dans l’application Suivi Horaires &amp; Heures Sup, vous saisissez votre planning une fois, le calendrier se remplit tout seul et vous ajoutez seulement les heures en plus.</p></details>
+
+  <footer>
+    <p>Cette page est fournie à titre d’information générale et ne remplace pas un conseil juridique ou fiscal. Seuls votre contrat de travail, votre convention collective et votre bulletin de paie font foi.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a></p>
+    <p class="note"><a href="/fazla-mesai-hesaplama/" hreflang="tr" lang="tr">Türkçe</a> · <a href="/overtime-calculator/" hreflang="en" lang="en">English</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR" lang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es" lang="es">Español</a> · <a href="/ueberstunden-rechner/" hreflang="de" lang="de">Deutsch</a> · <a href="/calcolo-straordinari/" hreflang="it" lang="it">Italiano</a> · <a href="/overuren-berekenen/" hreflang="nl" lang="nl">Nederlands</a> · <a href="/kalkulator-nadgodzin/" hreflang="pl" lang="pl">Polski</a> · <a href="/raschet-sverhurochnyh/" hreflang="ru" lang="ru">Русский</a> · <a href="/hesab-alamal-aledafi/" hreflang="ar" lang="ar">العربية</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var DEC = ",";
+  var v = function (id) {
+    var s = ($(id).value || '').trim().replace(/[\s\u00a0\u202f]/g, '').replace(/[^0-9.,-]/g, '');
+    if (DEC === ',') {
+      if (s.indexOf(',') !== -1) s = s.replace(/\./g, '').replace(',', '.');
+      else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, '');
+    } else {
+      s = s.replace(/,/g, '');
+    }
+    var n = parseFloat(s);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var fmt = function (n) { return n.toLocaleString("fr-FR", { style: 'currency', currency: "EUR" }); };
+  var OUT = ["r-hour", "r-rate25", "r-rate50", "r-pay25", "r-pay50", "r-total"];
+  function calc(v) {
+var salary = v("salary"), hours = v("hours");
+if (!salary || !hours) return null;
+var hour = salary / 151.67;
+var extra = Math.max(0, hours - 35);
+var h25 = Math.min(extra, 8);
+var h50 = Math.max(0, extra - 8);
+var rate25 = hour * 1.25, rate50 = hour * 1.5;
+var pay25 = h25 * rate25, pay50 = h50 * rate50;
+return { "r-hour": hour, "r-rate25": rate25, "r-rate50": rate50, "r-pay25": pay25, "r-pay50": pay50, "r-total": pay25 + pay50 };
+  }
+  function run() {
+    var r = calc(v);
+    OUT.forEach(function (k) { $(k).textContent = r && typeof r[k] === 'number' && isFinite(r[k]) ? fmt(r[k]) : '–'; });
+  }
+  ["salary", "hours"].forEach(function (id) { $(id).addEventListener('input', run); });
+})();
+</script>
+</body>
+</html>
