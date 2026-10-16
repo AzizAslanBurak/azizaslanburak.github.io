@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cálculo de Hora Extra – 50%, 100%, Adicional Noturno e DSR</title>
+<meta name="description" content="Calcule sua hora extra: valor da hora (divisor 220), hora extra 50% e 100%, adicional noturno de 20% com hora reduzida e reflexo no DSR. Exemplo passo a passo e regras da CLT.">
+<link rel="canonical" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Cálculo de Hora Extra">
+<meta property="og:description" content="Hora extra 50% e 100%, adicional noturno e DSR em uma calculadora simples.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/calculo-hora-extra/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Como calcular a hora extra?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Divida o salário mensal pelo divisor da sua jornada (220 para 44 horas semanais) para achar o valor da hora. A hora extra vale no mínimo 50% a mais, ou seja, 1,5 vez a hora normal. Multiplique pelo número de horas extras do mês."}},
+    {"@type": "Question", "name": "Por que o divisor é 220?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Na jornada de 44 horas semanais, 44 ÷ 6 dias × 30 dias = 220 horas por mês, já incluindo o descanso semanal remunerado. Para 40 horas semanais o divisor é 200 e para 36 horas é 180."}},
+    {"@type": "Question", "name": "Quando a hora extra é de 100%?",
+     "acceptedAnswer": {"@type": "Answer", "text": "O trabalho em domingos e feriados que não for compensado com outra folga deve ser pago em dobro (Súmula 146 do TST), o que corresponde a um adicional de 100%."}},
+    {"@type": "Question", "name": "Como funciona o adicional noturno?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Para o trabalhador urbano, o trabalho entre 22h e 5h tem adicional de no mínimo 20% sobre a hora normal, e cada hora noturna tem 52 minutos e 30 segundos. Assim, 7 horas de relógio nesse horário contam como 8 horas noturnas (CLT, art. 73)."}},
+    {"@type": "Question", "name": "O que é o reflexo da hora extra no DSR?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Horas extras habituais também aumentam o descanso semanal remunerado (Súmula 172 do TST). O cálculo usual é: valor das horas extras do mês ÷ dias úteis × domingos e feriados do mês."}}
+  ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Cálculo de Hora Extra</h1>
+  <p class="lead">Informe seu salário e as horas do mês para ver na hora o valor da hora extra 50% e 100%, o adicional noturno e o reflexo no DSR.</p>
+
+  <section class="card" aria-label="Calculadora de hora extra">
+    <div class="grid">
+      <div>
+        <label for="salary">Salário bruto mensal (R$)</label>
+        <input id="salary" inputmode="decimal" placeholder="Ex.: 2.200" autocomplete="off">
+      </div>
+      <div>
+        <label for="divisor">Divisor <span class="hint">(220 = 44 h/semana)</span></label>
+        <input id="divisor" inputmode="decimal" value="220">
+      </div>
+    </div>
+
+    <p class="sub">Horas no mês</p>
+    <div class="grid">
+      <div>
+        <label for="he50">Horas extras 50% <span class="hint">(dias normais)</span></label>
+        <input id="he50" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="he100">Horas extras 100% <span class="hint">(domingos e feriados)</span></label>
+        <input id="he100" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="night">Horas trabalhadas entre 22h e 5h <span class="hint">(de relógio)</span></label>
+        <input id="night" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="nightRate">Adicional noturno (%) <span class="hint">(mínimo 20)</span></label>
+        <input id="nightRate" inputmode="decimal" value="20">
+      </div>
+    </div>
+
+    <p class="sub">Reflexo no DSR <span class="hint">(opcional)</span></p>
+    <div class="grid">
+      <div>
+        <label for="workdays">Dias úteis no mês</label>
+        <input id="workdays" inputmode="decimal" placeholder="Ex.: 25">
+      </div>
+      <div>
+        <label for="restdays">Domingos e feriados no mês</label>
+        <input id="restdays" inputmode="decimal" placeholder="Ex.: 5">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Valor da hora normal</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Valor da hora extra 50%</span><span id="r-h50">–</span></div>
+      <div class="row"><span>Total horas extras 50%</span><span id="r-he50">–</span></div>
+      <div class="row"><span>Total horas extras 100%</span><span id="r-he100">–</span></div>
+      <div class="row"><span>Adicional noturno</span><span id="r-night">–</span></div>
+      <div class="row"><span>Reflexo das horas extras no DSR</span><span id="r-dsr">–</span></div>
+      <div class="row total"><span>Total a receber a mais (bruto)</span><span id="r-total">–</span></div>
+      <p class="note">Valores brutos. Do total ainda são descontados INSS e, se for o caso, Imposto de Renda. As horas noturnas são convertidas automaticamente para a hora reduzida (7 horas de relógio = 8 horas noturnas).</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Pare de calcular à mão todo mês.</strong> O app Turnos e Horas Extras guarda sua escala (12x36, plantão, turnos), soma suas horas extras e adicionais e mostra quanto você vai receber no fim do mês. Grátis.</p>
+      <a class="btn" href="https://apps.apple.com/br/app/id6821146979">Baixar na App Store</a>
+      <p class="note" style="margin:8px 0 0">Versão para Android em breve no Google Play.</p>
+    </div>
+  </div>
+
+  <h2>Como calcular a hora extra</h2>
+  <p>Pela Constituição (art. 7º, XVI) e pela CLT (art. 59), a hora extra deve ser paga com adicional de <strong>no mínimo 50%</strong> sobre a hora normal. Convenção ou acordo coletivo pode garantir um percentual maior. O cálculo tem três passos:</p>
+  <ol>
+    <li>Divida o salário mensal pelo <strong>divisor</strong> da sua jornada para achar o valor da hora.</li>
+    <li>Multiplique o valor da hora por 1,5 para achar o <strong>valor da hora extra</strong>.</li>
+    <li>Multiplique pelo número de horas extras feitas no mês.</li>
+  </ol>
+
+  <h3>Exemplo</h3>
+  <p>Salário de R$ 2.200,00, jornada de 44 horas semanais e 10 horas extras no mês:</p>
+  <table>
+    <tr><th>Passo</th><th>Cálculo</th><th>Resultado</th></tr>
+    <tr><td>Valor da hora</td><td>2.200 ÷ 220</td><td>R$ 10,00</td></tr>
+    <tr><td>Hora extra 50%</td><td>10,00 × 1,5</td><td>R$ 15,00</td></tr>
+    <tr><td>Total das horas extras</td><td>15,00 × 10 horas</td><td>R$ 150,00</td></tr>
+    <tr><td>Reflexo no DSR (25 dias úteis, 5 domingos e feriados)</td><td>150,00 ÷ 25 × 5</td><td>R$ 30,00</td></tr>
+  </table>
+
+  <h2>Qual divisor usar?</h2>
+  <table>
+    <tr><th>Jornada semanal</th><th>Divisor</th></tr>
+    <tr><td>44 horas</td><td>220</td></tr>
+    <tr><td>40 horas</td><td>200</td></tr>
+    <tr><td>36 horas</td><td>180</td></tr>
+    <tr><td>30 horas</td><td>150</td></tr>
+  </table>
+  <p>O divisor vem da jornada semanal dividida por 6 dias e multiplicada por 30 dias. Na jornada de 44 horas: 44 ÷ 6 × 30 = 220.</p>
+
+  <h2>Hora extra 100%: domingos e feriados</h2>
+  <p>O trabalho em domingos e feriados que <strong>não for compensado</strong> com outra folga deve ser pago em dobro, sem prejuízo da remuneração do repouso (Súmula 146 do TST). Por isso ele aparece no holerite como hora extra 100%. Na escala 12x36, a CLT (art. 59-A) considera os feriados e o descanso semanal já compensados pela própria escala.</p>
+
+  <h2>Adicional noturno</h2>
+  <p>Para o trabalhador urbano, o trabalho entre <strong>22h e 5h</strong> tem adicional de <strong>no mínimo 20%</strong> sobre a hora normal, e a hora noturna é reduzida: cada hora noturna tem 52 minutos e 30 segundos (CLT, art. 73). Na prática, 7 horas de relógio nesse horário contam como 8 horas noturnas. Se a hora extra também for noturna, o adicional noturno incide sobre ela.</p>
+
+  <h2>Reflexo no DSR</h2>
+  <p>Quando as horas extras são habituais, elas também aumentam o <strong>descanso semanal remunerado</strong> (Súmula 172 do TST). O cálculo mais usado é: valor das horas extras do mês ÷ dias úteis do mês × domingos e feriados do mês.</p>
+
+  <h2>Limite diário</h2>
+  <p>A duração normal do trabalho pode ser acrescida de horas extras em número <strong>não superior a duas por dia</strong> (CLT, art. 59).</p>
+
+  <h2>Perguntas frequentes</h2>
+  <details><summary>A hora extra é calculada sobre o salário bruto ou líquido?</summary>
+    <p>Sobre o salário bruto. Depois, o total entra na base do INSS e do Imposto de Renda, por isso o valor que cai na conta é menor.</p></details>
+  <details><summary>Trabalho em escala 12x36. Tenho hora extra?</summary>
+    <p>As horas dentro da escala 12x36 não são extras. Se você trabalhar além das 12 horas do plantão ou em uma folga, essas horas são extras. Anote tudo; no app Turnos e Horas Extras você registra a escala uma vez e adiciona as horas a mais em cada dia.</p></details>
+  <details><summary>Banco de horas substitui o pagamento?</summary>
+    <p>Pode substituir, se houver acordo de banco de horas válido e as horas forem compensadas no prazo combinado. Horas não compensadas no prazo devem ser pagas como extras.</p></details>
+
+  <footer>
+    <p>Esta página é apenas informativa e não substitui orientação jurídica. Confira seu contrato, a convenção coletiva da sua categoria e o seu holerite.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a> · <a href="/fazla-mesai-hesaplama/" hreflang="tr">Türkçe</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) {
+    var v = ($(id).value || '').trim().replace(/\s/g, '').replace(/^R\$/, '');
+    // Accept "2.200", "2200", "2.200,50" and "2200.5"
+    if (v.indexOf(',') !== -1) v = v.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(v)) v = v.replace(/\./g, '');
+    var n = parseFloat(v);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var brl = function (n) { return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); };
+  var OUT = ['r-hour', 'r-h50', 'r-he50', 'r-he100', 'r-night', 'r-dsr', 'r-total'];
+  function calc() {
+    var salary = num('salary'), divisor = num('divisor') || 220;
+    if (!salary) { OUT.forEach(function (k) { $(k).textContent = '–'; }); return; }
+    var hour = salary / divisor;
+    var he50 = hour * 1.5 * num('he50');
+    var he100 = hour * 2 * num('he100');
+    // 7 clock hours between 22h and 5h count as 8 night hours
+    var night = hour * (num('nightRate') / 100) * num('night') * 8 / 7;
+    var wd = num('workdays'), rd = num('restdays');
+    var dsr = wd > 0 && rd > 0 ? (he50 + he100) / wd * rd : 0;
+    $('r-hour').textContent = brl(hour);
+    $('r-h50').textContent = brl(hour * 1.5);
+    $('r-he50').textContent = brl(he50);
+    $('r-he100').textContent = brl(he100);
+    $('r-night').textContent = brl(night);
+    $('r-dsr').textContent = brl(dsr);
+    $('r-total').textContent = brl(he50 + he100 + night + dsr);
+  }
+  ['salary', 'divisor', 'he50', 'he100', 'night', 'nightRate', 'workdays', 'restdays'].forEach(function (id) { $(id).addEventListener('input', calc); });
+})();
+</script>
+</body>
+</html>
