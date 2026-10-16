@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcular Horas Extra – Valor de la Hora y Recargo según tu Convenio</title>
+<meta name="description" content="Calcula cuánto te pagan las horas extra: valor de la hora ordinaria a partir de tu salario anual y la jornada de tu convenio, recargo de horas extra y nocturnidad. Reglas del Estatuto de los Trabajadores y ejemplo paso a paso.">
+<link rel="canonical" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Calcular Horas Extra">
+<meta property="og:description" content="Valor de la hora ordinaria, horas extra y nocturnidad en una calculadora sencilla.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/calcular-horas-extra/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "¿Cuánto se paga una hora extra en España?",
+     "acceptedAnswer": {"@type": "Answer", "text": "El Estatuto de los Trabajadores (art. 35) no fija un recargo: la hora extra se paga en la cuantía que establezca el convenio colectivo o el contrato, que nunca puede ser inferior al valor de la hora ordinaria, o se compensa con descanso retribuido."}},
+    {"@type": "Question", "name": "¿Cómo se calcula el valor de la hora ordinaria?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Una forma habitual es dividir el salario bruto anual, incluidas las pagas extra, entre las horas de trabajo anuales que fija tu convenio."}},
+    {"@type": "Question", "name": "¿Cuántas horas extra se pueden hacer al año?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Como máximo 80 horas extra al año. No se cuentan las que se hayan compensado con descanso dentro de los cuatro meses siguientes."}},
+    {"@type": "Question", "name": "¿Qué es el plus de nocturnidad?",
+     "acceptedAnswer": {"@type": "Answer", "text": "El trabajo entre las 22:00 y las 6:00 es nocturno y tiene una retribución específica que fija la negociación colectiva (art. 36 del Estatuto), salvo que el salario ya se haya fijado por ser nocturno por su propia naturaleza o se compense con descansos."}}
+  ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Calcular Horas Extra</h1>
+  <p class="lead">Introduce tu salario anual y las horas de tu convenio para ver el valor de tu hora ordinaria y cuánto te corresponde por las horas extra y la nocturnidad del mes.</p>
+
+  <section class="card" aria-label="Calculadora de horas extra">
+    <div class="grid">
+      <div>
+        <label for="salary">Salario bruto anual (€) <span class="hint">(con pagas extra)</span></label>
+        <input id="salary" inputmode="decimal" placeholder="Ej.: 24.000" autocomplete="off">
+      </div>
+      <div>
+        <label for="hours">Horas anuales de tu convenio</label>
+        <input id="hours" inputmode="decimal" value="1.800">
+      </div>
+      <div>
+        <label for="ot">Horas extra en el mes</label>
+        <input id="ot" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="otRate">Recargo de la hora extra (%) <span class="hint">(según convenio)</span></label>
+        <input id="otRate" inputmode="decimal" value="0">
+      </div>
+      <div>
+        <label for="night">Horas nocturnas (22:00–6:00)</label>
+        <input id="night" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="nightRate">Plus de nocturnidad (%) <span class="hint">(según convenio)</span></label>
+        <input id="nightRate" inputmode="decimal" value="0">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Valor de la hora ordinaria</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Valor de la hora extra</span><span id="r-hourOt">–</span></div>
+      <div class="row"><span>Total horas extra</span><span id="r-ot">–</span></div>
+      <div class="row"><span>Plus de nocturnidad</span><span id="r-night">–</span></div>
+      <div class="row total"><span>Total a cobrar de más (bruto)</span><span id="r-total">–</span></div>
+      <p class="note">Importes brutos. Las horas extra cotizan a la Seguridad Social y tributan en el IRPF, así que lo que llega a tu cuenta es menos. Si no sabes tus horas anuales, búscalas en tu convenio colectivo.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Deja de apuntarlo a mano.</strong> La app Mis Turnos y Horas Extra guarda tu cuadrante, suma tus horas extra y pluses y te enseña cuánto vas a cobrar a final de mes. Gratis.</p>
+      <a class="btn" href="https://apps.apple.com/es/app/id6821146979">Descargar en la App Store</a>
+      <p class="note" style="margin:8px 0 0">Versión para Android muy pronto en Google Play.</p>
+    </div>
+  </div>
+
+  <h2>¿Cuánto se paga una hora extra?</h2>
+  <p>Son horas extraordinarias las que superan la duración máxima de la jornada ordinaria (art. 35 del Estatuto de los Trabajadores). La ley <strong>no fija un recargo</strong>: el convenio colectivo o el contrato decide si se pagan o se compensan con descanso.</p>
+  <ul>
+    <li>Si se pagan, la hora extra <strong>nunca puede valer menos que la hora ordinaria</strong>. Muchos convenios fijan un recargo (por ejemplo, un 25 % o un 75 % más); míralo en el tuyo.</li>
+    <li>Si no hay pacto, se entiende que se compensan con <strong>descanso retribuido</strong> dentro de los cuatro meses siguientes.</li>
+  </ul>
+
+  <h2>Cómo calcular el valor de la hora ordinaria</h2>
+  <p>Una forma habitual es dividir el <strong>salario bruto anual</strong> (incluidas las pagas extra) entre las <strong>horas de trabajo anuales</strong> que fija tu convenio. La jornada máxima legal es de 40 horas semanales de promedio en cómputo anual (art. 34), por lo que la mayoría de convenios fijan entre unas 1.700 y 1.826 horas al año.</p>
+
+  <h3>Ejemplo</h3>
+  <p>Salario de 24.000 € brutos al año, convenio de 1.800 horas anuales, 10 horas extra en el mes y un recargo del 25 % según convenio:</p>
+  <table>
+    <tr><th>Paso</th><th>Cálculo</th><th>Resultado</th></tr>
+    <tr><td>Valor de la hora ordinaria</td><td>24.000 ÷ 1.800</td><td>13,33 €</td></tr>
+    <tr><td>Valor de la hora extra (+25 %)</td><td>13,33 × 1,25</td><td>16,67 €</td></tr>
+    <tr><td>Total horas extra</td><td>16,67 × 10 horas</td><td>166,67 €</td></tr>
+  </table>
+
+  <h2>Límite de horas extra</h2>
+  <ul>
+    <li>Como máximo <strong>80 horas extra al año</strong>. No se cuentan las compensadas con descanso dentro de los cuatro meses siguientes.</li>
+    <li>La empresa debe llevar un <strong>registro diario de jornada</strong> con la hora de inicio y de fin de cada día (art. 34.9). Es la prueba de tus horas extra.</li>
+  </ul>
+
+  <h2>Nocturnidad</h2>
+  <p>Se considera trabajo nocturno el realizado entre las <strong>22:00 y las 6:00</strong> (art. 36). Tiene una retribución específica que fija la negociación colectiva, salvo que el salario ya se haya fijado por ser nocturno por su propia naturaleza o se compense con descansos. Introduce en la calculadora el porcentaje de tu convenio.</p>
+
+  <h2>Preguntas frecuentes</h2>
+  <details><summary>¿Las horas extra se pagan sobre el bruto o el neto?</summary>
+    <p>Sobre el bruto. Después cotizan a la Seguridad Social y tributan en el IRPF.</p></details>
+  <details><summary>Trabajo a turnos. ¿Cómo llevo la cuenta?</summary>
+    <p>Apunta cada día la hora de entrada y salida. En la app Mis Turnos y Horas Extra introduces tu cuadrante una vez, el calendario se rellena solo y añades las horas extra a cada día.</p></details>
+  <details><summary>¿Me pueden obligar a hacer horas extra?</summary>
+    <p>En general son voluntarias, salvo que se haya pactado su realización en el convenio o en el contrato, y siempre dentro del límite de 80 horas al año.</p></details>
+
+  <footer>
+    <p>Esta página es solo informativa y no sustituye el asesoramiento jurídico. Consulta tu contrato, tu convenio colectivo y tu nómina.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a> · <a href="/fazla-mesai-hesaplama/" hreflang="tr">Türkçe</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR">Português</a> · <a href="/ueberstunden-rechner/" hreflang="de">Deutsch</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) {
+    var v = ($(id).value || '').trim().replace(/\s/g, '').replace(/€/g, '');
+    // Accept "24.000", "24000", "24.000,50" and "24000.5"
+    if (v.indexOf(',') !== -1) v = v.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(v)) v = v.replace(/\./g, '');
+    var n = parseFloat(v);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var eur = function (n) { return n.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' }); };
+  var OUT = ['r-hour', 'r-hourOt', 'r-ot', 'r-night', 'r-total'];
+  function calc() {
+    var salary = num('salary'), hours = num('hours');
+    if (!salary || !hours) { OUT.forEach(function (k) { $(k).textContent = '–'; }); return; }
+    var hour = salary / hours;
+    var hourOt = hour * (1 + num('otRate') / 100);
+    var ot = hourOt * num('ot');
+    var night = hour * (num('nightRate') / 100) * num('night');
+    $('r-hour').textContent = eur(hour);
+    $('r-hourOt').textContent = eur(hourOt);
+    $('r-ot').textContent = eur(ot);
+    $('r-night').textContent = eur(night);
+    $('r-total').textContent = eur(ot + night);
+  }
+  ['salary', 'hours', 'ot', 'otRate', 'night', 'nightRate'].forEach(function (id) { $(id).addEventListener('input', calc); });
+})();
+</script>
+</body>
+</html>

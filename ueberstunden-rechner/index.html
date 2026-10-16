@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Überstunden-Rechner – Stundenlohn, Überstunden und steuerfreie Zuschläge</title>
+<meta name="description" content="Überstunden berechnen: Stundenlohn aus dem Monatsgehalt, Vergütung der Überstunden mit Zuschlag laut Vertrag oder Tarif sowie Nacht-, Sonntags- und Feiertagszuschläge mit den steuerfreien Höchstsätzen nach § 3b EStG.">
+<link rel="canonical" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<!-- hreflang -->
+<link rel="alternate" hreflang="tr" href="https://azizaslanburak.github.io/fazla-mesai-hesaplama/">
+<link rel="alternate" hreflang="pt-BR" href="https://azizaslanburak.github.io/calculo-hora-extra/">
+<link rel="alternate" hreflang="es" href="https://azizaslanburak.github.io/calcular-horas-extra/">
+<link rel="alternate" hreflang="de" href="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<!-- /hreflang -->
+<meta name="apple-itunes-app" content="app-id=6821146979">
+<meta property="og:title" content="Überstunden-Rechner">
+<meta property="og:description" content="Stundenlohn, Überstunden und Nacht-, Sonntags- und Feiertagszuschläge in einem einfachen Rechner.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://azizaslanburak.github.io/ueberstunden-rechner/">
+<style>
+  :root { --bg:#f6f7f9; --card:#fff; --text:#16181d; --muted:#5f6672; --accent:#2563eb; --accent-soft:#e8efff; --line:#e3e6eb; --good:#15803d; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#0f1115; --card:#181b21; --text:#eef0f3; --muted:#a0a7b3; --accent:#5b8dff; --accent-soft:#1d2740; --line:#2a2f38; --good:#4ade80; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:28px 16px 64px; }
+  h1 { font-size:28px; line-height:1.25; margin:0 0 8px; }
+  h2 { font-size:21px; margin:36px 0 8px; }
+  h3 { font-size:17px; margin:20px 0 4px; }
+  .lead { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; padding:18px; }
+  label { display:block; font-weight:600; font-size:14px; margin:12px 0 4px; }
+  .hint { font-weight:400; color:var(--muted); }
+  input { width:100%; font:inherit; font-size:17px; padding:10px 12px; border-radius:10px; border:1px solid var(--line); background:var(--bg); color:var(--text); }
+  input:focus { outline:2px solid var(--accent); outline-offset:1px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+  @media (max-width:520px) { .grid { grid-template-columns:1fr; } }
+  .sub { font-size:13px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin:18px 0 0; }
+  .result { margin-top:18px; border-top:1px solid var(--line); padding-top:14px; }
+  .row { display:flex; justify-content:space-between; gap:12px; padding:5px 0; }
+  .row span:last-child { font-variant-numeric:tabular-nums; font-weight:600; text-align:right; white-space:nowrap; }
+  .total { font-size:20px; color:var(--good); }
+  .note { font-size:13px; color:var(--muted); margin-top:8px; }
+  .cta { display:flex; gap:14px; align-items:center; background:var(--accent-soft); border-radius:16px; padding:16px; margin:28px 0; }
+  .cta img { width:56px; height:56px; border-radius:13px; flex:none; }
+  .cta p { margin:0 0 8px; }
+  .btn { display:inline-block; background:var(--accent); color:#fff; text-decoration:none; font-weight:700; padding:9px 16px; border-radius:10px; }
+  table { width:100%; border-collapse:collapse; margin:8px 0; font-size:15px; }
+  th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { color:var(--muted); font-weight:600; }
+  details { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:8px 0; }
+  summary { font-weight:600; cursor:pointer; }
+  a { color:var(--accent); }
+  footer { color:var(--muted); font-size:13px; margin-top:40px; }
+</style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Gibt es einen gesetzlichen Überstundenzuschlag?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Nein. Ob und in welcher Höhe es einen Zuschlag für Überstunden gibt, regeln Arbeitsvertrag, Tarifvertrag oder Betriebsvereinbarung."}},
+    {"@type": "Question", "name": "Wie rechne ich mein Monatsgehalt in einen Stundenlohn um?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Üblich ist: Bruttomonatsgehalt geteilt durch (Wochenstunden × 4,33). Der Faktor 4,33 ergibt sich aus 13 Wochen je Quartal geteilt durch 3 Monate."}},
+    {"@type": "Question", "name": "Sind Überstundenzuschläge steuerfrei?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Nein. Steuerfrei nach § 3b EStG sind nur Zuschläge für tatsächlich geleistete Nacht-, Sonntags- und Feiertagsarbeit, und zwar bis zu bestimmten Prozentsätzen des Grundlohns."}},
+    {"@type": "Question", "name": "Bis zu welcher Höhe sind Nacht-, Sonntags- und Feiertagszuschläge steuerfrei?",
+     "acceptedAnswer": {"@type": "Answer", "text": "Nachtarbeit (20 bis 6 Uhr) bis 25 %, von 0 bis 4 Uhr bei Arbeitsbeginn vor 0 Uhr bis 40 %, Sonntagsarbeit bis 50 %, Feiertagsarbeit bis 125 % sowie am 24. Dezember ab 14 Uhr, am 25. und 26. Dezember und am 1. Mai bis 150 % des Grundlohns. Berücksichtigt wird ein Grundlohn von höchstens 50 Euro pro Stunde."}}
+  ]
+}
+</script>
+</head>
+<body>
+<main>
+  <h1>Überstunden-Rechner</h1>
+  <p class="lead">Gib dein Bruttogehalt und deine Stunden ein und sieh sofort deinen Stundenlohn, die Vergütung deiner Überstunden und deine Nacht-, Sonntags- und Feiertagszuschläge.</p>
+
+  <section class="card" aria-label="Überstunden-Rechner">
+    <div class="grid">
+      <div>
+        <label for="salary">Bruttomonatsgehalt (€)</label>
+        <input id="salary" inputmode="decimal" placeholder="z. B. 3.000" autocomplete="off">
+      </div>
+      <div>
+        <label for="week">Vertragliche Wochenstunden</label>
+        <input id="week" inputmode="decimal" value="40">
+      </div>
+      <div>
+        <label for="ot">Überstunden im Monat</label>
+        <input id="ot" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="otRate">Überstundenzuschlag (%) <span class="hint">(laut Vertrag/Tarif)</span></label>
+        <input id="otRate" inputmode="decimal" value="0">
+      </div>
+    </div>
+
+    <p class="sub">Zuschläge <span class="hint">(laut Vertrag/Tarif)</span></p>
+    <div class="grid">
+      <div>
+        <label for="night">Nachtstunden</label>
+        <input id="night" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="nightRate">Nachtzuschlag (%) <span class="hint">(steuerfrei bis 25)</span></label>
+        <input id="nightRate" inputmode="decimal" value="25">
+      </div>
+      <div>
+        <label for="sun">Sonntagsstunden</label>
+        <input id="sun" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="sunRate">Sonntagszuschlag (%) <span class="hint">(steuerfrei bis 50)</span></label>
+        <input id="sunRate" inputmode="decimal" value="50">
+      </div>
+      <div>
+        <label for="hol">Feiertagsstunden</label>
+        <input id="hol" inputmode="decimal" placeholder="0">
+      </div>
+      <div>
+        <label for="holRate">Feiertagszuschlag (%) <span class="hint">(steuerfrei bis 125)</span></label>
+        <input id="holRate" inputmode="decimal" value="125">
+      </div>
+    </div>
+
+    <div class="result" aria-live="polite">
+      <div class="row"><span>Stundenlohn</span><span id="r-hour">–</span></div>
+      <div class="row"><span>Vergütung der Überstunden</span><span id="r-ot">–</span></div>
+      <div class="row"><span>Nachtzuschlag</span><span id="r-night">–</span></div>
+      <div class="row"><span>Sonntagszuschlag</span><span id="r-sun">–</span></div>
+      <div class="row"><span>Feiertagszuschlag</span><span id="r-hol">–</span></div>
+      <div class="row total"><span>Zusätzlich im Monat (brutto)</span><span id="r-total">–</span></div>
+      <p class="note">Bruttobeträge. Die Überstundenvergütung ist voll steuer- und sozialversicherungspflichtig. Nacht-, Sonntags- und Feiertagszuschläge können bis zu den Sätzen von § 3b EStG steuerfrei sein (Grundlohn höchstens 50 € pro Stunde); sozialversicherungsfrei sind sie nur bei einem Grundlohn bis 25 € pro Stunde.</p>
+    </div>
+  </section>
+
+  <div class="cta">
+    <img src="/assets/vardiya-icon.png" alt="" width="56" height="56">
+    <div>
+      <p><strong>Nie wieder von Hand rechnen.</strong> Die App Schichtplan &amp; Lohnrechner speichert deinen Dienstplan, zählt Überstunden und Zuschläge zusammen und zeigt dir, was du am Monatsende bekommst. Kostenlos.</p>
+      <a class="btn" href="https://apps.apple.com/de/app/id6821146979">Im App Store laden</a>
+      <p class="note" style="margin:8px 0 0">Android-Version bald bei Google Play.</p>
+    </div>
+  </div>
+
+  <h2>Gibt es einen gesetzlichen Überstundenzuschlag?</h2>
+  <p><strong>Nein.</strong> Das Arbeitszeitgesetz begrenzt nur die Arbeitszeit, es schreibt keinen Zuschlag vor. Ob Überstunden mit Zuschlag bezahlt, ohne Zuschlag bezahlt oder mit Freizeit ausgeglichen werden, regeln dein <strong>Arbeitsvertrag</strong>, ein <strong>Tarifvertrag</strong> oder eine <strong>Betriebsvereinbarung</strong>. Viele Tarifverträge sehen 25 % vor – schau in deinen.</p>
+
+  <h2>So berechnest du deinen Stundenlohn</h2>
+  <p>Üblich ist die Formel <strong>Bruttomonatsgehalt ÷ (Wochenstunden × 4,33)</strong>. Der Faktor 4,33 ergibt sich aus 13 Wochen pro Quartal geteilt durch 3 Monate.</p>
+
+  <h3>Beispiel</h3>
+  <p>3.000 € brutto im Monat, 40 Wochenstunden, 10 Überstunden mit 25 % Zuschlag laut Tarifvertrag:</p>
+  <table>
+    <tr><th>Schritt</th><th>Rechnung</th><th>Ergebnis</th></tr>
+    <tr><td>Stundenlohn</td><td>3.000 ÷ (40 × 4,33)</td><td>17,32 €</td></tr>
+    <tr><td>Überstunde mit 25 %</td><td>17,32 × 1,25</td><td>21,65 €</td></tr>
+    <tr><td>Vergütung der Überstunden</td><td>21,65 × 10 Stunden</td><td>216,51 €</td></tr>
+  </table>
+
+  <h2>Steuerfreie Zuschläge nach § 3b EStG</h2>
+  <p>Zuschläge für <strong>Überstunden</strong> sind immer steuerpflichtig. Zuschläge für tatsächlich geleistete <strong>Nacht-, Sonntags- und Feiertagsarbeit</strong> sind dagegen bis zu diesen Sätzen des Grundlohns steuerfrei:</p>
+  <table>
+    <tr><th>Arbeit</th><th>Steuerfrei bis</th></tr>
+    <tr><td>Nachtarbeit (20 bis 6 Uhr)</td><td>25 %</td></tr>
+    <tr><td>Nachtarbeit 0 bis 4 Uhr, wenn die Arbeit vor 0 Uhr begonnen hat</td><td>40 %</td></tr>
+    <tr><td>Sonntagsarbeit</td><td>50 %</td></tr>
+    <tr><td>Arbeit an gesetzlichen Feiertagen</td><td>125 %</td></tr>
+    <tr><td>24. Dezember ab 14 Uhr, 25. und 26. Dezember, 1. Mai</td><td>150 %</td></tr>
+  </table>
+  <p>Dabei zählt ein Grundlohn von höchstens 50 € pro Stunde. Sozialversicherungsfrei sind die Zuschläge nur, soweit der Grundlohn 25 € pro Stunde nicht übersteigt. Ob du einen Zuschlag bekommst, regelt dein Vertrag oder Tarif – § 3b sagt nur, wie viel davon steuerfrei ist.</p>
+
+  <h2>Höchstarbeitszeit</h2>
+  <p>Die werktägliche Arbeitszeit darf <strong>8 Stunden</strong> nicht überschreiten. Sie kann auf bis zu <strong>10 Stunden</strong> verlängert werden, wenn innerhalb von sechs Kalendermonaten oder 24 Wochen im Durchschnitt 8 Stunden werktäglich nicht überschritten werden (§ 3 ArbZG). Da der Samstag ein Werktag ist, ergibt das durchschnittlich höchstens 48 Stunden pro Woche.</p>
+
+  <h2>Nachtarbeit</h2>
+  <p>Nachtzeit im Sinne des Arbeitszeitgesetzes ist die Zeit von 23 bis 6 Uhr, in Bäckereien und Konditoreien von 22 bis 5 Uhr (§ 2 ArbZG). Gibt es keinen Tarifvertrag, haben Nachtarbeitnehmer Anspruch auf eine angemessene Zahl bezahlter freier Tage oder einen angemessenen Zuschlag (§ 6 Abs. 5 ArbZG).</p>
+
+  <h2>Häufige Fragen</h2>
+  <details><summary>Muss mein Arbeitgeber Überstunden überhaupt bezahlen?</summary>
+    <p>Das hängt vom Vertrag ab. Klauseln wie „Überstunden sind mit dem Gehalt abgegolten“ sind nur wirksam, wenn klar ist, wie viele Überstunden damit gemeint sind. Bei sehr hohen Gehältern kann eine Vergütung ganz entfallen. Im Zweifel hilft der Betriebsrat oder eine Beratung.</p></details>
+  <details><summary>Ich arbeite im Schichtdienst. Wie behalte ich den Überblick?</summary>
+    <p>Notiere jeden Tag Beginn und Ende. In der App Schichtplan &amp; Lohnrechner trägst du deinen Schichtplan einmal ein, der Kalender füllt sich von selbst und du ergänzt nur die Überstunden des Tages.</p></details>
+  <details><summary>Sind Überstundenzuschläge steuerfrei?</summary>
+    <p>Nein. Steuerfrei sind nur Zuschläge für Nacht-, Sonntags- und Feiertagsarbeit bis zu den Sätzen in der Tabelle oben.</p></details>
+
+  <footer>
+    <p>Diese Seite dient nur der allgemeinen Information und ersetzt keine Rechts- oder Steuerberatung. Maßgeblich sind dein Arbeitsvertrag, dein Tarifvertrag und deine Lohnabrechnung.</p>
+    <p><a href="/">Aziz Aslan Burak – Apps</a> · <a href="/fazla-mesai-hesaplama/" hreflang="tr">Türkçe</a> · <a href="/calculo-hora-extra/" hreflang="pt-BR">Português</a> · <a href="/calcular-horas-extra/" hreflang="es">Español</a></p>
+  </footer>
+</main>
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var num = function (id) {
+    var v = ($(id).value || '').trim().replace(/\s/g, '').replace(/€/g, '');
+    // Accept "3.000", "3000", "3.000,50" and "3000.5"
+    if (v.indexOf(',') !== -1) v = v.replace(/\./g, '').replace(',', '.');
+    else if (/^\d{1,3}(\.\d{3})+$/.test(v)) v = v.replace(/\./g, '');
+    var n = parseFloat(v);
+    return isFinite(n) && n > 0 ? n : 0;
+  };
+  var eur = function (n) { return n.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }); };
+  var OUT = ['r-hour', 'r-ot', 'r-night', 'r-sun', 'r-hol', 'r-total'];
+  function calc() {
+    var salary = num('salary'), week = num('week');
+    if (!salary || !week) { OUT.forEach(function (k) { $(k).textContent = '–'; }); return; }
+    var hour = salary / (week * 4.33);
+    var ot = hour * (1 + num('otRate') / 100) * num('ot');
+    var night = hour * num('nightRate') / 100 * num('night');
+    var sun = hour * num('sunRate') / 100 * num('sun');
+    var hol = hour * num('holRate') / 100 * num('hol');
+    $('r-hour').textContent = eur(hour);
+    $('r-ot').textContent = eur(ot);
+    $('r-night').textContent = eur(night);
+    $('r-sun').textContent = eur(sun);
+    $('r-hol').textContent = eur(hol);
+    $('r-total').textContent = eur(ot + night + sun + hol);
+  }
+  ['salary', 'week', 'ot', 'otRate', 'night', 'nightRate', 'sun', 'sunRate', 'hol', 'holRate'].forEach(function (id) { $(id).addEventListener('input', calc); });
+})();
+</script>
+</body>
+</html>
