@@ -48,7 +48,7 @@ export function akortEkrani(kok) {
   kok.append(h("div", { class: "yigin kart", style: "margin-top:16px" },
     h("div", { class: "satir" }, h("label", { class: "ara" }, h("div", { class: "kucuk soluk" }, "Hedef"), hedefS), h("label", null, h("div", { class: "kucuk soluk" }, "Hassasiyet"), tolS)),
     h("div", { class: "satir" }, dinleB, demB),
-    h("p", { class: "kucuk soluk" }, "Dem, seçtiğin notanın bir oktav pesini sürekli çalar. Uzun ses çalışırken kulağını demle birleştirmeye çalış; iki ses tam oturunca titreşim (vuru) kaybolur."),
+    h("p", { class: "kucuk soluk" }, "Dem, karar sesini (bütün delikler kapalı La) sürekli çalar. Uzun ses çalışırken kulağını demle birleştirmeye çalış; iki ses tam oturunca titreşim (vuru) kaybolur."),
   ));
   return () => temizlik.forEach((f) => f());
 }

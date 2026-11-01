@@ -2,8 +2,9 @@
 // Adım türleri ve alanları için DERS_YAZIM_KILAVUZU.md dosyasına bak.
 import * as mik from "./mikrofon.js";
 import { ac, notaCal, demBaslat, demDurdur, saymaYukle } from "./ses.js";
-import { notaMidi } from "./perde.js";
-import { h, mikrofonGerekli, kaydirma, notaYazisi } from "./ortak.js";
+import { notaMidi, midiAdi } from "./perde.js";
+import { h, mikrofonGerekli, kaydirma, notaYazisi, calgiAdi } from "./ortak.js";
+import { ayar, ayarla } from "./depo.js";
 import { AkortGostergesi } from "./akort-gosterge.js";
 import { parmakKarti } from "./parmak.js";
 import { notaKagidi, hepsiniDurdur } from "./nota.js";
@@ -241,20 +242,31 @@ function uzunSes(adim, bildir, temizlik) {
     kapat(); alan.replaceChildren();
     alistirB.setAttribute("aria-pressed", "true"); if (sinavB) sinavB.setAttribute("aria-pressed", "false");
     const cubuk = h("div", { class: "ilerleme-cubugu" }, h("i", { style: "width:0%" }));
-    const bilgi = h("p", { class: "kucuk soluk", "aria-live": "polite" }, puanli ? `Göstergeye bakarak tut. ${tekrar} kez.` : "Göstergeye bakarak sesi oturt. Bu kısım puanlanmaz; hazır hissedince Sınav'a geç.");
-    let tutulan = 0, kopma = 0, sonZ = null, yapilan = 0;
-    const g = new AkortGostergesi({ hedef, tolerans: bant, olayda: (o, hs) => {
+    const bilgi = h("p", { class: "kucuk soluk", "aria-live": "polite" }, !akortBiliniyor()
+      ? `Çalgının akordunu henüz bilmiyorum. Şimdilik yalnızca sesin ${saniye} saniye sabit kalmasına bakıyorum; göstergedeki nota adı yanlış olabilir, aldırma.`
+      : puanli ? `Göstergeye bakarak tut. ${tekrar} kez.` : "Göstergeye bakarak sesi oturt. Bu kısım puanlanmaz; hazır hissedince Sınav'a geç.");
+    let tutulan = 0, kopma = 0, sonZ = null, yapilan = 0, tutus = [];
+    const tani = taniSatiri();
+    const g = new AkortGostergesi({ hedef: akortBiliniyor() ? hedef : null, tolerans: bant, olayda: (o, hs) => {
       const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
-      const icinde = hs && !hs.oktavFark && bantIcinde(hs.cent, bant);
-      if (icinde) { tutulan += dt; kopma = 0; } else { kopma += dt; if (kopma > 0.3) tutulan = 0; }
+      tani.guncelle(o, true);
+      let icinde;
+      if (akortBiliniyor()) icinde = hs && !hs.oktavFark && bantIcinde(hs.cent, bant);
+      else {
+        // Akort henüz bilinmiyor: hangi nota olduğuna değil, sesin sabit kalmasına bak
+        icinde = o.midi != null && (!tutus.length || Math.abs(o.midi - ortanca(tutus)) * 100 <= bant);
+        if (icinde) tutus.push(o.midi);
+      }
+      if (icinde) { tutulan += dt; kopma = 0; } else { kopma += dt; if (kopma > 0.5) { tutulan = 0; tutus = []; } }
       cubuk.firstChild.style.width = Math.min(100, (tutulan / saniye) * 100) + "%";
       if (tutulan >= saniye) {
+        if (!akortBiliniyor() && tutus.length) { bilgi.textContent = akortOgren(ortanca(tutus), hedef); g.hedefAyarla(hedef); tutus = []; tutulan = 0; yapilan++; if (puanli && yapilan >= tekrar) bildir(100, true); return; }
         tutulan = 0; yapilan++;
         bilgi.textContent = puanli ? (yapilan >= tekrar ? "Tamam, bu adımı geçtin." : `${yapilan}/${tekrar}. Nefes al, sonra devam.`) : `${saniye} saniye bantta tuttun. Bir kez daha, ya da Sınav'a geç.`;
         if (puanli && yapilan >= tekrar) bildir(100, true);
       }
     } });
-    mikrofonGerekli(alan, () => { g.baslat(); aktif = () => g.durdur(); alan.append(cubuk, bilgi, g.kok); });
+    mikrofonGerekli(alan, () => { g.baslat(); aktif = () => g.durdur(); alan.append(cubuk, tani.kok, bilgi, g.kok); });
   }
 
   function sinav() {
@@ -267,18 +279,25 @@ function uzunSes(adim, bildir, temizlik) {
     const cubuk = h("div", { class: "ilerleme-cubugu" }, h("i", { style: "width:0%" }));
     const basB = h("button", { class: "vurgu" }, "Başla");
     const sonuc = h("div");
-    alan.append(sayac, yonerge, cubuk, basB, sonuc);
+    const tani = taniSatiri();
+    alan.append(sayac, yonerge, cubuk, tani.kok, basB, sonuc);
     basB.addEventListener("click", () => mikrofonGerekli(sonuc, () => {
       basB.hidden = true; sonuc.replaceChildren();
       yonerge.textContent = `Çal ve ${saniye} saniye tut…`;
-      let sure = 0, kopma = 0, sonZ = null; const centler = [];
+      let sure = 0, kopma = 0, sonZ = null; const centler = [], hamlar = [];
       const bitir = mik.abone((o) => {
         const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
-        const yakin = o.midi != null && Math.abs(o.midi - kaydirma() - hedef) < 1.5;
-        if (yakin) { sure += dt; kopma = 0; centler.push((o.midi - kaydirma() - hedef) * 100); }
-        else if (sure > 0) { kopma += dt; if (kopma > 0.4 && sure < saniye) { sure = 0; centler.length = 0; } }
+        tani.guncelle(o, false);
+        const biliniyor = akortBiliniyor();
+        const yakin = o.midi != null && (biliniyor ? Math.abs(o.midi - kaydirma() - hedef) < 1.5 : (!hamlar.length || Math.abs(o.midi - ortanca(hamlar)) < 1.5));
+        if (yakin) { sure += dt; kopma = 0; hamlar.push(o.midi); if (biliniyor) centler.push((o.midi - kaydirma() - hedef) * 100); }
+        else if (sure > 0) { kopma += dt; if (kopma > 0.5 && sure < saniye) { sure = 0; centler.length = 0; hamlar.length = 0; } }
         cubuk.firstChild.style.width = Math.min(100, (sure / saniye) * 100) + "%";
-        if (sure >= saniye) { bitir(); aktif = null; tahminSor(centler); }
+        if (sure >= saniye) {
+          bitir(); aktif = null;
+          if (!biliniyor) { const not = akortOgren(ortanca(hamlar), hedef); hamlar.forEach((m) => centler.push((m - kaydirma() - hedef) * 100)); sonuc.append(h("p", { class: "kucuk" }, not)); }
+          tahminSor(centler);
+        }
       });
       aktif = bitir;
     }));
@@ -316,6 +335,34 @@ function uzunSes(adim, bildir, temizlik) {
   if (sinavB) sinavB.addEventListener("click", sinav);
   if (korMu) sinav(); else alistirma(true);
   return kok;
+}
+
+// Akort bilgisi: "Çalgını tanıt" ölçümü ya da ilk derslerde öğrenilen tahmin
+function akortBiliniyor() { return !!ayar("tanitildi") || !!ayar("kaydirmaTahmini"); }
+function ortanca(d) { const s = d.slice().sort((a, b) => a - b); return s[s.length >> 1]; }
+function akortOgren(duyulanMidi, hedefYazili) {
+  const k = Math.round(duyulanMidi) - Math.round(hedefYazili);
+  ayarla("kaydirma", k); ayarla("kaydirmaTahmini", true);
+  const sapma = Math.round((duyulanMidi - Math.round(duyulanMidi)) * 100);
+  return `Sesin geldi! ${notaYazisi(hedefYazili)} parmağıyla çaldığın ses ${midiAdi(duyulanMidi).ad}${midiAdi(duyulanMidi).oktav} olarak duyuldu; çalgını buna göre ayarladım (${calgiAdi()}).` +
+    (Math.abs(sapma) > 25 ? ` Ses ${sapma > 0 ? "biraz tiz" : "biraz pes"} (${sapma > 0 ? "+" : ""}${sapma} cent); şimdilik sorun değil.` : "") +
+    " Kesin ölçüm için sonra Araçlar › Çalgını tanıt'ı yap.";
+}
+// Ne duyduğumu gösteren satır: ses seviyesi ve (göstergeli kipte) nota. Sorun ararken yardımcı olur.
+function taniSatiri() {
+  const kok = h("div", { class: "kucuk soluk", style: "font-family:var(--font-mono);display:flex;gap:10px;align-items:center;flex-wrap:wrap", "aria-live": "off" });
+  const cubuk = h("span", { style: "display:inline-block;width:70px;height:8px;border-radius:4px;background:var(--paper-3);overflow:hidden" }, h("i", { style: "display:block;height:100%;width:0;background:var(--reed)" }));
+  const yazi = h("span", null, "Duyduğum: sessizlik");
+  kok.append(h("span", null, "Ses"), cubuk, yazi);
+  let son = 0;
+  return { kok, guncelle(o, perdeGoster) {
+    const t = performance.now(); if (t - son < 120) return; son = t;
+    cubuk.firstChild.style.width = Math.min(100, Math.max(0, (o.db + 60) / 50) * 100) + "%";
+    if (!o.sesli) yazi.textContent = "Duyduğum: sessizlik";
+    else if (o.midi == null) yazi.textContent = "Duyduğum: ses var ama perdesi net değil (hava sesi?)";
+    else if (!perdeGoster) yazi.textContent = "Duyduğum: net bir ses";
+    else { const a = midiAdi(o.midi - kaydirma()); const c = Math.round((o.midi - Math.round(o.midi)) * 100); yazi.textContent = `Duyduğum: ${a.ad}${a.oktav} ${c >= 0 ? "+" : ""}${c} cent`; }
+  } };
 }
 
 function kontrolListesi(maddeler, tamam) {

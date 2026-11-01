@@ -69,7 +69,7 @@ export function tanitEkrani(kok) {
         h("button", { class: "vurgu", onclick: adim1 }, "Tekrar dene")));
       return;
     }
-    ayarla("calgi", tur); ayarla("kaydirma", kayma); ayarla("tanitildi", true);
+    ayarla("calgi", tur); ayarla("kaydirma", kayma); ayarla("tanitildi", true); ayarla("kaydirmaTahmini", false);
     const kutu = h("div", { class: "degerlendirme iyi" }, h("div", { class: "baslik" }, `Senin çalgın: ${calgiAdi()}`),
       h("p", { style: "margin:0" }, `${CALGILAR[tur].aciklama} Bütün delikler kapalıyken ${midiAdi(tumKapali).ad} sesi çıkıyor. Parmak tablosu ve dersler artık buna göre.`));
     if (Math.abs(sapma) > 20) kutu.append(h("p", { style: "margin:0" }, `Not: çalgın eşit akorttan ${sapma > 0 ? "+" : ""}${sapma} cent sapıyor. Kıskacı kamışın ucuna doğru 1 mm itmek sesi tizleştirir, dibe doğru çekmek pesleştirir. İstersen ayarlayıp yeniden ölç.`));

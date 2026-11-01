@@ -136,7 +136,7 @@ function analizAdimi() {
   let p = null;
   if (sesli) p = yin(tampon, c.sampleRate);
   let midi = null, hz = null, netlik = 0;
-  if (p && p.netlik > 0.75) {
+  if (p && p.netlik > 0.6) {
     medyan.push(p.hz); if (medyan.length > 5) medyan.shift();
     const sirali = medyan.slice().sort((a, b) => a - b);
     hz = sirali[sirali.length >> 1];
