@@ -54,7 +54,7 @@ export function adimCiz(adim, bildir) {
       metin(adim.html);
       if (adim.abc) kok.append(notaKagidi(adim.abc, { baslik: adim.notaBaslik || "", dem: adim.dem, takip: false }));
       else if (adim.notalar) {
-        const b = h("button", { class: "vurgu" }, "▶ Dinle");
+        const b = h("button", { class: "vurgu" }, "▶︎ Dinle");
         b.addEventListener("click", () => {
           const c = ac(); let t = 0; const sure = adim.notaSure || 1.2;
           adim.notalar.forEach((n) => { setTimeout(() => notaCal(notaMidi(n) + kaydirma(), sure * 0.95), t * 1000); t += sure; });
@@ -92,7 +92,7 @@ export function adimCiz(adim, bildir) {
       window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", staffwidth: 500, paddingtop: 0, paddingbottom: 0 });
       const durumEl = h("div", { class: "kucuk soluk", "aria-live": "polite" });
       const sonucAlan = h("div");
-      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4") }, "▶ Dinle");
+      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4") }, "▶︎ Dinle");
       const test = h("button", { class: "vurgu" }, "Ritmi çal");
       test.addEventListener("click", () => mikrofonGerekli(sonucAlan, async () => {
         test.disabled = true; sonucAlan.replaceChildren(); await saymaYukle();

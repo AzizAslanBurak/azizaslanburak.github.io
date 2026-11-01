@@ -1,6 +1,6 @@
 // Nota kâğıdı: abcjs ile çizim, örnek çalma, "takip" (sen doğru notayı çalınca ilerler) ve "birlikte çal" (tempoda puanlama).
 import * as mik from "./mikrofon.js";
-import { ac, kamisSesi, onSayim, demBaslat, demDurdur } from "./ses.js";
+import { ac, kamisSesi, modelSesi, modelKullan, onSayim, demBaslat, demDurdur } from "./ses.js";
 import { notaMidi } from "./perde.js";
 import { h, kaydirma, notaYazisi } from "./ortak.js";
 import { perdeBandi, bantIcinde } from "./ilerleme.js";
@@ -20,7 +20,7 @@ export function notaKagidi(abc, secenek = {}) {
   const hizG = h("input", { type: "range", min: "40", max: "130", step: "5", value: "100", "aria-label": "Hız" });
   const hizA = h("span", null, "%100");
   hizG.addEventListener("input", () => (hizA.textContent = "%" + hizG.value));
-  const dinle = h("button", { class: "ikincil", "aria-pressed": "false" }, "▶ Dinle");
+  const dinle = h("button", { class: "ikincil", "aria-pressed": "false" }, "▶︎ Dinle");
   const demB = secenek.dem ? h("button", { class: "ikincil", "aria-pressed": "false" }, "Dem") : null;
   const takipB = secenek.takip !== false ? h("button", { class: "ikincil", "aria-pressed": "false" }, "Notayla ilerle") : null;
   const birlikteB = secenek.birlikte ? h("button", { class: "vurgu", "aria-pressed": "false" }, "Tempoda çal") : null;
@@ -38,7 +38,7 @@ export function notaKagidi(abc, secenek = {}) {
   const temizle = () => kagit.querySelectorAll(".calan,.dogru,.bekliyor").forEach((n) => n.classList.remove("calan", "dogru", "bekliyor"));
   const isaretle = (ol, sinif) => ol.elemanlar.forEach((n) => n.classList.add(sinif));
   function birak() { hepsiniDurdur(); }
-  function dugmeleriSifirla() { [dinle, takipB, birlikteB].forEach((b) => b && b.setAttribute("aria-pressed", "false")); dinle.textContent = "▶ Dinle"; }
+  function dugmeleriSifirla() { [dinle, takipB, birlikteB].forEach((b) => b && b.setAttribute("aria-pressed", "false")); dinle.textContent = "▶︎ Dinle"; }
 
   // --- Dinle ---
   dinle.addEventListener("click", () => {
@@ -47,12 +47,15 @@ export function notaKagidi(abc, secenek = {}) {
     const bpm = baseBpm() * (+hizG.value / 100);
     const c = ac(); const t0 = c.currentTime + 0.15; const k = kaydirma();
     const ols = olaylar(bpm);
-    const sesler = ols.map((o) => kamisSesi(o.pitch + k, t0 + o.ms / 1000, Math.max(0.08, o.sureMs / 1000 - 0.02)));
+    // model: ezgi tek nefeste, notalar parmakla bağlanır; basit sentez: her nota ayrı
+    const sesler = modelKullan()
+      ? [modelSesi(ols.map((o) => ({ midi: o.pitch + k, bas: t0 + o.ms / 1000, bit: t0 + (o.ms + o.sureMs) / 1000 - 0.012 })))]
+      : ols.map((o) => kamisSesi(o.pitch + k, t0 + o.ms / 1000, Math.max(0.08, o.sureMs / 1000 - 0.02)));
     const zamanlar = ols.map((o) => setTimeout(() => { temizle(); isaretle(o, "calan"); }, 150 + o.ms));
     const son = ols.length ? ols[ols.length - 1].ms + ols[ols.length - 1].sureMs : 0;
     zamanlar.push(setTimeout(() => { birak(); }, son + 400));
     if (demB && demB.getAttribute("aria-pressed") === "true") demBaslat(notaMidi(secenek.dem) + k);
-    dinle.setAttribute("aria-pressed", "true"); dinle.textContent = "■ Durdur";
+    dinle.setAttribute("aria-pressed", "true"); dinle.textContent = "■︎ Durdur";
     calan = () => { sesler.forEach((s) => s.dur()); zamanlar.forEach(clearTimeout); temizle(); dugmeleriSifirla(); demDurdur(); };
   });
   if (demB) demB.addEventListener("click", () => {
@@ -70,7 +73,7 @@ export function notaKagidi(abc, secenek = {}) {
     let i = 0, tutma = 0, sonZaman = null, serbest = true, yanlis = 0, yanlisSure = 0, basZaman = performance.now();
     temizle(); isaretle(ols[0], "bekliyor");
     durumEl.textContent = `Sıradaki: ${notaYazisi(ols[0].pitch)}`;
-    takipB.setAttribute("aria-pressed", "true"); takipB.textContent = "■ Bitir";
+    takipB.setAttribute("aria-pressed", "true"); takipB.textContent = "■︎ Bitir";
     const bitir = mik.abone((o) => {
       const dt = sonZaman == null ? 0 : Math.min(0.1, o.zaman - sonZaman); sonZaman = o.zaman;
       if (i >= ols.length) return;
@@ -142,7 +145,7 @@ export function notaKagidi(abc, secenek = {}) {
       calan = null;
       if (secenek.sonucta) secenek.sonucta({ tur: "birlikte", puan });
     }, (basla - c.currentTime) * 1000 + son + 300));
-    birlikteB.setAttribute("aria-pressed", "true"); birlikteB.textContent = "■ Durdur";
+    birlikteB.setAttribute("aria-pressed", "true"); birlikteB.textContent = "■︎ Durdur";
     durumEl.textContent = "Sayımdan sonra başla…";
     calan = () => { bitir(); sesler.forEach((s) => s.dur()); zamanlar.forEach(clearTimeout); temizle(); dugmeleriSifirla(); birlikteB.textContent = "Tempoda çal"; };
   });

@@ -8,16 +8,47 @@ export function ac() {
     AC = new C({ latencyHint: "interactive" });
     ANA = AC.createDynamicsCompressor();
     ANA.connect(AC.destination);
+    modelYukle(AC);
   }
   if (AC.state === "suspended") AC.resume();
   return AC;
 }
 export const cikis = () => { ac(); return ANA; };
 
-// Çift kamışa benzeyen buğulu ses: testere + kare dalga, alçak geçiren süzgeç, 1,1 kHz civarında tını tepesi,
-// uzun seslerde gecikmeli hafif titreşim. sure = Infinity → durdurulana kadar çalar.
-export function kamisSesi(midi, t0, sure, { guc = 0.2, titresim = true, hedef = null } = {}) {
+// ---- Fiziksel model (kamis-model.js): varsayılan ses motoru; yüklenemezse basit sentez ----
+let modelHazir = false, modelYukleniyor = null;
+function modelYukle(c) {
+  if (!c.audioWorklet || modelYukleniyor) return;
+  modelYukleniyor = c.audioWorklet.addModule(new URL("./kamis-model.js", import.meta.url)).then(() => { modelHazir = true; }).catch(() => {});
+}
+export const modelYuklendi = () => (ac(), modelYukleniyor || Promise.resolve());
+export function sesMotoru() { try { return localStorage.getItem("bu:sesMotoru") || "model"; } catch (e) { return "model"; } }
+export function sesMotoruAyarla(m) { try { localStorage.setItem("bu:sesMotoru", m); } catch (e) {} }
+export const modelKullan = (motor) => modelHazir && (motor || sesMotoru()) === "model";
+
+// Bir nefeste çalınan ses ya da ezgi: olaylar [{ midi, bas, bit }] (bağlam saati). Aralarında <30 ms boşluk olan
+// notalar bağlı (parmakla) geçer; daha uzun boşlukta nefes yeniden başlar.
+export function modelSesi(olaylar, { guc = 0.2, titresim = true, sonsuz = false, hedef = null } = {}) {
   const c = ac();
+  const dugum = new AudioWorkletNode(c, "kamis-model", {
+    numberOfInputs: 0, numberOfOutputs: 1, outputChannelCount: [1],
+    processorOptions: { olaylar: olaylar.map((o) => ({ bas: o.bas, bit: o.bit, frekans: midiHz(o.midi) })), guc: 0.7, titresim, sonsuz, duzeltme: 0.7 },
+  });
+  const renk = c.createBiquadFilter(); renk.type = "peaking"; renk.frequency.value = 1300; renk.gain.value = 3; renk.Q.value = 1;
+  const yumusat = c.createBiquadFilter(); yumusat.type = "lowpass"; yumusat.frequency.value = 4200; yumusat.Q.value = 0.5;
+  const kazanc = c.createGain(); kazanc.gain.value = guc * 4.2;
+  dugum.connect(renk); renk.connect(yumusat); yumusat.connect(kazanc); kazanc.connect(hedef || ANA);
+  return {
+    dur() { dugum.port.postMessage({ tur: "dur" }); setTimeout(() => { try { kazanc.disconnect(); } catch (e) {} }, 500); },
+    perde(m) { dugum.port.postMessage({ tur: "perde", frekans: midiHz(m) }); },
+  };
+}
+
+// Çift kamışa benzeyen buğulu ses (basit sentez; model yoksa ya da ayarda seçilirse): testere + kare dalga, alçak geçiren süzgeç, 1,1 kHz civarında tını tepesi,
+// uzun seslerde gecikmeli hafif titreşim. sure = Infinity → durdurulana kadar çalar.
+export function kamisSesi(midi, t0, sure, { guc = 0.2, titresim = true, hedef = null, motor = null } = {}) {
+  const c = ac();
+  if (modelKullan(motor)) return modelSesi([{ midi, bas: t0, bit: isFinite(sure) ? t0 + sure : 1e9 }], { guc, titresim, sonsuz: !isFinite(sure), hedef });
   const frek = midiHz(midi);
   const o1 = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain();
   o1.type = "sawtooth"; o2.type = "square";
@@ -57,9 +88,12 @@ export function kamisSesi(midi, t0, sure, { guc = 0.2, titresim = true, hedef = 
 export function notaCal(midi, sure = 1.2) { const c = ac(); return kamisSesi(midi, c.currentTime + 0.03, sure); }
 
 // Bir nota dizisini çal: [{midi, bas (s), sure (s)}]
-export function diziCal(notalar) {
+export function diziCal(notalar, { motor = null } = {}) {
   const c = ac(); const t0 = c.currentTime + 0.1;
-  const sesler = notalar.filter((n) => n.midi != null).map((n) => kamisSesi(n.midi, t0 + n.bas, n.sure));
+  const n = notalar.filter((x) => x.midi != null);
+  const sesler = modelKullan(motor)
+    ? [modelSesi(n.map((x) => ({ midi: x.midi, bas: t0 + x.bas, bit: t0 + x.bas + x.sure })))]
+    : n.map((x) => kamisSesi(x.midi, t0 + x.bas, x.sure, { motor: "basit" }));
   return { t0, dur: () => sesler.forEach((s) => s.dur()) };
 }
 

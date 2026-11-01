@@ -1,6 +1,6 @@
 // Ekranlar: Akort, Ritim, Araçlar. (Bugün ve Dersler ders-ekranlari.js içinde.)
 import * as mik from "./mikrofon.js";
-import { ac, metronom, saymaYukle, demBaslat, demDurdur, demAcik, notaCal } from "./ses.js";
+import { ac, metronom, saymaYukle, demBaslat, demDurdur, demAcik, notaCal, diziCal, sesMotoru, sesMotoruAyarla, modelYuklendi } from "./ses.js";
 import { notaMidi } from "./perde.js";
 import { h, mikrofonGerekli, calismaSuresiTut, kaydirma, notaYazisi, calgiAdi, calgiTuru } from "./ortak.js";
 import { tanitEkrani } from "./tanit.js";
@@ -129,7 +129,7 @@ export function ritimEkrani(kok) {
   const sonucAlan = h("div", { class: "yigin" });
   function desenGoster() { const d = RITIM_DESENLERI[+desenS.value]; desenNota.replaceChildren(); window.ABCJS.renderAbc(desenNota, desenAbc(d.desen, d.olcu), { responsive: "resize", staffwidth: 500, paddingtop: 0, paddingbottom: 0 }); }
   desenS.addEventListener("change", desenGoster);
-  const dinleB = h("button", { class: "ikincil" }, "▶ Dinle");
+  const dinleB = h("button", { class: "ikincil" }, "▶︎ Dinle");
   const testB = h("button", { class: "vurgu" }, "Testi başlat");
   const durumEl = h("div", { class: "kucuk soluk", "aria-live": "polite" });
   dinleB.addEventListener("click", () => { const d = RITIM_DESENLERI[+desenS.value]; desenCal(d.desen, bpm.deger); });
@@ -234,6 +234,7 @@ function ayarlarEkrani(kok) {
     h("div", { class: "kart yigin" }, h("h3", null, "Mikrofon gecikmesi"),
       h("p", { class: "soluk kucuk" }, "Ritim testlerinin adil olması için cihazının ses gecikmesini ölçerim. Kulaklık ya da hoparlör değiştirirsen yeniden ölç."),
       h("div", { class: "satir" }, h("span", null, "Şu anki: "), gecikmeEl, olcB), olcDurum, alan),
+    sesKarti(),
     h("div", { class: "kart yigin" }, h("h3", null, "Deneme modu"),
       h("p", { class: "soluk kucuk" }, "Uygulamayı hızlıca gezmek için: bütün dersler açılır, \"Şimdilik atla\" ile sonraki derse geçebilirsin. Gerçek çalışmada kapalı tut; ilerleme kuralları (ertesi gün açılma, 3 gün ustalık) öğrenmeyi kalıcı yapar."),
       (() => { const b = h("button", { class: "ikincil", "aria-pressed": ayar("denemeModu") ? "true" : "false" }, ayar("denemeModu") ? "Açık — kapat" : "Kapalı — aç");
@@ -241,4 +242,23 @@ function ayarlarEkrani(kok) {
         return b; })()),
     h("div", { class: "kart yigin" }, h("h3", null, "Sıfırla"), h("p", { class: "soluk kucuk" }, "Ders ilerlemen ve çalışma süren bu cihazda saklanır."), sifirB, onay),
   ));
+}
+
+// Örnek ses: fiziksel model ile eski basit sentezi aynı ezgiyle karşılaştır
+function sesKarti() {
+  const k = kaydirma();
+  // Fa–Sol–La–Sol–Fa–Mi–Fa, son nota uzun (yazılı; çalgının akordunda duyulur)
+  const ezgi = [["F5", 0.5], ["G5", 0.5], ["A5", 0.9], ["G5", 0.45], ["F5", 0.45], ["E5", 0.6], ["F5", 1.8]];
+  function cal(motor) {
+    let t = 0;
+    const notalar = ezgi.map(([n, d]) => { const x = { midi: notaMidi(n) + k, bas: t, sure: d - 0.012 }; t += d; return x; });
+    modelYuklendi().then(() => diziCal(notalar, { motor }));
+  }
+  const secim = h("select", { id: "ayar-ses" }, h("option", { value: "model" }, "Fiziksel model (önerilen)"), h("option", { value: "basit" }, "Basit sentez (eski)"));
+  secim.value = sesMotoru();
+  secim.addEventListener("change", () => sesMotoruAyarla(secim.value));
+  return h("div", { class: "kart yigin" }, h("h3", null, "Örnek ses"),
+    h("p", { class: "soluk kucuk" }, "Derslerdeki örnek sesler ve dem bilgisayarda üretilir. Fiziksel model, kamışın titreşimini ve gövdedeki ses dalgasını hesaplayarak nefesli bir ses verir; ezgilerde notalar tek nefeste bağlanır. Gerçek bir ustanın kaydı değildir."),
+    h("div", { class: "satir" }, h("button", { class: "vurgu", onclick: () => cal("model") }, "▶︎ Yeni ses"), h("button", { class: "ikincil", onclick: () => cal("basit") }, "▶︎ Eski ses")),
+    h("label", null, h("div", { class: "kucuk soluk" }, "Uygulamada kullanılacak"), secim));
 }

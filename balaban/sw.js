@@ -1,5 +1,5 @@
 // Otomatik üretildi: araclar/sw-olustur.py — elle düzenleme.
-const SURUM = "balaban-7613b91a88";
+const SURUM = "balaban-7ef5024efb";
 const DOSYALAR = [
 "./",
 "index.html",
@@ -44,6 +44,7 @@ const DOSYALAR = [
 "js/dersler/u9-ses-rengi.js",
 "js/ekranlar.js",
 "js/ilerleme.js",
+"js/kamis-model.js",
 "js/kayit.js",
 "js/main.js",
 "js/mikrofon.js",
