@@ -43,7 +43,7 @@ export function tekrarIsle(id) {
 
 // Ders açık mı? Önceki ders geçilmiş ve o gün bugün değilse (ya da kullanıcı erken açtıysa)
 export function dersAcikMi(dersler, i) {
-  if (i === 0) return { acik: true };
+  if (i === 0 || depo().ayarlar.denemeModu) return { acik: true }; // deneme modu: hızlı tarama için her ders açık
   const onceki = depo().dersler[dersler[i - 1].id];
   if (depo().acilanlar && depo().acilanlar[dersler[i].id]) return { acik: true };
   if (!onceki || !onceki.gecti) return { acik: false, neden: "onceki" };

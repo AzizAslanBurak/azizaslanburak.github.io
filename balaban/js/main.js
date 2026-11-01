@@ -16,6 +16,7 @@ function yonlendir() {
   const alt = kalan.join("-");
   if (temizle) { try { temizle(); } catch (e) { console.error(e); } temizle = null; }
   hepsiniDurdur(); demDurdur();
+  mik.durdur(); // mikrofon yalnızca ona ihtiyaç duyan ekranda açık kalır
   ekran.replaceChildren();
   let sonuc;
   switch (ana) {
@@ -61,6 +62,13 @@ calismaSuresiTut();
 const stil = document.createElement("style");
 stil.textContent = `.mola{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(4px)}`;
 document.head.append(stil);
+
+// Arka plana geçince mikrofonu ve sesleri kapat; dönünce açık olan mikrofonu yeniden aç
+let arkaPlandaKapandi = false;
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) { arkaPlandaKapandi = mik.acikMi(); mik.durdur(); demDurdur(); hepsiniDurdur(); }
+  else if (arkaPlandaKapandi) { arkaPlandaKapandi = false; mik.baslat(); }
+});
 
 baslangicGunu();
 window.addEventListener("hashchange", yonlendir);

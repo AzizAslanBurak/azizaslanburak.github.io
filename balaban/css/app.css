@@ -36,6 +36,8 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 [hidden] { display: none !important; }
+/* Telefonda saat/çentik alanı: içerik kayarken altına girmesin */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); background: var(--paper); z-index: 40; }
 #ekran {
   max-width: 42rem; margin: 0 auto;
   padding-left: max(16px, env(safe-area-inset-left, 0px));

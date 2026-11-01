@@ -20,6 +20,8 @@ export const durum = {
 function oku(k) { try { return localStorage.getItem("bu:" + k); } catch (e) { return null; } }
 function yaz(k, v) { try { localStorage.setItem("bu:" + k, String(v)); } catch (e) {} }
 
+export const izinDahaOnceVerildi = () => oku("izin") === "1";
+
 export function abone(fn) { dinleyiciler.add(fn); return () => dinleyiciler.delete(fn); }
 
 export async function baslat() {
@@ -31,7 +33,7 @@ export async function baslat() {
       akis = await navigator.mediaDevices.getUserMedia({
         audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false, channelCount: 1 },
       });
-      durum.izin = "verildi";
+      durum.izin = "verildi"; yaz("izin", "1");
     } catch (e) {
       durum.izin = "reddedildi";
       return false;

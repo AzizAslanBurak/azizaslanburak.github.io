@@ -234,6 +234,11 @@ function ayarlarEkrani(kok) {
     h("div", { class: "kart yigin" }, h("h3", null, "Mikrofon gecikmesi"),
       h("p", { class: "soluk kucuk" }, "Ritim testlerinin adil olması için cihazının ses gecikmesini ölçerim. Kulaklık ya da hoparlör değiştirirsen yeniden ölç."),
       h("div", { class: "satir" }, h("span", null, "Şu anki: "), gecikmeEl, olcB), olcDurum, alan),
+    h("div", { class: "kart yigin" }, h("h3", null, "Deneme modu"),
+      h("p", { class: "soluk kucuk" }, "Uygulamayı hızlıca gezmek için: bütün dersler açılır, \"Şimdilik atla\" ile sonraki derse geçebilirsin. Gerçek çalışmada kapalı tut; ilerleme kuralları (ertesi gün açılma, 3 gün ustalık) öğrenmeyi kalıcı yapar."),
+      (() => { const b = h("button", { class: "ikincil", "aria-pressed": ayar("denemeModu") ? "true" : "false" }, ayar("denemeModu") ? "Açık — kapat" : "Kapalı — aç");
+        b.addEventListener("click", () => { const v = !ayar("denemeModu"); ayarla("denemeModu", v); b.setAttribute("aria-pressed", String(v)); b.textContent = v ? "Açık — kapat" : "Kapalı — aç"; });
+        return b; })()),
     h("div", { class: "kart yigin" }, h("h3", null, "Sıfırla"), h("p", { class: "soluk kucuk" }, "Ders ilerlemen ve çalışma süren bu cihazda saklanır."), sifirB, onay),
   ));
 }

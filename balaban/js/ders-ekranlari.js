@@ -36,6 +36,8 @@ export function bugunEkrani(kok) {
     h("p", { class: "soluk", style: "margin:0 0 10px" }, "Balaban mı düdük mü, hangi akortta? İki kısa sesle anlarım; akort göstergesi ve parmak tablosu senin çalgına göre ayarlanır. Henüz ses çıkaramıyorsan önce ilk dersleri yap, sonra buraya dön."),
     h("div", { class: "satir" }, h("a", { class: "dugme vurgu", href: "#araclar-tanit" }, "Çalgını tanıt"), h("a", { class: "dugme ikincil", href: "#ders-" + (TUM_DERSLER[0] && TUM_DERSLER[0].id) }, "Önce derslere başla"))));
 
+  if (ayar("denemeModu")) kok.append(h("aside", { class: "not dikkat", style: "margin-top:14px" }, h("span", { class: "etiket" }, "Deneme modu açık"), h("p", null, "Bütün dersler açık ve ilerleme kuralları devre dışı. Kapatmak için: Araçlar › Ayarlar.")));
+
   const oran = yukOrani();
   if (oran && oran > 1.2) kok.append(h("aside", { class: "not dikkat", style: "margin-top:14px" }, h("span", { class: "etiket" }, "Dudakların için"), h("p", null, `Bu hafta geçen haftadan %${Math.round((oran - 1) * 100)} fazla çaldın. Yükü haftada en fazla %20 artırmak dudak ve kamış yorgunluğunu önler. Bugün kısa tut.`)));
 
@@ -162,7 +164,11 @@ export function dersEkrani(kok, id) {
       const eksik = denetimliler.filter((j) => !gecilen.has(j)).length;
       k.append(h("div", { class: "degerlendirme orta" }, h("div", { class: "baslik" }, "Neredeyse"),
         h("p", { style: "margin:0" }, `${eksik} denetimli adımı henüz geçmedin. Atladığın adımlara geri dönüp geçince ders tamamlanır. Acele etme; bugün yapamadığını yarın çok daha kolay yaparsın.`)));
+      if (ayar("denemeModu")) k.append(h("p", { class: "kucuk soluk" }, "Deneme modu açık: ders geçilmiş sayılmadı ama sonraki derse geçebilirsin."));
     }
+    const sira = TUM_DERSLER.indexOf(ders);
+    const sonraki = TUM_DERSLER[sira + 1];
+    if (sonraki && dersAcikMi(TUM_DERSLER, sira + 1).acik) k.append(h("a", { class: "dugme vurgu", href: "#ders-" + sonraki.id }, `Sonraki ders: ${sonraki.baslik} ›`));
     return k;
   }
   geri.addEventListener("click", () => { if (i > 0) { i--; goster(); } });
