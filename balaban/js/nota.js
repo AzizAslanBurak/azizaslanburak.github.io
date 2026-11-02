@@ -4,8 +4,7 @@ import { ac, kamisSesi, nefesSesi, onSayim, demBaslat, demDurdur } from "./ses.j
 import { notaMidi } from "./perde.js";
 import { h, kaydirma, notaYazisi } from "./ortak.js";
 import { perdeBandi, bantIcinde } from "./ilerleme.js";
-import { parmakCanli } from "./parmak.js";
-import { ayar, ayarla } from "./depo.js";
+import { parmakCanli, notaYaninda, parmakDugmesi } from "./parmak.js";
 
 let calan = null;
 export function hepsiniDurdur() { if (calan) calan(); calan = null; }
@@ -17,9 +16,10 @@ export function notaKagidi(abc, secenek = {}) {
   const kagit = h("div", { class: "kagit" });
   const durumEl = h("div", { class: "kucuk soluk", style: "padding: 0 12px 10px", "aria-live": "polite" });
   const parmak = parmakCanli();
-  parmak.kok.hidden = ayar("parmakSim") === false;
-  kok.append(bas, parmak.kok, kagit, durumEl);
-  const tune = window.ABCJS.renderAbc(kagit, abc, { responsive: "resize", add_classes: true, paddingleft: 2, paddingright: 2, paddingtop: 4, paddingbottom: 4, staffwidth: 560 })[0];
+  const govde = notaYaninda(parmak, kagit);
+  kok.append(bas, govde, durumEl);
+  // Dar porte + satır kırma: çalgı şemasının yanındaki sütunda notalar iri kalır.
+  const tune = window.ABCJS.renderAbc(kagit, abc, { responsive: "resize", add_classes: true, paddingleft: 2, paddingright: 2, paddingtop: 4, paddingbottom: 4, staffwidth: 330, wrap: { minSpacing: 1.5, maxSpacing: 2.7, preferredMeasuresPerLine: 2 } })[0];
 
   const hizG = h("input", { type: "range", min: "40", max: "130", step: "5", value: "100", "aria-label": "Hız" });
   const hizA = h("span", null, "%100");
@@ -28,8 +28,7 @@ export function notaKagidi(abc, secenek = {}) {
   const demB = secenek.dem ? h("button", { class: "ikincil", "aria-pressed": "false" }, "Dem") : null;
   const takipB = secenek.takip !== false ? h("button", { class: "ikincil", "aria-pressed": "false" }, "Notayla ilerle") : null;
   const birlikteB = secenek.birlikte ? h("button", { class: "vurgu", "aria-pressed": "false" }, "Tempoda çal") : null;
-  const parmakB = h("button", { class: "ikincil", "aria-pressed": String(!parmak.kok.hidden) }, "Parmaklar");
-  parmakB.addEventListener("click", () => { const acik = parmak.kok.hidden; parmak.kok.hidden = !acik; parmakB.setAttribute("aria-pressed", String(acik)); ayarla("parmakSim", acik); });
+  const parmakB = parmakDugmesi(govde);
   bas.append(h("div", { class: "satir" }, dinle, demB, takipB, birlikteB, parmakB, h("label", { class: "hiz" }, "Hız", hizG, hizA)));
 
   const baseBpm = () => (secenek.bpm || tune.getBpm() || 80);

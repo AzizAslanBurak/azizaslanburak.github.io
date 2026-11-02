@@ -312,25 +312,33 @@ details.katlanir[open] > summary::after { content: "Gizle"; }
 @keyframes nota-bekle { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .nota .kagit .bekliyor { animation: none; } }
 .nota .kagit .dogru, .nota .kagit .dogru path { fill: var(--iyi) !important; }
-/* Canlı parmak şeması (nota kâğıdıyla eşzamanlı) */
-.parmak-canli { display: grid; grid-template-columns: 5.2rem 1fr; align-items: center; gap: 8px; padding: 10px 12px 4px; border-bottom: 1px solid var(--cizgi); }
-.parmak-canli[hidden] { display: none; }
-.parmak-canli .pc-yazi { display: grid; gap: 1px; line-height: 1.15; }
-.parmak-canli .pc-yazi b { font-family: var(--font-baslik); font-size: 1.75rem; font-weight: 700; color: var(--oynayan); }
-.parmak-canli .pc-yazi span { font-size: .75rem; color: var(--murekkep-3); }
-.parmak-canli .pc-yazi .pc-not { color: var(--kayisi-murekkep); }
-.parmak-canli.yok .pc-yazi b { color: var(--murekkep-3); }
+/* Nota adı dizisi (notasız "dinle" adımı): çalınan ad kırmızı */
+.nota-dizi { display: flex; flex-wrap: wrap; gap: 6px 14px; padding: 14px 12px; font-family: var(--font-baslik); font-size: 1.375rem; font-weight: 650; color: var(--murekkep-2); }
+.nota-dizi .calan { color: var(--oynayan); transform: scale(1.12); }
+.nota-dizi span { transition: color 90ms, transform 90ms; }
+/* Canlı parmak şeması: dik çalgı nota kâğıdının solunda, ipucu altta (nota kâğıdıyla eşzamanlı) */
+.nota-govde { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; }
+.nota-govde > .kagit { min-width: 0; }
+.nota-govde .pc-not { grid-column: 1 / -1; padding: 0 12px 8px; font-size: .8125rem; color: var(--kayisi-murekkep); }
+.nota-govde .pc-not:empty { display: none; }
+.nota-govde.parmaksiz { grid-template-columns: minmax(0, 1fr); }
+.nota-govde.parmaksiz .parmak-canli, .nota-govde.parmaksiz .pc-not { display: none; }
+.parmak-canli { display: grid; justify-items: center; align-content: start; gap: 0; padding: 10px 6px 8px 10px; border-right: 1px solid var(--cizgi); line-height: 1.1; }
+.parmak-canli .pc-ad { font-family: var(--font-baslik); font-size: 1.5rem; font-weight: 700; color: var(--oynayan); }
+.parmak-canli .pc-alt { font-family: var(--font-mono); font-size: .6875rem; color: var(--murekkep-3); margin-bottom: 4px; }
+.parmak-canli.yok .pc-ad { color: var(--murekkep-3); }
 .parmak-canli.yok .pc-sema { opacity: .35; }
-.pc-sema { width: 100%; max-width: 380px; height: auto; display: block; }
-@media (max-width: 420px) { .parmak-canli { grid-template-columns: 3.9rem 1fr; gap: 4px; padding-inline: 8px; } .parmak-canli .pc-yazi b { font-size: 1.5rem; } }
-.pc-sema .pc-etiket { font: 600 11px var(--font-govde); fill: var(--murekkep-3); }
-.pc-sema .pc-no { font: 500 10px var(--font-mono); fill: var(--murekkep-3); }
+.pc-sema { width: 88px; height: auto; display: block; }
+.pc-sema .pc-etiket { font: 600 10.5px var(--font-govde); fill: var(--murekkep-3); }
+.pc-sema .pc-kucuk { font: 600 9px var(--font-govde); fill: var(--murekkep-3); }
+.pc-sema .pc-no { font: 600 10px var(--font-mono); fill: var(--murekkep-3); }
 .pc-dolu { fill: var(--ink); opacity: 0; transform: scale(.4); transition: opacity 90ms ease-out, transform 90ms ease-out; }
 .pc-dolu.acik { opacity: 1; transform: scale(1); }
 .pc-halka { fill: none; stroke: var(--oynayan); stroke-width: 2.2; opacity: 0; }
 .pc-delik.degisti .pc-halka { animation: pc-degisti 520ms ease-out; }
 @keyframes pc-degisti { 0% { opacity: 1; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .pc-dolu { transition: none; } .pc-delik.degisti .pc-halka { animation: none; } }
+@media (max-width: 420px) { .pc-sema { width: 76px; } .parmak-canli { padding-inline: 6px 4px; } }
 .nota .durum-yazi { padding: 0 14px 12px; font-size: .9375rem; color: var(--murekkep-2); }
 .nota .durum-yazi:empty { display: none; }
 .nota .alt-denetim { padding: 0 14px 14px; display: grid; gap: 10px; }

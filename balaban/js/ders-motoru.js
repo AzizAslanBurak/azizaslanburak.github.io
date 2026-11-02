@@ -6,9 +6,9 @@ import { notaMidi, midiAdi } from "./perde.js";
 import { h, mikrofonGerekli, kaydirma, kaydirmaKatla, notaYazisi, calgiAdi } from "./ortak.js";
 import { ayar, ayarla } from "./depo.js";
 import { AkortGostergesi } from "./akort-gosterge.js";
-import { parmakKarti } from "./parmak.js";
+import { parmakKarti, parmakCanli, notaYaninda, parmakDugmesi } from "./parmak.js";
 import { notaKagidi, hepsiniDurdur } from "./nota.js";
-import { ritimTesti, desenAbc, desenCal } from "./ritim.js";
+import { ritimTesti, desenCiz, desenCal } from "./ritim.js";
 import { sonucKutusu } from "./ekranlar.js";
 import { kaydedici } from "./kayit.js";
 import { CIZIMLER } from "./cizimler.js";
@@ -56,11 +56,14 @@ export function adimCiz(adim, bildir) {
       if (adim.abc) kok.append(notaKagidi(adim.abc, { baslik: adim.notaBaslik || "", dem: adim.dem, takip: false }));
       else if (adim.notalar) {
         const b = h("button", { class: "ikincil genis" }, ikon("oynat"), "Dinle");
+        const parmak = parmakCanli(); parmak.goster(notaMidi(adim.notalar[0]));
+        const dizi = h("div", { class: "nota-dizi" }, ...adim.notalar.map((n) => h("span", null, notaYazisi(n))));
         b.addEventListener("click", () => {
           const c = ac(); let t = 0; const sure = adim.notaSure || 1.2;
-          adim.notalar.forEach((n) => { setTimeout(() => notaCal(notaMidi(n) + kaydirma(), sure * 0.95), t * 1000); t += sure; });
+          adim.notalar.forEach((n, i) => { setTimeout(() => { notaCal(notaMidi(n) + kaydirma(), sure * 0.95); parmak.goster(notaMidi(n)); [...dizi.children].forEach((e, j) => e.classList.toggle("calan", j === i)); }, t * 1000); t += sure; });
+          setTimeout(() => [...dizi.children].forEach((e) => e.classList.remove("calan")), t * 1000);
         });
-        kok.append(b);
+        kok.append(h("div", { class: "nota" }, notaYaninda(parmak, dizi)), b);
       }
       sonra();
       break;
@@ -91,7 +94,7 @@ export function adimCiz(adim, bildir) {
       metin(adim.html);
       const d = { desen: adim.desen, olcu: adim.olcu || "4/4", bpm: adim.bpm || 60 };
       const kagit = h("div", { class: "kagit" });
-      window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", add_classes: true, staffwidth: 500, paddingtop: 0, paddingbottom: 0 });
+      desenCiz(kagit, d.desen, d.olcu);
       const durumEl = h("div", { class: "kucuk soluk", "aria-live": "polite" });
       const sonucAlan = h("div");
       const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4", kagit) }, ikon("oynat"), "Dinle");
@@ -108,7 +111,9 @@ export function adimCiz(adim, bildir) {
         bildir(s.puan, s.puan >= (adim.gecme || 70));
       }));
       test.hidden = true;
-      kok.append(h("div", { class: "nota" }, kagit), dinle, test, durumEl, sonucAlan);
+      const parmak = parmakCanli(); parmak.goster(notaMidi(adim.nota || "A4"));
+      const govde = notaYaninda(parmak, kagit);
+      kok.append(h("div", { class: "nota" }, govde), h("div", { class: "satir" }, dinle, parmakDugmesi(govde)), test, durumEl, sonucAlan);
       kok.eylem = { etiket: () => "Ritmi çal", alt: () => `${d.bpm} vuruş/dk`, tikla: () => test.click() };
       sonra();
       break;

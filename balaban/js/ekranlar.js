@@ -7,8 +7,8 @@ import { kayitEkrani } from "./kayit.js";
 import { ritimBandi, perdeBandi } from "./ilerleme.js";
 import { CALGILAR, TABLO } from "./parmak-tablosu.js";
 import { AkortGostergesi } from "./akort-gosterge.js";
-import { ritimTesti, desenAbc, sonucGrafigi, desenCal, gecikmeOlc, OLCU_GRUPLARI } from "./ritim.js";
-import { parmakKarti, parmakBul } from "./parmak.js";
+import { ritimTesti, desenCiz, sonucGrafigi, desenCal, gecikmeOlc, OLCU_GRUPLARI } from "./ritim.js";
+import { parmakKarti, parmakBul, parmakCanli, notaYaninda, parmakDugmesi } from "./parmak.js";
 import { ayar, ayarla, sifirla as hepsiniSifirla } from "./depo.js";
 import { ikon, ustCubuk, ayarDugmesi, listeSatiri, segment, chipler, altSayfa, sahneAc, durumEl } from "./arayuz.js";
 import { oturumIsaretle } from "./oturum.js";
@@ -173,7 +173,7 @@ function testPaneli(panel) {
   const bpm = +(ayar("bpm") || 70);
   const kagit = h("div", { class: "kagit" });
   const sonucAlan = h("div", { class: "yigin" });
-  function desenGoster() { const d = RITIM_DESENLERI[secili]; kagit.replaceChildren(); window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", add_classes: true, staffwidth: 500, paddingtop: 0, paddingbottom: 0 }); }
+  function desenGoster() { const d = RITIM_DESENLERI[secili]; desenCiz(kagit, d.desen, d.olcu); }
   const desenChip = chipler(RITIM_DESENLERI.map((d, i) => [i, `${d.seviye} · ${d.ad}`]), secili, (i) => { secili = i; ayarla("ritimDesen", i); desenGoster(); sonucAlan.replaceChildren(); });
   const dinleB = h("button", { class: "ikincil" }, ikon("oynat"), "Dinle");
   dinleB.addEventListener("click", () => { const d = RITIM_DESENLERI[secili]; desenCal(d.desen, bpm, "A4", kagit); });
@@ -191,10 +191,12 @@ function testPaneli(panel) {
     s.kapat("bitti");
     sonucAlan.append(sonucKutusu(sonuc));
   }));
+  const parmak = parmakCanli(); parmak.goster(notaMidi("A4"));
+  const govde = notaYaninda(parmak, kagit);
   panel.append(
     h("div", { class: "yigin-s" }, h("span", { class: "etiket-yazi" }, "Desen"), desenChip),
-    h("div", { class: "nota" }, kagit),
-    h("div", { class: "satir" }, dinleB),
+    h("div", { class: "nota" }, govde),
+    h("div", { class: "satir" }, dinleB, parmakDugmesi(govde)),
     testB, sonucAlan);
   desenGoster();
   return () => {};

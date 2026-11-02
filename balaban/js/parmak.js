@@ -3,6 +3,8 @@
 // ● kapalı, ○ açık, ◐ yarım kapalı.
 import { notaMidi, midiAdi } from "./perde.js";
 import { TABLO, ELLER_ARASI } from "./parmak-tablosu.js";
+import { h } from "./ortak.js";
+import { ayar, ayarla } from "./depo.js";
 
 const NS = "http://www.w3.org/2000/svg";
 function s(tag, a, ebeveyn) { const n = document.createElementNS(NS, tag); for (const k in a) n.setAttribute(k, a[k]); if (ebeveyn) ebeveyn.appendChild(n); return n; }
@@ -55,29 +57,35 @@ export function parmakKarti(nota, { buyuk = false, aciklama = true } = {}) {
   return k;
 }
 
-// Canlı parmak şeması: yatay çalgı (kamış solda), nota kâğıdıyla eşzamanlı.
+// Canlı parmak şeması: dik çalgı (kamış üstte, elde tutulduğu gibi), nota kâğıdıyla eşzamanlı.
 // Tek SVG kalır, yalnızca deliklerin durumu değişir; değişen delik bir an halkayla işaretlenir
-// ki öğrenci hangi parmağın kalkıp indiğini görsün.
+// ki öğrenci hangi parmağın kalkıp indiğini görsün. Ad ve ipucu ayrı öğelerdir (notaYaninda yerleştirir).
 export function parmakCanli() {
   const kok = document.createElement("div");
   kok.className = "parmak-canli";
-  const yazi = document.createElement("div"); yazi.className = "pc-yazi";
-  const ad = document.createElement("b"); const alt = document.createElement("span"); const not = document.createElement("span"); not.className = "pc-not";
-  yazi.append(ad, alt, not);
-  const W = 246, H = 96, govdeY = 34, govdeH = 26, x1 = 60, ara = 21, el = 14;
+  const ad = document.createElement("b"); ad.className = "pc-ad";
+  const alt = document.createElement("span"); alt.className = "pc-alt";
+  const notEl = document.createElement("div"); notEl.className = "pc-not";
+  const W = 88, govdeX = 34, govdeW = 24, cx = govdeX + govdeW / 2, y1 = 50, ara = 20, el = 12;
+  const cy = (i) => y1 + i * ara + (i >= ELLER_ARASI ? el : 0);
+  const H = cy(7) + 18;
   const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, class: "pc-sema", role: "img", "aria-label": "Parmak pozisyonu" });
-  s("path", { d: `M4 ${govdeY + 8} L34 ${govdeY + 4} L34 ${govdeY + govdeH - 4} L4 ${govdeY + govdeH - 8} Z`, fill: "var(--reed-soft)", stroke: "var(--reed)", "stroke-width": "1.2" }, svg);
-  s("rect", { x: "18", y: govdeY + 3, width: "4", height: govdeH - 6, rx: "1", fill: "var(--reed)" }, svg);
-  s("rect", { x: "34", y: govdeY, width: W - 38, height: govdeH, rx: "9", fill: "var(--wood-soft)", stroke: "var(--wood)", "stroke-width": "1.5" }, svg);
-  const cx = (i) => x1 + i * ara + (i >= ELLER_ARASI ? el : 0);
-  const etiket = (x, y, metin) => { const t = s("text", { x, y, "text-anchor": "middle", class: "pc-etiket" }, svg); t.textContent = metin; };
-  etiket((cx(0) + cx(3)) / 2, 22, "sol el");
-  etiket((cx(4) + cx(7)) / 2, 22, "sağ el");
-  for (let i = 0; i < 8; i++) { const t = s("text", { x: cx(i), y: govdeY + govdeH + 13, "text-anchor": "middle", class: "pc-no" }, svg); t.textContent = String(i + 1); }
-  // arka (baş parmak) deliği: gövdenin altında, 1. deliğin solunda; kesik çizgiyle gövdeye bağlı
-  const ax = x1 - 16, ay = govdeY + govdeH + 22;
-  s("line", { x1: ax, y1: govdeY + govdeH, x2: ax, y2: ay - 7, stroke: "var(--line)", "stroke-dasharray": "2 2" }, svg);
-  etiket(ax - 24, ay + 2, "baş p.");
+  s("path", { d: `M${cx - 4} 3 L${cx + 4} 3 L${cx + 7} 28 L${cx - 7} 28 Z`, fill: "var(--reed-soft)", stroke: "var(--reed)", "stroke-width": "1.2" }, svg);
+  s("rect", { x: cx - 6, y: "14", width: "12", height: "3.2", rx: "1", fill: "var(--reed)" }, svg);
+  s("rect", { x: govdeX, y: "28", width: govdeW, height: H - 32, rx: "9", fill: "var(--wood-soft)", stroke: "var(--wood)", "stroke-width": "1.5" }, svg);
+  const yazi = (x, y, metin, sinif, ek = {}) => { const t = s("text", { x, y, "text-anchor": "middle", class: sinif, ...ek }, svg); t.textContent = metin; };
+  for (let i = 0; i < 8; i++) yazi(govdeX + govdeW + 8, cy(i) + 3.5, String(i + 1), "pc-no");
+  // el grupları: sağda ince köşeli çizgi + dik yazı
+  const grup = (a, b, metin) => {
+    const x = W - 13, ya = cy(a) - 8, yb = cy(b) + 8;
+    s("path", { d: `M${x - 3} ${ya} L${x} ${ya} L${x} ${yb} L${x - 3} ${yb}`, fill: "none", stroke: "var(--line)", "stroke-width": "1" }, svg);
+    const ym = (ya + yb) / 2; yazi(x + 6, ym, metin, "pc-etiket", { transform: `rotate(90 ${x + 6} ${ym})` });
+  };
+  grup(0, 3, "sol el"); grup(4, 7, "sağ el");
+  // arka (baş parmak) deliği: solda, 1. deliğin hizasında; kesik çizgiyle gövdeye bağlı
+  const ax = 15, ay = cy(0) + 4;
+  s("line", { x1: ax + 7, y1: ay, x2: govdeX, y2: ay, stroke: "var(--line)", "stroke-dasharray": "2 2" }, svg);
+  yazi(ax, ay + 17, "baş", "pc-kucuk"); yazi(ax, ay + 26, "parmak", "pc-kucuk");
   function delik(x, y, r) {
     const g = s("g", { class: "pc-delik" }, svg);
     s("circle", { cx: x, cy: y, r: r + 4.5, class: "pc-halka" }, g);
@@ -87,9 +95,9 @@ export function parmakCanli() {
     tam.style.transformOrigin = yarim.style.transformOrigin = `${x}px ${y}px`;
     return { g, tam, yarim, d: null };
   }
-  const arka = delik(ax, ay - 2, 5.5);
-  const on = Array.from({ length: 8 }, (_, i) => delik(cx(i), govdeY + govdeH / 2, 7));
-  kok.append(yazi, svg);
+  const arka = delik(ax, ay, 5.5);
+  const on = Array.from({ length: 8 }, (_, i) => delik(cx, cy(i), 7));
+  kok.append(ad, alt, svg);
 
   function ayarla(dl, d, ilk) {
     dl.tam.classList.toggle("acik", d === "●");
@@ -99,20 +107,31 @@ export function parmakCanli() {
   }
   let ilk = true;
   return {
-    kok,
+    kok, notEl,
     // yazılı MIDI (kesirli olabilir: koma sesleri)
     goster(midi) {
       const g = parmakBul(midi);
       const a = midiAdi(midi);
       ad.textContent = a.ad;
       kok.classList.toggle("yok", !g);
-      if (!g) { alt.textContent = "tabloda yok"; not.textContent = ""; return; }
+      if (!g) { alt.textContent = "tabloda yok"; notEl.textContent = ""; return; }
       const [ar, onD] = g.delikler.split("|");
       ayarla(arka, ar, ilk); Array.from(onD).forEach((d, i) => ayarla(on[i], d, ilk)); ilk = false;
       svg.setAttribute("aria-label", `${a.ad}: ${g.delikler}`);
       alt.textContent = g.etiket || a.ad + a.oktav;
       const koma = Math.round((midi - Math.round(midi)) * 100);
-      not.textContent = Math.abs(koma) >= 10 ? (koma < 0 ? `koma pes: ${a.ad} parmağı, dudağı gevşet` : `koma tiz: ${a.ad} parmağı, biraz sık`) : (g.not || "");
+      notEl.textContent = Math.abs(koma) >= 10 ? (koma < 0 ? `${a.ad} koma pes: ${a.ad} parmağı, dudağı gevşet` : `${a.ad} koma tiz: ${a.ad} parmağı, biraz sık`) : g.not ? `${a.ad}: ${g.not}` : "";
     },
   };
+}
+
+// Nota kâğıdının soluna dik çalgıyı koyar; ipucu satırı altta tam genişlikte.
+// "Parmaklar" düğmesi için gizle/göster durumu ayarlarda tutulur.
+export function notaYaninda(parmak, kagit) {
+  return h("div", { class: "nota-govde" + (ayar("parmakSim") === false ? " parmaksiz" : "") }, parmak.kok, kagit, parmak.notEl);
+}
+export function parmakDugmesi(govde) {
+  const b = h("button", { class: "ikincil", "aria-pressed": String(ayar("parmakSim") !== false) }, "Parmaklar");
+  b.addEventListener("click", () => { const acik = govde.classList.toggle("parmaksiz") === false; b.setAttribute("aria-pressed", String(acik)); ayarla("parmakSim", acik); });
+  return b;
 }

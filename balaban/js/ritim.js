@@ -38,6 +38,14 @@ export function desenAbc(desen, olcu = "4/4", notaHarf = "B") {
   return `X:1\nM:${olcu}\nL:1/8\nK:C clef=perc stafflines=1\n${parcalar.join(" ")} |]`;
 }
 
+// Desen notasını kâğıda çiz. Dar portede az nota iri görünsün diye porte genişliği nota sayısına göre seçilir
+// (responsive çizim SVG'yi kutuya ölçekler; geniş porte = küçük nota).
+export function desenCiz(kagit, desen, olcu) {
+  const n = desenCoz(desen).olaylar.length;
+  kagit.replaceChildren();
+  window.ABCJS.renderAbc(kagit, desenAbc(desen, olcu), { responsive: "resize", add_classes: true, staffwidth: Math.max(200, Math.min(500, 70 + n * 38)), paddingtop: 0, paddingbottom: 0 });
+}
+
 // Ritim testi. secenek: { desen, bpm, olcuVurus, notaYazili (MIDI, örnek çalım için), modelCal (önce örneği çal), onSayimSesli }
 // Döner: Promise<{ notlar:[{beklenen, olculen, hata}], fazla, puan, ortalama, sapma }>
 export function ritimTesti(secenek, { durumda } = {}) {
