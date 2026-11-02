@@ -1,5 +1,7 @@
 // Kendini kaydet: MediaRecorder ile kayıt, IndexedDB'de saklama, dinleme ve silme.
 import { h } from "./ortak.js";
+import { oturumIsaretle } from "./oturum.js";
+import { ustCubuk, SIMGE } from "./arayuz.js";
 
 const DB_AD = "balaban-kayit", MAGAZA = "kayitlar";
 function dbAc() {
@@ -17,7 +19,7 @@ export const kayitSil = (id) => islem("readwrite", (s) => s.delete(id));
 // Kaydedici bileşeni (derslerde de kullanılır). etiket: kaydın adı
 export function kaydedici(etiket, { kaydedince } = {}) {
   const kok = h("div", { class: "yigin" });
-  const b = h("button", { class: "vurgu" }, "● Kaydı başlat");
+  const b = h("button", { class: "birincil" }, "● Kaydı başlat");
   const sure = h("span", { class: "kucuk soluk", style: "font-family:var(--font-mono)" });
   const oynat = h("div");
   let kaydedici = null, akis = null, parcalar = [], bas = 0, zam = 0;
@@ -35,6 +37,7 @@ export function kaydedici(etiket, { kaydedince } = {}) {
       const kayit = { id: Date.now().toString(36), etiket, tarih: new Date().toISOString(), sure: Math.round((performance.now() - bas) / 1000), blob };
       kaydedici = null; b.textContent = "● Yeniden kaydet";
       try { await kayitEkle(kayit); } catch (e) {}
+      oturumIsaretle("kayit");
       oynat.replaceChildren(h("audio", { controls: true, src: URL.createObjectURL(blob), style: "width:100%" }));
       if (kaydedince) kaydedince(kayit);
     };
@@ -51,7 +54,7 @@ export function kayitEkrani(kok) {
     let hepsi = [];
     try { hepsi = (await kayitlariGetir()).sort((a, b) => b.tarih.localeCompare(a.tarih)); } catch (e) {}
     liste.replaceChildren();
-    if (!hepsi.length) { liste.append(h("p", { class: "soluk" }, "Henüz kaydın yok. Derslerdeki kayıt adımları ve buradaki düğme kayıtlarını burada toplar.")); return; }
+    if (!hepsi.length) { liste.append(h("div", { class: "bos-durum" }, h("div", { class: "simge", html: SIMGE.kayit }), h("b", null, "Henüz kayıt yok"), h("p", { class: "kucuk soluk", style: "margin:0" }, "Ders sonlarında bir kez kaydet; birkaç hafta sonra ilk kaydınla kıyaslarız."))); return; }
     hepsi.forEach((k) => {
       const t = new Date(k.tarih);
       liste.append(h("div", { class: "kayit-satiri" },
@@ -59,11 +62,10 @@ export function kayitEkrani(kok) {
         h("button", { class: "ikincil", "aria-label": "Kaydı sil", onclick: async () => { await kayitSil(k.id); yenile(); } }, "Sil")));
     });
   }
-  kok.append(h("div", { class: "yigin" },
-    h("a", { href: "#araclar", class: "kucuk" }, "‹ Araçlar"),
-    h("h1", null, "Kendini kaydet"),
-    h("p", { class: "soluk" }, "Çalarken kendini tam duyamazsın; kayıt dinlerken duyarsın. Haftada bir aynı parçayı kaydet ve önceki haftayla karşılaştır: ses temiz mi, notalar akortlu mu, nefes yerleri doğru mu?"),
-    h("div", { class: "kart" }, kaydedici("Serbest kayıt", { kaydedince: yenile })),
-    h("h2", null, "Kayıtların"), liste));
+  kok.append(ustCubuk({ geri: { href: "#kitaplik", ad: "Kitaplık" }, baslik: "Kayıtlarım" }),
+    h("div", { class: "yigin" },
+      h("p", { class: "soluk kucuk", style: "margin:0" }, "Çalarken kendini tam duyamazsın; kayıtta duyarsın. Haftada bir aynı parçayı kaydet, önceki haftayla kıyasla: ses temiz mi, perde yerinde mi, nefes yerleri doğru mu?"),
+      h("div", { class: "kart" }, kaydedici("Serbest kayıt", { kaydedince: yenile })),
+      h("h2", { style: "margin-top:8px" }, "Kayıtların"), liste));
   yenile();
 }

@@ -12,6 +12,7 @@ import { ritimTesti, desenAbc, desenCal } from "./ritim.js";
 import { sonucKutusu } from "./ekranlar.js";
 import { kaydedici } from "./kayit.js";
 import { CIZIMLER } from "./cizimler.js";
+import { ikon, segment, sahneAc, durumEl, halka } from "./arayuz.js";
 import { perdeBandi, bantIcinde, ritimBandi, tahminKaydet } from "./ilerleme.js";
 
 export const DENETIMLI = new Set(["uzun-ses", "nota-dizisi", "ritim", "eser", "kulak", "kontrol", "sureli", "kayit"]);
@@ -54,7 +55,7 @@ export function adimCiz(adim, bildir) {
       metin(adim.html);
       if (adim.abc) kok.append(notaKagidi(adim.abc, { baslik: adim.notaBaslik || "", dem: adim.dem, takip: false }));
       else if (adim.notalar) {
-        const b = h("button", { class: "vurgu" }, "▶︎ Dinle");
+        const b = h("button", { class: "ikincil genis" }, ikon("oynat"), "Dinle");
         b.addEventListener("click", () => {
           const c = ac(); let t = 0; const sure = adim.notaSure || 1.2;
           adim.notalar.forEach((n) => { setTimeout(() => notaCal(notaMidi(n) + kaydirma(), sure * 0.95), t * 1000); t += sure; });
@@ -67,7 +68,8 @@ export function adimCiz(adim, bildir) {
 
     case "uzun-ses": {
       metin(adim.html);
-      kok.append(uzunSes(adim, bildir, temizlik));
+      const us = uzunSes(adim, bildir, temizlik);
+      kok.append(us); kok.eylem = us.eylem;
       sonra();
       break;
     }
@@ -88,21 +90,26 @@ export function adimCiz(adim, bildir) {
     case "ritim": {
       metin(adim.html);
       const d = { desen: adim.desen, olcu: adim.olcu || "4/4", bpm: adim.bpm || 60 };
-      const kagit = h("div"); kok.append(kagit);
+      const kagit = h("div", { class: "kagit" });
       window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", staffwidth: 500, paddingtop: 0, paddingbottom: 0 });
       const durumEl = h("div", { class: "kucuk soluk", "aria-live": "polite" });
       const sonucAlan = h("div");
-      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4") }, "▶︎ Dinle");
-      const test = h("button", { class: "vurgu" }, "Ritmi çal");
+      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4") }, ikon("oynat"), "Dinle");
+      const test = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Ritmi çal"), h("span", { class: "sure" }, `${d.bpm} vuruş/dk`));
       test.addEventListener("click", () => mikrofonGerekli(sonucAlan, async () => {
         test.disabled = true; sonucAlan.replaceChildren(); await saymaYukle();
         const olcuVurus = d.olcu.endsWith("/8") ? Math.max(2, Math.round(parseInt(d.olcu) / 2)) : parseInt(d.olcu);
-        const s = await ritimTesti({ desen: d.desen, bpm: d.bpm, olcuVurus, olcu: d.olcu, bant: adim.bant || ritimBandi() }, { durumda: (x) => (durumEl.textContent = x.evre === "sayim" ? `Sayım: ${x.vurus}` : "Çal!") });
+        const buyuk = h("div", { class: "sayim" }, ""); const dur = durumEl(); dur.ayarla("bos", "Sayımı dinle");
+        const sahne = sahneAc({ ust: `${d.olcu} · ${d.bpm} vuruş/dk`, icerik: [buyuk, dur], bitirAdi: "Vazgeç" });
+        const s = await ritimTesti({ desen: d.desen, bpm: d.bpm, olcuVurus, olcu: d.olcu, bant: adim.bant || ritimBandi() }, { durumda: (x) => { if (x.evre === "sayim") buyuk.textContent = String(x.vurus); else { buyuk.textContent = "Çal"; dur.ayarla("bos", "Dinliyorum"); } } });
+        sahne.kapat("bitti");
         test.disabled = false; durumEl.textContent = "";
         sonucAlan.append(sonucKutusu(s));
         bildir(s.puan, s.puan >= (adim.gecme || 70));
       }));
-      kok.append(h("div", { class: "satir" }, dinle, test, h("span", { class: "kucuk soluk" }, `${d.bpm} vuruş/dk`)), durumEl, sonucAlan);
+      test.hidden = true;
+      kok.append(h("div", { class: "nota" }, kagit), dinle, test, durumEl, sonucAlan);
+      kok.eylem = { etiket: () => "Ritmi çal", alt: () => `${d.bpm} vuruş/dk`, tikla: () => test.click() };
       sonra();
       break;
     }
@@ -126,10 +133,12 @@ export function adimCiz(adim, bildir) {
       const soru = adim.soru || 5, notalar = adim.notalar;
       let sira = 0, dogru = 0, hedef = null, tut = 0, sonZ = null, bekliyor = false, zamanAsimi = 0;
       const durumEl = h("p", { "aria-live": "polite" }, `Ben bir nota çalacağım, sen aynısını çal. ${soru} soru.`);
-      const basB = h("button", { class: "vurgu" }, "Başla");
+      const basB = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Başla"), h("span", { class: "sure" }, `${soru} soru`));
       const tekrarB = h("button", { class: "ikincil", disabled: true }, "Tekrar dinle");
       const alan = h("div");
+      basB.hidden = true;
       kok.append(durumEl, h("div", { class: "satir" }, basB, tekrarB), alan);
+      kok.eylem = { etiket: () => (sira > 0 && sira < soru ? "Dinliyorum…" : sira >= soru ? "Yeniden başla" : "Başla"), alt: () => `${soru} soru`, tikla: () => basB.click() };
       function yeniSoru() {
         if (sira >= soru) { const puan = Math.round((dogru / soru) * 100); durumEl.textContent = `Bitti: ${dogru}/${soru} doğru.`; bekliyor = false; basB.disabled = false; basB.textContent = "Yeniden başla"; tekrarB.disabled = true; bildir(puan, puan >= (adim.gecme || 80)); return; }
         let yeni; do { yeni = notalar[Math.floor(Math.random() * notalar.length)]; } while (notalar.length > 1 && yeni === hedef);
@@ -183,10 +192,12 @@ export function adimCiz(adim, bildir) {
       const sayacEl = h("div", { class: "bpm-buyuk" }, sureYaz(hedefSn));
       const cubuk = h("div", { class: "ilerleme-cubugu" }, h("i", { style: "width:0%" }));
       const alan = h("div");
-      const b = h("button", { class: "vurgu" }, "Başla");
+      const b = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Başla"), h("span", { class: "sure" }, `${adim.dakika || 3} dk`));
+      b.hidden = true;
       kok.append(sayacEl, cubuk, h("p", { class: "kucuk soluk" }, "Süre yalnızca sen çalarken (ben ses duyarken) ilerler."), b, alan);
+      kok.eylem = { etiket: () => (basladi ? "Çalıyorsun…" : "Başla"), alt: () => `${adim.dakika || 3} dk`, tikla: () => b.click() };
       b.addEventListener("click", () => mikrofonGerekli(alan, () => {
-        if (basladi) return; basladi = true; b.hidden = true;
+        if (basladi) return; basladi = true;
         temizlik.push(mik.abone((o) => {
           const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
           if (o.sesli && o.midi != null) sesli += dt;
@@ -207,133 +218,122 @@ export function adimCiz(adim, bildir) {
   return { kok, temizle: () => { hepsiniDurdur(); temizlik.forEach((f) => typeof f === "function" && f()); } };
 }
 
-// Uzun ses: "Alıştırma" göstergeli ve puansız; "Sınav" kör (çalarken perde gösterilmez), sonunda önce
-// öz-tahmin ister, sonra nota-nota bilgi verir. Geçiş: tutuşun ≥%80'i bantta, istenen sayıda tekrar.
+// Uzun ses (tasarım sistemi §4.3): hazırlık kartı → Sahne (çalarken, uzaktan okunur) → sonuç kartı.
+// "Sınav (kör)": çalarken perde gösterilmez; sonunda önce öz-tahmin, sonra bilgi. "Alıştırma": Sahne'de şerit.
+// Geçiş: tutuşun ≥%80'i bantta, istenen sayıda tekrar (araştırma notu 01, U6).
 function uzunSes(adim, bildir, temizlik) {
   const kok = h("div", { class: "yigin" });
   const hedef = notaMidi(adim.nota), saniye = adim.saniye || 4, tekrar = adim.tekrar || 3;
   const bant = adim.tolerans || perdeBandi();
   const korMu = adim.kor !== false;
-  const ust = h("div", { class: "satir" },
-    h("button", { class: "ikincil", onclick: () => notaCal(hedef + kaydirma(), Math.min(saniye, 3)) }, "Hedef sesi dinle"));
+  let kip = korMu ? "sinav" : "alistirma", gecenTekrar = 0, deneme = 0, aktifSahne = null;
+  temizlik.push(() => { if (aktifSahne) aktifSahne.kapat("temizlik"); });
+
+  const dinleB = h("button", { class: "ikincil", onclick: () => notaCal(hedef + kaydirma(), Math.min(saniye, 3)) }, ikon("oynat"), "Hedefi dinle");
+  const dugmeler = h("div", { class: "dugmeler" }, dinleB);
+  let demNota = null;
   if (adim.dem) {
-    const demB = h("button", { class: "ikincil", "aria-pressed": "false" }, "Dem");
-    const demNota = adim.dem === true ? hedef - 12 : notaMidi(adim.dem);
-    demB.addEventListener("click", () => { const a = demB.getAttribute("aria-pressed") === "true"; demB.setAttribute("aria-pressed", String(!a)); if (a) demDurdur(); else demBaslat(demNota + kaydirma()); });
-    ust.append(demB); temizlik.push(() => demDurdur());
+    demNota = adim.dem === true ? hedef - 12 : notaMidi(adim.dem);
+    const demB = h("button", { class: "ikincil", "aria-pressed": "false" }, ikon("dem"), "Dem · kapalı");
+    demB.addEventListener("click", () => { const a = demB.getAttribute("aria-pressed") === "true"; demB.setAttribute("aria-pressed", String(!a)); demB.lastChild.textContent = a ? "Dem · kapalı" : "Dem · açık"; if (a) demDurdur(); else demBaslat(demNota + kaydirma()); });
+    dugmeler.append(demB); temizlik.push(() => demDurdur());
   }
-  const kart = parmakKarti(adim.nota, { aciklama: false });
-  kok.append(h("div", { class: "satir", style: "align-items:flex-start" }, kart,
-    h("div", { class: "ara yigin", style: "gap:8px" },
-      h("p", { style: "margin:0" }, `${notaYazisi(adim.nota)} notasını ${saniye} saniye tut, ${tekrar} kez. Bant: ±${bant} cent.`), ust)));
+  kok.append(h("div", { class: "hazirlik" }, parmakKarti(adim.nota, { aciklama: false }),
+    h("div", { class: "bilgi" },
+      h("div", { class: "hedef" }, h("b", null, notaYazisi(adim.nota)), ` notasını ${saniye} sn tut, ${tekrar} kez.`),
+      h("div", { class: "kucuk soluk" }, `Bant ±${bant} cent`),
+      dugmeler)));
 
-  const sekmeler = h("div", { class: "satir" });
-  const alistirB = h("button", { class: "ikincil", "aria-pressed": korMu ? "false" : "true" }, "Alıştırma (göstergeli)");
-  const sinavB = korMu ? h("button", { class: "ikincil", "aria-pressed": "true" }, "Sınav (kör)") : null;
-  sekmeler.append(alistirB, sinavB);
-  const alan = h("div", { class: "yigin" });
-  kok.append(sekmeler, alan);
+  const ipucu = h("span", null);
+  const sayac = h("b", null, `0/${tekrar}`);
+  function ipucuYaz() { ipucu.textContent = kip === "sinav" ? "Göstergeyi kapatırım; kulağına ve deme güven." : korMu ? "Şeride bakarak oturt; bu kısım puanlanmaz." : "Şeride bakarak tut."; }
+  if (korMu) kok.append(segment([["alistirma", "Alıştırma (göstergeli)"], ["sinav", "Sınav (kör)"]], kip, (d) => { kip = d; ipucuYaz(); calB.lastChild.textContent = `${saniye} sn × ${tekrar}`; }));
+  ipucuYaz();
+  kok.append(h("div", { class: "sayac-satir" }, ipucu, h("span", null, sayac, " geçti")));
+  const calB = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Çal"), h("span", { class: "sure" }, `${saniye} sn × ${tekrar}`));
+  const sonuc = h("div", { class: "yigin" });
+  calB.hidden = true; // asıl eylem ders oynatıcının alt çubuğunda (başparmak altında, kaydırmadan görünür)
+  kok.append(calB, sonuc);
+  calB.addEventListener("click", () => mikrofonGerekli(sonuc, () => calmaBaslat()));
+  kok.eylem = { etiket: () => calB.querySelector(".sol").lastChild.textContent, alt: () => calB.querySelector(".sure").textContent, tikla: () => calB.click() };
 
-  let gecenTekrar = 0, aktif = null;
-  function kapat() { if (aktif) { aktif(); aktif = null; } }
-  temizlik.push(kapat);
-
-  function alistirma(puanli) {
-    kapat(); alan.replaceChildren();
-    alistirB.setAttribute("aria-pressed", "true"); if (sinavB) sinavB.setAttribute("aria-pressed", "false");
-    const cubuk = h("div", { class: "ilerleme-cubugu" }, h("i", { style: "width:0%" }));
-    const bilgi = h("p", { class: "kucuk soluk", "aria-live": "polite" }, !akortBiliniyor()
-      ? `Çalgının akordunu henüz bilmiyorum. Şimdilik yalnızca sesin ${saniye} saniye sabit kalmasına bakıyorum; göstergedeki nota adı yanlış olabilir, aldırma.`
-      : puanli ? `Göstergeye bakarak tut. ${tekrar} kez.` : "Göstergeye bakarak sesi oturt. Bu kısım puanlanmaz; hazır hissedince Sınav'a geç.");
-    let tutulan = 0, kopma = 0, sonZ = null, yapilan = 0, tutus = [];
-    const tani = taniSatiri();
-    const g = new AkortGostergesi({ hedef: akortBiliniyor() ? hedef : null, tolerans: bant, olayda: (o, hs) => {
+  function calmaBaslat() {
+    sonuc.replaceChildren();
+    deneme++;
+    const halkaEl = halka(); halkaEl.ayarla(0, String(saniye));
+    const durum = durumEl(); durum.ayarla("bos", "Dinliyorum");
+    let gosterge = null;
+    const icerik = [];
+    if (kip === "sinav") icerik.push(h("div", { class: "sahne-nota" }, notaYazisi(adim.nota)), halkaEl, durum);
+    else { gosterge = new AkortGostergesi({ hedef: akortBiliniyor() ? hedef : null, tolerans: bant, parmak: false, iz: false, sahne: true }); icerik.push(gosterge.kok, halkaEl); }
+    let bitti = false;
+    const s = sahneAc({ ust: `Tekrar ${Math.min(gecenTekrar + 1, tekrar)} / ${tekrar}`, sagUst: h("span", { class: "kayit" }, "DİNLİYORUM"), icerik, bitince: () => { if (!bitti) bitir(); } });
+    aktifSahne = s;
+    let sure = 0, kopma = 0, sonZ = null; const centler = [], hamlar = [];
+    const tum = [];
+    const dinle = mik.abone((o) => {
       const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
-      tani.guncelle(o, true);
-      let icinde;
-      if (akortBiliniyor()) icinde = hs && !hs.oktavFark && bantIcinde(hs.cent, bant);
-      else {
-        // Akort henüz bilinmiyor: hangi nota olduğuna değil, sesin sabit kalmasına bak
-        icinde = o.midi != null && (!tutus.length || Math.abs(o.midi - ortanca(tutus)) * 100 <= bant);
-        if (icinde) tutus.push(o.midi);
-      }
-      if (icinde) { tutulan += dt; kopma = 0; } else { kopma += dt; if (kopma > 0.5) { tutulan = 0; tutus = []; } }
-      cubuk.firstChild.style.width = Math.min(100, (tutulan / saniye) * 100) + "%";
-      if (tutulan >= saniye) {
-        if (!akortBiliniyor() && tutus.length) { bilgi.textContent = akortOgren(ortanca(tutus), hedef); g.hedefAyarla(hedef); tutus = []; tutulan = 0; yapilan++; if (puanli && yapilan >= tekrar) bildir(100, true); return; }
-        tutulan = 0; yapilan++;
-        bilgi.textContent = puanli ? (yapilan >= tekrar ? "Tamam, bu adımı geçtin." : `${yapilan}/${tekrar}. Nefes al, sonra devam.`) : `${saniye} saniye bantta tuttun. Bir kez daha, ya da Sınav'a geç.`;
-        if (puanli && yapilan >= tekrar) bildir(100, true);
-      }
-    } });
-    mikrofonGerekli(alan, () => { g.baslat(); aktif = () => g.durdur(); alan.append(cubuk, tani.kok, bilgi, g.kok); });
-  }
-
-  function sinav() {
-    kapat(); alan.replaceChildren();
-    alistirB.setAttribute("aria-pressed", "false"); sinavB.setAttribute("aria-pressed", "true");
-    const sayac = h("div", { class: "olcum" });
-    const sayacCiz = () => sayac.replaceChildren(h("div", null, h("b", null, `${gecenTekrar}/${tekrar}`), h("span", null, "geçen tekrar")));
-    sayacCiz();
-    const yonerge = h("p", { "aria-live": "polite" }, "Göstergeyi kapattım; kulağına ve deme güven. Hazır olunca başla ve sesi tut.");
-    const cubuk = h("div", { class: "ilerleme-cubugu" }, h("i", { style: "width:0%" }));
-    const basB = h("button", { class: "vurgu" }, "Başla");
-    const sonuc = h("div");
-    const tani = taniSatiri();
-    alan.append(sayac, yonerge, cubuk, tani.kok, basB, sonuc);
-    basB.addEventListener("click", () => mikrofonGerekli(sonuc, () => {
-      basB.hidden = true; sonuc.replaceChildren();
-      yonerge.textContent = `Çal ve ${saniye} saniye tut…`;
-      let sure = 0, kopma = 0, sonZ = null; const centler = [], hamlar = [];
-      const bitir = mik.abone((o) => {
-        const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
-        tani.guncelle(o, false);
-        const biliniyor = akortBiliniyor();
-        const yakin = o.midi != null && (biliniyor ? Math.abs(o.midi - kaydirma() - hedef) < 1.5 : (!hamlar.length || Math.abs(o.midi - ortanca(hamlar)) < 1.5));
-        if (yakin) { sure += dt; kopma = 0; hamlar.push(o.midi); if (biliniyor) centler.push((o.midi - kaydirma() - hedef) * 100); }
-        else if (sure > 0) { kopma += dt; if (kopma > 0.5 && sure < saniye) { sure = 0; centler.length = 0; hamlar.length = 0; } }
-        cubuk.firstChild.style.width = Math.min(100, (sure / saniye) * 100) + "%";
-        if (sure >= saniye) {
-          bitir(); aktif = null;
-          if (!biliniyor) { const not = akortOgren(ortanca(hamlar), hedef); hamlar.forEach((m) => centler.push((m - kaydirma() - hedef) * 100)); sonuc.append(h("p", { class: "kucuk" }, not)); }
-          tahminSor(centler);
-        }
-      });
-      aktif = bitir;
-    }));
-    function tahminSor(centler) {
-      const ort = centler.reduce((a, b) => a + b, 0) / centler.length;
-      const sd = Math.sqrt(centler.reduce((a, b) => a + (b - ort) ** 2, 0) / centler.length);
-      const oran = centler.filter((c) => bantIcinde(c, bant)).length / centler.length;
-      const gercek = Math.abs(ort) <= bant / 2 ? "tam" : ort > 0 ? "tiz" : "pes";
-      yonerge.textContent = "Sence nasıldı? Önce sen söyle:";
-      const secenekler = h("div", { class: "satir" });
-      [["pes", "Pes kaldı"], ["tam", "Tam yerindeydi"], ["tiz", "Tiz kaçtı"]].forEach(([k, ad]) => secenekler.append(h("button", { class: "ikincil", onclick: () => goster(k) }, ad)));
-      sonuc.append(secenekler);
-      function goster(tahmin) {
-        tahminKaydet(tahmin === gercek);
-        const gecti = oran >= 0.8;
-        if (gecti) gecenTekrar++;
-        const iyi = sd < 10 ? "Sesin çok sabitti." : oran >= 0.8 ? "Sesi bantta tuttun." : centler.length ? "Sesi sonuna kadar götürdün." : "";
-        const duzeltme = gecti ? (Math.abs(ort) > bant / 2 ? (ort > 0 ? "Bir sonrakinde kamışı biraz daha az sık; ses hafif tiz." : "Bir sonrakinde nefes desteğini artır; ses hafif pes.") : (sd > 15 ? "Sesi daha da sabitlemek için nefesi karından eşit ver." : "Böyle devam."))
-          : (sd > 20 ? "Ses dalgalanıyor: nefesi karından, eşit akıt; dudak basıncını değiştirme." : ort > 0 ? "Ses tiz kaldı: kamışı daha az sık, dudakları gevşet." : "Ses pes kaldı: nefes desteğini artır, kamışı çok az daha sık.");
-        sonuc.replaceChildren(h("div", { class: "degerlendirme " + (gecti ? "iyi" : oran >= 0.5 ? "orta" : "kotu") },
-          h("div", { class: "baslik" }, gecti ? "Geçti" : "Bir daha"),
-          h("div", { class: "olcum" },
-            h("div", null, h("b", null, `${ort > 0 ? "+" : ""}${Math.round(ort)}`), h("span", null, "ortalama sapma (cent)")),
-            h("div", null, h("b", null, `±${Math.round(sd)}`), h("span", null, "kararlılık (cent)")),
-            h("div", null, h("b", null, `%${Math.round(oran * 100)}`), h("span", null, `bantta (±${bant})`))),
-          h("p", { style: "margin:0" }, `Tahminin: ${tahmin === gercek ? "doğru" : "yanlış"} (ses ${gercek === "tam" ? "tam yerindeydi" : gercek === "tiz" ? "tizdi" : "pesti"}). ${iyi} ${duzeltme}`)));
-        sayacCiz();
-        if (gecenTekrar >= tekrar) { yonerge.textContent = "Sınavı geçtin. Kamışı dudaktan ayır, biraz dinlen."; bildir(100, true); }
-        else { yonerge.textContent = "Nefes al, dudaklarını dinlendir, sonra tekrar."; basB.hidden = false; basB.textContent = "Sonraki tekrar"; }
-        if (gecenTekrar < tekrar) bildir(Math.round((gecenTekrar / tekrar) * 100), false);
-      }
+      const biliniyor = akortBiliniyor();
+      const yakin = o.midi != null && (biliniyor ? Math.abs(o.midi - kaydirma() - hedef) < 1.5 : (!hamlar.length || Math.abs(o.midi - ortanca(hamlar)) < 1.5));
+      if (yakin) { sure += dt; kopma = 0; hamlar.push(o.midi); if (biliniyor) centler.push((o.midi - kaydirma() - hedef) * 100); }
+      else if (sure > 0) { kopma += dt; if (kopma > 0.5 && sure < saniye) { sure = 0; centler.length = 0; hamlar.length = 0; } }
+      if (kip === "sinav") durum.ayarla("bos", o.midi != null ? "Ses geliyor" : o.sesli ? "Ses var, perdesi net değil" : "Dinliyorum");
+      halkaEl.ayarla(sure / saniye, String(Math.max(0, Math.ceil(saniye - sure))));
+      if (sure >= saniye && !bitti) { bitti = true; s.kapat("tamam"); bitir(true); }
+    });
+    if (gosterge) gosterge.baslat();
+    function bitir(tamam) {
+      dinle(); if (gosterge) gosterge.durdur(); aktifSahne = null;
+      if (!tamam) { sonuc.replaceChildren(h("p", { class: "kucuk soluk", style: "margin:0" }, "Durdurdun. Hazır olunca yeniden \"Çal\"a dokun.")); return; }
+      let not = null;
+      if (!akortBiliniyor()) { not = akortOgren(ortanca(hamlar), hedef); hamlar.forEach((m) => centler.push((m - kaydirma() - hedef) * 100)); }
+      if (kip === "sinav") tahminSor(centler, not); else goster(centler, null, not);
     }
   }
-  alistirB.addEventListener("click", () => alistirma(!korMu));
-  if (sinavB) sinavB.addEventListener("click", sinav);
-  if (korMu) sinav(); else alistirma(true);
+
+  function tahminSor(centler, not) {
+    sonuc.replaceChildren(h("div", { class: "kart yigin-s" },
+      h("h3", null, "Sence nasıldı?"),
+      h("p", { class: "kucuk soluk", style: "margin:0" }, "Önce sen söyle, sonra ben göstereyim. Tahminlerin kulak puanına yazılır."),
+      h("div", { class: "segment" }, ...[["pes", "Pes kaldı"], ["tam", "Tam yerinde"], ["tiz", "Tiz kaçtı"]].map(([k, ad]) => h("button", { onclick: () => goster(centler, k, not) }, ad)))));
+  }
+
+  function goster(centler, tahmin, not) {
+    const ort = centler.reduce((a, b) => a + b, 0) / Math.max(1, centler.length);
+    const sd = Math.sqrt(centler.reduce((a, b) => a + (b - ort) ** 2, 0) / Math.max(1, centler.length));
+    const oran = centler.filter((c) => bantIcinde(c, bant)).length / Math.max(1, centler.length);
+    const gercek = Math.abs(ort) <= bant / 2 ? "tam" : ort > 0 ? "tiz" : "pes";
+    if (tahmin) tahminKaydet(tahmin === gercek);
+    const puanli = kip === "sinav" || !korMu;
+    const gecti = puanli && oran >= 0.8;
+    if (gecti) gecenTekrar++;
+    sayac.textContent = `${gecenTekrar}/${tekrar}`;
+    const enIyi = sd < 10 ? `Ses çok sabitti (±${Math.round(sd)} cent).` : oran >= 0.8 ? `Sürenin %${Math.round(oran * 100)}'i bantta kaldı.` : "Sesi sonuna kadar götürdün.";
+    const duzeltme = gecti
+      ? (Math.abs(ort) > bant / 2 ? (ort > 0 ? "Ses hafif tiz; kamışı biraz daha az sık." : "Ses hafif pes; nefes desteğini biraz artır.") : sd > 15 ? "Nefesi karından eşit ver; ses daha da sabitlenir." : "Böyle devam.")
+      : (sd > 20 ? "Ses dalgalanıyor: nefesi eşit akıt, dudak basıncını değiştirme." : ort > 0 ? "Ses tiz kaldı: kamışı daha az sık, dudakları gevşet." : "Ses pes kaldı: nefes desteğini artır, kamışı çok az daha sık.");
+    const harita = h("div", { style: "display:flex;align-items:flex-end;gap:2px;height:36px", "aria-hidden": "true" });
+    const parca = Math.max(1, Math.floor(centler.length / 24));
+    for (let i = 0; i < centler.length; i += parca) {
+      const c = centler.slice(i, i + parca).reduce((a, b) => a + b, 0) / Math.min(parca, centler.length - i);
+      const a = Math.abs(c);
+      harita.append(h("i", { style: `flex:1;border-radius:2px;height:${Math.min(100, 20 + a * 1.6)}%;background:var(--${bantIcinde(c, bant) ? "iyi" : a <= bant * 2 ? "orta" : "kotu"})` }));
+    }
+    const kart = h("div", { class: "degerlendirme " + (gecti ? "iyi" : !puanli ? "" : oran >= 0.5 ? "orta" : "kotu") },
+      h("div", { class: "baslik" }, gecti ? ikon("onay") : null, !puanli ? "Alıştırma bitti" : gecti ? `Geçtin · ${gecenTekrar}/${tekrar}` : "Bir daha"),
+      tahmin ? h("p", { style: "margin:0" }, `Tahminin ${tahmin === gercek ? "doğru" : "yanlış"}: ses ${gercek === "tam" ? "tam yerindeydi" : gercek === "tiz" ? "tizdi" : "pesti"}.`) : null,
+      h("div", { class: "satir-bilgi" }, h("b", null, "En iyi"), h("span", null, enIyi)),
+      h("div", { class: "satir-bilgi" }, h("b", null, "Tek düzeltme"), h("span", null, duzeltme)),
+      h("div", { class: "olcum" },
+        h("div", null, h("b", null, `%${Math.round(oran * 100)}`), h("span", null, `bantta (±${bant})`)),
+        h("div", null, h("b", null, `±${Math.round(sd)} c`), h("span", null, "kararlılık")),
+        h("div", null, h("b", null, `${ort > 0 ? "+" : ""}${Math.round(ort)} c`), h("span", null, "ortalama"))),
+      harita);
+    if (not) kart.append(h("p", { class: "kucuk", style: "margin:0" }, not));
+    sonuc.replaceChildren(kart);
+    if (puanli && gecenTekrar >= tekrar) { sonuc.append(h("p", { class: "kucuk soluk", style: "margin:0" }, "Adımı geçtin. Kamışı dudaktan ayır, biraz dinlen.")); bildir(100, true); }
+    else { calB.firstChild.lastChild.textContent = puanli ? "Sonraki tekrar" : "Yeniden çal"; if (puanli) bildir(Math.round((gecenTekrar / tekrar) * 100), false); else bildir(0, false); }
+  }
   return kok;
 }
 

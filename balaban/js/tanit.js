@@ -4,6 +4,7 @@ import { midiAdi } from "./perde.js";
 import { h, mikrofonGerekli, calgiAdi, kaydirmaKatla } from "./ortak.js";
 import { ayar, ayarla } from "./depo.js";
 import { semaCiz } from "./parmak.js";
+import { ustCubuk } from "./arayuz.js";
 import { CALGILAR } from "./parmak-tablosu.js";
 
 // Bir sesi dinleyip kararlı perdenin medyanını döndürür (sure saniye kararlı ses bekler)
@@ -25,11 +26,10 @@ function sesOlc(sure, durumda) {
 export function tanitEkrani(kok) {
   const temizlik = [];
   const govde = h("div", { class: "yigin" });
-  kok.append(h("div", { class: "yigin" },
-    h("a", { href: "#araclar-ayarlar", class: "kucuk" }, "‹ Ayarlar"),
-    h("div", null, h("div", { class: "ust-yazi" }, "İki kısa ölçüm"), h("h1", null, "Çalgını tanıt")),
-    h("p", { class: "soluk" }, "Her balaban ve düdük farklı akortta yapılır. Senin çalgını dinleyip akordunu ve parmak düzenini bulayım; böylece akort göstergesi ve dersler senin çalgına göre çalışır. Kamışın hazır olsun (nemli ve hafif açık)."),
-    govde));
+  kok.append(ustCubuk({ geri: { href: "#ayarlar", ad: "Ayarlar" }, baslik: "Çalgını tanıt" }),
+    h("div", { class: "yigin" },
+      h("p", { class: "soluk", style: "margin:0" }, "Her balaban ve düdük farklı akortta yapılır. İki kısa sesle akordunu ve parmak düzenini bulayım; akort ve dersler senin çalgına göre çalışsın. Kamışın hazır olsun: nemli ve hafif açık."),
+      govde));
 
   let tumKapali = null;
   function adim1() {
@@ -75,7 +75,7 @@ export function tanitEkrani(kok) {
     const kutu = h("div", { class: "degerlendirme iyi" }, h("div", { class: "baslik" }, `Senin çalgın: ${calgiAdi()}`),
       h("p", { style: "margin:0" }, `${CALGILAR[tur].aciklama} Bütün delikler kapalıyken ${midiAdi(tumKapali).ad} sesi çıkıyor. Parmak tablosu ve dersler artık buna göre.`));
     if (Math.abs(sapma) > 20) kutu.append(h("p", { style: "margin:0" }, `Not: çalgın eşit akorttan ${sapma > 0 ? "+" : ""}${sapma} cent sapıyor. Kıskacı kamışın ucuna doğru 1 mm itmek sesi tizleştirir, dibe doğru çekmek pesleştirir. İstersen ayarlayıp yeniden ölç.`));
-    kutu.append(h("div", { class: "satir" }, h("a", { class: "dugme vurgu", href: "#bugun" }, "Tamam"), h("button", { class: "ikincil", onclick: adim1 }, "Yeniden ölç")));
+    kutu.append(h("div", { class: "satir" }, h("a", { class: "dugme birincil", href: "#bugun" }, "Tamam"), h("button", { class: "ikincil", onclick: adim1 }, "Yeniden ölç")));
     govde.append(kutu);
   }
   adim1();

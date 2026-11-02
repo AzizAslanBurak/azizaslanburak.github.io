@@ -52,12 +52,13 @@ export function mikrofonGerekli(kutu, hazir, { aciklama } = {}) {
     mik.baslat().then((ok) => (ok ? hazir() : mikrofonGerekli(kutu, hazir, { aciklama })));
     return;
   }
-  const k = h("div", { class: "izin-kutusu kart cerceve" },
+  const k = h("div", { class: "izin-kutusu" },
     h("svg", { viewBox: "0 0 24 24", width: "40", height: "40", fill: "none", stroke: "currentColor", "stroke-width": "1.8", "aria-hidden": "true", html: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>' }),
-    h("p", null, aciklama || "Seni dinleyebilmem için mikrofon iznine ihtiyacım var. Ses kaydedilmez, yalnızca bu cihazda anlık olarak işlenir."),
+    h("h3", null, "Mikrofon gerekiyor"),
+    h("p", { class: "soluk", style: "margin:0" }, aciklama || "Seni dinleyebilmem için mikrofon gerekiyor; sesin yerinde mi, zamanında mı ancak böyle söyleyebilirim. Ses kaydedilmez, yalnızca bu cihazda anlık işlenir."),
   );
-  const hata = h("p", { class: "kucuk", style: "color:var(--warn)", hidden: true });
-  const dugme = h("button", { class: "vurgu", onclick: async () => {
+  const hata = h("p", { class: "kucuk", style: "color:var(--kotu);margin:0", hidden: true });
+  const dugme = h("button", { class: "birincil genis", onclick: async () => {
     dugme.disabled = true; dugme.textContent = "Açılıyor…";
     const ok = await mik.baslat();
     if (ok) { k.remove(); hazir(); }
@@ -68,7 +69,7 @@ export function mikrofonGerekli(kutu, hazir, { aciklama } = {}) {
         ? "Bu tarayıcı mikrofonu desteklemiyor. Uygulamayı Safari ya da Chrome ile, https adresinden aç."
         : "Mikrofon izni verilmedi. Tarayıcının adres çubuğundaki izin simgesinden mikrofona izin verip tekrar dene.";
     }
-  } }, "Mikrofonu aç");
+  } }, "İzin ver");
   k.append(dugme, hata);
   kutu.appendChild(k);
 }
@@ -90,4 +91,11 @@ export function sapmaSinifi(cent, tolerans = 15) {
   if (a <= tolerans) return "iyi";
   if (a <= tolerans * 2) return "orta";
   return "kotu";
+}
+
+// Tema (sistem/açık/koyu) ve büyük yazı ayarını köke uygula
+export function gorunumUygula() {
+  const t = ayar("tema"); const r = document.documentElement;
+  if (t === "acik") r.setAttribute("data-theme", "light"); else if (t === "koyu") r.setAttribute("data-theme", "dark"); else r.removeAttribute("data-theme");
+  if (ayar("yaziBuyuk")) r.setAttribute("data-yazi", "buyuk"); else r.removeAttribute("data-yazi");
 }

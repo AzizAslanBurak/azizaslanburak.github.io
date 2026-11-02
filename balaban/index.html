@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Balaban Ustası</title>
 <meta name="description" content="Hocasız balaban (düdük) öğrenmek için mikrofonla dinleyen, adım adım ders veren uygulama.">
-<meta name="theme-color" content="#a8581f">
+<meta name="theme-color" content="#F1F0EB" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#121513" media="(prefers-color-scheme: dark)">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="ikon/ikon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="ikon/ikon-180.png">
@@ -16,15 +17,7 @@
 </head>
 <body>
 <main id="ekran" tabindex="-1"></main>
-<nav class="sekmeler" aria-label="Ana menü">
-  <ul>
-    <li><a href="#bugun" data-sekme="bugun"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Bugün</a></li>
-    <li><a href="#dersler" data-sekme="dersler"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5"/><path d="M9 7h6"/></svg>Dersler</a></li>
-    <li><a href="#akort" data-sekme="akort"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16a8 8 0 0 1 16 0"/><path d="M12 16l4-6"/><circle cx="12" cy="16" r="1.5"/></svg>Akort</a></li>
-    <li><a href="#ritim" data-sekme="ritim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3h6l3 18H6z"/><path d="M12 15l5-9"/></svg>Ritim</a></li>
-    <li><a href="#araclar" data-sekme="araclar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="20" rx="3"/><circle cx="12" cy="8" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="16" r="1"/></svg>Araçlar</a></li>
-  </ul>
-</nav>
+<nav class="sekmeler" aria-label="Ana menü"><ul></ul></nav>
 <script src="lib/abcjs-basic-min.js"></script>
 <script type="module" src="js/main.js"></script>
 </body>

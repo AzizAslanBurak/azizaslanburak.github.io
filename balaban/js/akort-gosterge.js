@@ -1,63 +1,40 @@
-// Canlı akort göstergesi: nota adı, cent ibresi, durum hapı, perde izi. Hem Akort ekranında hem derslerde kullanılır.
+// Canlı akort göstergesi (tasarım sistemi §2.8): nota adı, yatay cent şeridi + hedef bandı,
+// renk + şekil + kelime durum satırı, isteğe bağlı perde izi ve parmak şeması.
+// Yatay şerit: doğrusal konum <300 ms'de okunur, açısal ibre >1,7 sn (Blascheck vd.).
 import * as mik from "./mikrofon.js";
 import { midiAdi, midiHz, midiYazi } from "./perde.js";
 import { h, kaydirma, sapmaSinifi } from "./ortak.js";
 import { parmakKarti } from "./parmak.js";
-
-const NS = "http://www.w3.org/2000/svg";
-
-function ibreSvg() {
-  const svg = document.createElementNS(NS, "svg");
-  svg.setAttribute("viewBox", "0 0 300 150");
-  svg.setAttribute("aria-hidden", "true");
-  const yay = (a0, a1, renk, kalinlik) => {
-    const r = 120, cx = 150, cy = 140;
-    const p = (a) => [cx + r * Math.sin(a), cy - r * Math.cos(a)];
-    const [x0, y0] = p(a0), [x1, y1] = p(a1);
-    return `<path d="M${x0} ${y0} A${r} ${r} 0 0 1 ${x1} ${y1}" stroke="${renk}" stroke-width="${kalinlik}" fill="none" stroke-linecap="round"/>`;
-  };
-  const A = (c) => (c / 50) * (Math.PI / 2.6);
-  let ic = yay(A(-50), A(-25), "var(--warn-soft)", 14) + yay(A(-25), A(-10), "var(--mid-soft)", 14) + yay(A(-10), A(10), "var(--good-soft)", 14) + yay(A(10), A(25), "var(--mid-soft)", 14) + yay(A(25), A(50), "var(--warn-soft)", 14);
-  for (let c = -50; c <= 50; c += 10) {
-    const a = A(c), r1 = c === 0 ? 96 : 104, r2 = 112;
-    ic += `<line x1="${150 + r1 * Math.sin(a)}" y1="${140 - r1 * Math.cos(a)}" x2="${150 + r2 * Math.sin(a)}" y2="${140 - r2 * Math.cos(a)}" stroke="var(--ink-soft)" stroke-width="${c === 0 ? 2.5 : 1.2}"/>`;
-  }
-  ic += `<text x="22" y="146" font-size="12" fill="var(--ink-soft)" font-family="IBM Plex Mono, monospace">pes</text><text x="256" y="146" font-size="12" fill="var(--ink-soft)" font-family="IBM Plex Mono, monospace">tiz</text>`;
-  ic += `<g class="igne" style="transition: transform .08s linear; transform-origin: 150px 140px"><line x1="150" y1="140" x2="150" y2="38" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></g><circle cx="150" cy="140" r="7" fill="var(--ink)"/>`;
-  svg.innerHTML = ic;
-  svg.ibre = (cent) => {
-    const g = svg.querySelector(".igne");
-    if (cent == null) { g.style.opacity = ".25"; g.style.transform = "rotate(0rad)"; return; }
-    g.style.opacity = "1";
-    g.style.transform = `rotate(${A(Math.max(-50, Math.min(50, cent)))}rad)`;
-  };
-  svg.ibre(null);
-  return svg;
-}
+import { durumEl } from "./arayuz.js";
 
 export class AkortGostergesi {
-  // secenek: { hedef: yazılı MIDI (kesirli olabilir) | null, tolerans: cent, parmak: bool, iz: bool, olayda: fn(olay, hesap) }
+  // secenek: { hedef: yazılı MIDI | null, tolerans: cent, parmak: bool, iz: bool, sahne: bool, olayda: fn(olay, hesap) }
   constructor(secenek = {}) {
-    this.s = Object.assign({ hedef: null, tolerans: 15, parmak: true, iz: true }, secenek);
+    this.s = Object.assign({ hedef: null, tolerans: 15, parmak: true, iz: true, sahne: false }, secenek);
     this.kok = h("div", { class: "akort" });
-    this.notaEl = h("div", { class: "nota-buyuk", "aria-live": "polite" }, "–");
-    this.hzEl = h("div", { class: "hz" }, "Çal, dinliyorum");
-    this.hapEl = h("span", { class: "durum-hap bos" }, "Ses yok");
-    this.ibre = ibreSvg();
-    this.kok.append(this.notaEl, h("div", { class: "ibre" }, this.ibre), this.hapEl, this.hzEl);
+    this.notaEl = h("div", { class: this.s.sahne ? "sahne-nota" : "nota-buyuk", "aria-live": "off" }, "–");
+    this.bant = h("i", { class: "bant" });
+    this.imlec = h("i", { class: "imlec" });
+    const serit = h("div", { class: "serit", role: "img", "aria-label": "Perde şeridi: solda pes, sağda tiz" }, this.bant, h("i", { class: "sifir" }), this.imlec);
+    this.durum = durumEl();
+    this.hzEl = h("span", { class: "hz" }, "");
+    this.kok.append(this.notaEl,
+      h("div", { class: "serit-kap" }, h("span", { class: "uc" }, "pes"), serit, h("span", { class: "uc" }, "tiz")),
+      this.s.sahne ? h("div", { class: "durum-satir", style: "justify-content:center" }, this.durum) : h("div", { class: "durum-satir" }, this.durum, this.hzEl));
+    if (this.s.sahne) this.kok.append(h("div", { class: "alt-bilgi" }, this.hzEl));
+    this.bantAyarla();
     if (this.s.iz) {
-      this.tuval = h("canvas", { width: "600", height: "140" });
-      this.kok.append(h("div", { class: "iz", title: "Son 8 saniyenin perde izi" }, this.tuval));
+      this.tuval = h("canvas", { width: "600", height: "120" });
       this.izVeri = [];
+      this.kok.append(h("details", { class: "katlanir" }, h("summary", null, "Perde izi (son 8 sn)"), h("div", { class: "iz" }, this.tuval)));
     }
-    if (this.s.parmak) { this.parmakYer = h("div"); this.kok.append(this.parmakYer); this.sonParmak = null; }
+    if (this.s.parmak) { this.parmakYer = h("div", { style: "justify-self:center" }); this.kok.append(this.parmakYer); this.sonParmak = null; }
     this.sonCiz = 0;
   }
+  bantAyarla() { const g = Math.min(100, this.s.tolerans); this.bant.style.left = `${50 - g}%`; this.bant.style.width = `${2 * g}%`; }
   hedefAyarla(m) { this.s.hedef = m; this.sonParmak = null; }
-  baslat() {
-    this.bitir = mik.abone((o) => this.olay(o));
-    return this;
-  }
+  toleransAyarla(t) { this.s.tolerans = t; this.bantAyarla(); }
+  baslat() { this.bitir = mik.abone((o) => this.olay(o)); return this; }
   durdur() { if (this.bitir) this.bitir(); this.bitir = null; }
 
   olay(o) {
@@ -68,7 +45,7 @@ export class AkortGostergesi {
       const referans = this.s.hedef != null ? this.s.hedef : Math.round(yaziliMidi);
       let cent = (yaziliMidi - referans) * 100;
       const oktavFark = Math.round(cent / 1200);
-      if (this.s.hedef != null && Math.abs(cent) > 600) cent -= oktavFark * 1200; // oktav hatası ayrıca bildirilir
+      if (this.s.hedef != null && Math.abs(cent) > 600) cent -= oktavFark * 1200;
       hesap = { yaziliMidi, referans, cent, oktavFark: this.s.hedef != null ? oktavFark : 0, sinif: sapmaSinifi(cent, this.s.tolerans) };
     }
     if (this.s.olayda) this.s.olayda(o, hesap);
@@ -81,24 +58,27 @@ export class AkortGostergesi {
 
   ciz(o, hesap) {
     if (!hesap) {
-      this.ibre.ibre(null);
-      this.hapEl.className = "durum-hap bos"; this.hapEl.textContent = o.sesli ? "Ses net değil" : "Ses yok";
-      if (this.s.hedef != null) { const a = midiAdi(this.s.hedef); this.notaEl.innerHTML = `${a.ad}<sub>${a.oktav}</sub>`; this.notaEl.style.opacity = ".35"; }
-      else this.notaEl.style.opacity = ".35";
+      this.imlec.className = "imlec"; this.imlec.style.transform = "translateX(0)";
+      this.durum.ayarla("bos", o.sesli ? "Ses var, perdesi net değil" : "Dinliyorum");
+      this.notaEl.style.opacity = ".3";
+      if (this.s.hedef != null) { const a = midiAdi(this.s.hedef); this.notaEl.innerHTML = `${a.ad}<sub>${a.oktav}</sub>`; }
+      this.hzEl.textContent = "";
     } else {
-      const gosterilen = this.s.hedef != null ? this.s.hedef : hesap.referans;
-      const a = midiAdi(this.s.hedef != null ? Math.round(hesap.yaziliMidi) : gosterilen);
+      const a = midiAdi(this.s.hedef != null ? this.s.hedef : hesap.referans);
+      const calinan = midiAdi(Math.round(hesap.yaziliMidi));
       this.notaEl.innerHTML = `${a.ad}<sub>${a.oktav}</sub>`;
       this.notaEl.style.opacity = "1";
-      this.ibre.ibre(hesap.cent);
       const c = Math.round(hesap.cent);
-      let yazi;
-      if (hesap.oktavFark) yazi = hesap.oktavFark > 0 ? "Bir oktav tiz çıkıyor" : "Bir oktav pes çıkıyor";
-      else if (Math.abs(c) <= this.s.tolerans) yazi = "Tam yerinde";
-      else yazi = c > 0 ? `${c} cent tiz · gevşet` : `${-c} cent pes · biraz sık`;
-      if (this.s.hedef != null && !hesap.oktavFark && Math.abs(hesap.cent) > 60) yazi = `Hedef ${midiAdi(this.s.hedef).ad}, sen ${a.ad} çalıyorsun`;
-      this.hapEl.className = "durum-hap " + (hesap.oktavFark ? "kotu" : hesap.sinif);
-      this.hapEl.textContent = yazi;
+      const konum = Math.max(-50, Math.min(50, hesap.cent));
+      this.imlec.style.transform = `translateX(${(konum / 50) * (this.imlec.parentNode.clientWidth / 2)}px)`;
+      const yanlisNota = this.s.hedef != null && !hesap.oktavFark && Math.abs(hesap.cent) > 60;
+      let tur = hesap.oktavFark ? "kotu" : hesap.sinif, kelime, yon = c > 0 ? "tiz" : "pes";
+      if (hesap.oktavFark) kelime = hesap.oktavFark > 0 ? "Bir oktav tiz" : "Bir oktav pes";
+      else if (yanlisNota) { kelime = `Hedef ${a.ad}, sen ${calinan.ad} çalıyorsun`; yon = null; tur = "kotu"; }
+      else if (tur === "iyi") kelime = "Yerinde";
+      else kelime = c > 0 ? `${c} cent tiz · gevşet` : `${-c} cent pes · biraz sık`;
+      this.imlec.className = "imlec " + tur;
+      this.durum.ayarla(tur, kelime, yon);
       const k = kaydirma();
       this.hzEl.textContent = `${o.hz.toFixed(1)} Hz` + (k ? ` · duyulan ${midiYazi(o.midi)}` : "");
       if (this.parmakYer) {
@@ -106,7 +86,7 @@ export class AkortGostergesi {
         if (p !== this.sonParmak) { this.sonParmak = p; this.parmakYer.replaceChildren(parmakKarti(p, { buyuk: true })); }
       }
     }
-    if (this.tuval) this.izCiz();
+    if (this.tuval && this.tuval.closest("details") && this.tuval.closest("details").open) this.izCiz();
   }
 
   izCiz() {
@@ -115,11 +95,11 @@ export class AkortGostergesi {
     const W = t.width, H = t.height;
     c.clearRect(0, 0, W, H);
     const y = (cent) => H / 2 - (Math.max(-60, Math.min(60, cent)) / 60) * (H / 2 - 8);
-    c.fillStyle = cs.getPropertyValue("--good-soft"); c.fillRect(0, y(this.s.tolerans), W, y(-this.s.tolerans) - y(this.s.tolerans));
-    c.strokeStyle = cs.getPropertyValue("--line"); c.lineWidth = 1; c.beginPath(); c.moveTo(0, H / 2); c.lineTo(W, H / 2); c.stroke();
+    c.fillStyle = cs.getPropertyValue("--iyi-soluk"); c.fillRect(0, y(this.s.tolerans), W, y(-this.s.tolerans) - y(this.s.tolerans));
+    c.strokeStyle = cs.getPropertyValue("--cizgi"); c.lineWidth = 1; c.beginPath(); c.moveTo(0, H / 2); c.lineTo(W, H / 2); c.stroke();
     if (!this.izVeri.length) return;
     const son = this.izVeri[this.izVeri.length - 1].t;
-    c.strokeStyle = cs.getPropertyValue("--wood"); c.lineWidth = 2.5; c.lineJoin = "round"; c.beginPath();
+    c.strokeStyle = cs.getPropertyValue("--civit"); c.lineWidth = 2.5; c.lineJoin = "round"; c.beginPath();
     let acik = false;
     for (const n of this.izVeri) {
       const x = W - ((son - n.t) / 8) * W;

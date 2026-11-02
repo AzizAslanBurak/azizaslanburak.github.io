@@ -1,9 +1,11 @@
 // Uygulama girişi: yönlendirme, dudak molası, servis çalışanı.
 import * as mik from "./mikrofon.js";
-import { h, calismaSuresiTut, kaydirmaKatla } from "./ortak.js";
+import { h, calismaSuresiTut, kaydirmaKatla, gorunumUygula } from "./ortak.js";
 import { depo, kaydet } from "./depo.js";
 import { bugunEkrani, derslerEkrani, dersEkrani } from "./ders-ekranlari.js";
-import { akortEkrani, ritimEkrani, araclarEkrani } from "./ekranlar.js";
+import { akortEkrani, ritimEkrani, kitaplikEkrani, ayarlarEkrani } from "./ekranlar.js";
+import { tanitEkrani } from "./tanit.js";
+import { ikon } from "./arayuz.js";
 import { hepsiniDurdur } from "./nota.js";
 import { demDurdur, sesleriHazirla } from "./ses.js";
 import { baslangicGunu, ilkAy } from "./ilerleme.js";
@@ -11,13 +13,26 @@ import { baslangicGunu, ilkAy } from "./ilerleme.js";
 const ekran = document.getElementById("ekran");
 let temizle = null;
 
+// Sekmeler (tasarım sistemi §2.1): Bugün · Dersler · Akort · Ritim · Kitaplık
+const SEKMELER = [["bugun", "Bugün"], ["dersler", "Dersler"], ["akort", "Akort"], ["ritim", "Ritim"], ["kitaplik", "Kitaplık"]];
+const sekmeListe = document.querySelector("nav.sekmeler ul");
+SEKMELER.forEach(([id, ad]) => sekmeListe.append(h("li", null, h("a", { href: "#" + id, "data-sekme": id }, ikon(id), ad))));
+
+// Eski adresler (ders metinlerindeki bağlantılar dahil) yeni yerlerine
+const ESKI = { "araclar": "kitaplik", "araclar-parmak": "kitaplik-parmak", "araclar-kayit": "kitaplik-kayit", "araclar-ustalar": "kitaplik-ustalar", "araclar-ayarlar": "ayarlar", "araclar-tanit": "tanit" };
+
 function yonlendir() {
-  const iz = (location.hash || "#bugun").slice(1);
+  let iz = (location.hash || "#bugun").slice(1);
+  if (ESKI[iz]) { history.replaceState(null, "", "#" + ESKI[iz]); iz = ESKI[iz]; }
   const [ana, ...kalan] = iz.split("-");
   const alt = kalan.join("-");
   if (temizle) { try { temizle(); } catch (e) { console.error(e); } temizle = null; }
   hepsiniDurdur(); demDurdur();
   mik.durdur(); // mikrofon yalnızca ona ihtiyaç duyan ekranda açık kalır
+  document.querySelectorAll(".sahne, .perde-arka").forEach((n) => n.remove());
+  document.body.removeAttribute("data-sahne");
+  document.body.toggleAttribute("data-kip", ana === "ders");
+  if (ana === "ders") document.body.setAttribute("data-kip", "ders");
   ekran.replaceChildren();
   let sonuc;
   switch (ana) {
@@ -25,14 +40,18 @@ function yonlendir() {
     case "ders": sonuc = dersEkrani(ekran, alt); break;
     case "akort": sonuc = akortEkrani(ekran); break;
     case "ritim": sonuc = ritimEkrani(ekran); break;
-    case "araclar": sonuc = araclarEkrani(ekran, alt); break;
+    case "kitaplik": sonuc = kitaplikEkrani(ekran, alt); break;
+    case "ayarlar": sonuc = ayarlarEkrani(ekran); break;
+    case "tanit": sonuc = tanitEkrani(ekran); break;
     default: sonuc = bugunEkrani(ekran);
   }
   temizle = typeof sonuc === "function" ? sonuc : null;
-  const sekme = ana === "ders" ? "dersler" : ["dersler", "akort", "ritim", "araclar"].includes(ana) ? ana : "bugun";
+  const sekme = ana === "ders" ? "dersler" : ana === "ayarlar" || ana === "tanit" ? "" : SEKMELER.some(([id]) => id === ana) ? ana : "bugun";
   document.querySelectorAll("nav.sekmeler a").forEach((a) => (a.dataset.sekme === sekme ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current")));
   window.scrollTo({ top: 0 });
 }
+
+gorunumUygula(); // tema ve yazı boyutu (Ayarlar)
 
 // ---- Dudak molası (ilk ay: her 3 dk ses sonrası 45 sn) ----
 let sesliSure = 0, sonZ = null, molada = false;
@@ -43,11 +62,11 @@ function molaGoster() {
   let kalan = 45;
   const sayac = h("div", { class: "bpm-buyuk" }, "0:45");
   KATMAN.replaceChildren(h("div", { class: "kart yigin", style: "max-width:28rem" },
-    h("div", { class: "ust-yazi" }, "Dudak molası"),
+    h("div", { class: "etiket-yazi" }, "Dudak molası"),
     h("h2", null, "Kamışı dudaktan ayır"),
     h("p", null, "3 dakikadır çalıyorsun. İlk haftalarda dudak kasları çabuk yorulur; yorgun dudakla çalmak sesi bozar ve yanlış alışkanlık bırakır. Bu sürede çalıştığın ezgiyi içinden söyle ya da parmaklarını sessizce gezdir."),
     sayac,
-    h("button", { class: "ikincil", onclick: kapat }, "Molayı geç")));
+    h("button", { class: "ikincil genis", onclick: kapat }, "Molayı geç")));
   KATMAN.hidden = false;
   const z = setInterval(() => { kalan--; sayac.textContent = `0:${String(Math.max(0, kalan)).padStart(2, "0")}`; if (kalan <= 0) kapat(); }, 1000);
   function kapat() { clearInterval(z); KATMAN.hidden = true; molada = false; sesliSure = 0; }
@@ -60,9 +79,6 @@ mik.abone((o) => {
 });
 calismaSuresiTut();
 
-const stil = document.createElement("style");
-stil.textContent = `.mola{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:24px max(16px,env(safe-area-inset-left,0px));background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(4px)}`;
-document.head.append(stil);
 
 // Arka plana geçince mikrofonu ve sesleri kapat; dönünce açık olan mikrofonu yeniden aç
 let arkaPlandaKapandi = false;
