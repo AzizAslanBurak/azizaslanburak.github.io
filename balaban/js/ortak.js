@@ -19,7 +19,15 @@ export function h(tag, ozellik, ...cocuklar) {
 }
 
 // Yazılı → duyulan kayma (yarım ses). "Çalgını tanıt" adımında ölçülür; ölçülmemişse çalgı türünün varsayılanı.
-export const kaydirma = () => { const k = ayar("kaydirma"); return typeof k === "number" ? k : CALGILAR[calgiTuru()].varsayilanKaydirma; };
+export const kaydirma = () => { const k = ayar("kaydirma"); return typeof k === "number" ? kaydirmaKatla(k) : CALGILAR[calgiTuru()].varsayilanKaydirma; };
+// Balaban ve düdüklerde bütün delikler kapalı ses gerçekte ≈ Mi3–Mi4 (MIDI 52–64) aralığındadır; yazılı La4 = 69.
+// Perde algılamanın oktav hatası (yarım ya da iki kat frekans) akordu bir oktav kaydırmasın diye katlanır.
+export function kaydirmaKatla(k) {
+  k = Math.round(k);
+  while (k < -19) k += 12;
+  while (k > -5) k -= 12;
+  return k;
+}
 export const calgiTuru = () => (ayar("calgi") in CALGILAR ? ayar("calgi") : "balaban");
 // Geleneksel ad: düdükte yazılı Do'nun duyulan sesi (A duduk), balabanda yazılı La'nın duyulan sesi (THM: "Re balaban")
 export function akortAdi() {

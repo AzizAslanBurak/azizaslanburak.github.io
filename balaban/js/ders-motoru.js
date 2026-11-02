@@ -3,7 +3,7 @@
 import * as mik from "./mikrofon.js";
 import { ac, notaCal, demBaslat, demDurdur, saymaYukle } from "./ses.js";
 import { notaMidi, midiAdi } from "./perde.js";
-import { h, mikrofonGerekli, kaydirma, notaYazisi, calgiAdi } from "./ortak.js";
+import { h, mikrofonGerekli, kaydirma, kaydirmaKatla, notaYazisi, calgiAdi } from "./ortak.js";
 import { ayar, ayarla } from "./depo.js";
 import { AkortGostergesi } from "./akort-gosterge.js";
 import { parmakKarti } from "./parmak.js";
@@ -341,7 +341,8 @@ function uzunSes(adim, bildir, temizlik) {
 function akortBiliniyor() { return !!ayar("tanitildi") || !!ayar("kaydirmaTahmini"); }
 function ortanca(d) { const s = d.slice().sort((a, b) => a - b); return s[s.length >> 1]; }
 function akortOgren(duyulanMidi, hedefYazili) {
-  const k = Math.round(duyulanMidi) - Math.round(hedefYazili);
+  const k = kaydirmaKatla(Math.round(duyulanMidi) - Math.round(hedefYazili));
+  duyulanMidi = Math.round(hedefYazili) + k + (duyulanMidi - Math.round(duyulanMidi)); // oktav hatası düzeltilmiş hâli
   ayarla("kaydirma", k); ayarla("kaydirmaTahmini", true);
   const sapma = Math.round((duyulanMidi - Math.round(duyulanMidi)) * 100);
   return `Sesin geldi! ${notaYazisi(hedefYazili)} parmağıyla çaldığın ses ${midiAdi(duyulanMidi).ad}${midiAdi(duyulanMidi).oktav} olarak duyuldu; çalgını buna göre ayarladım (${calgiAdi()}).` +

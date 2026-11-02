@@ -1,6 +1,7 @@
 // Uygulama girişi: yönlendirme, dudak molası, servis çalışanı.
 import * as mik from "./mikrofon.js";
-import { h, calismaSuresiTut } from "./ortak.js";
+import { h, calismaSuresiTut, kaydirmaKatla } from "./ortak.js";
+import { depo, kaydet } from "./depo.js";
 import { bugunEkrani, derslerEkrani, dersEkrani } from "./ders-ekranlari.js";
 import { akortEkrani, ritimEkrani, araclarEkrani } from "./ekranlar.js";
 import { hepsiniDurdur } from "./nota.js";
@@ -70,6 +71,8 @@ document.addEventListener("visibilitychange", () => {
   else if (arkaPlandaKapandi) { arkaPlandaKapandi = false; mik.baslat(); }
 });
 
+// Eski sürümde oktav hatasıyla kaydedilmiş akordu düzelt
+{ const k = depo().ayarlar.kaydirma; if (typeof k === "number" && kaydirmaKatla(k) !== k) { depo().ayarlar.kaydirma = kaydirmaKatla(k); kaydet(); console.log("[ses] akort oktav düzeltmesi:", k, "→", depo().ayarlar.kaydirma); } }
 sesleriHazirla(); // düdük kayıtları ve fiziksel model açılışta yüklensin; ilk "Dinle" basit sentezle çalmasın
 baslangicGunu();
 window.addEventListener("hashchange", yonlendir);

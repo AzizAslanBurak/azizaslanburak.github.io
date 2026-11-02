@@ -205,7 +205,7 @@ function ayarlarEkrani(kok) {
   const turS = h("select", { id: "ayar-calgi" }, Object.entries(CALGILAR).map(([k, v]) => h("option", { value: k }, v.ad)));
   turS.value = calgiTuru();
   turS.addEventListener("change", () => { ayarla("calgi", turS.value); ayarla("kaydirma", null); location.reload(); });
-  const kaymaS = h("select", { id: "ayar-kayma" }, Array.from({ length: 15 }, (_, i) => i - 21).map((k) => h("option", { value: String(k) }, `Bütün delikler kapalı: ${notaYazisi(69 + k, { oktav: true })} (duyulan)`)));
+  const kaymaS = h("select", { id: "ayar-kayma" }, Array.from({ length: 15 }, (_, i) => i - 19).map((k) => h("option", { value: String(k) }, `Bütün delikler kapalı: ${notaYazisi(69 + k, { oktav: true })} (duyulan)`)));
   kaymaS.value = String(kaydirma());
   kaymaS.addEventListener("change", () => { ayarla("kaydirma", +kaymaS.value); });
   const gecikmeEl = h("b", null, `${Math.round(mik.durum.gecikme * 1000)} ms`);

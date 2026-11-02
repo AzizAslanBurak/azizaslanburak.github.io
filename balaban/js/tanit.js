@@ -1,7 +1,7 @@
 // "Çalgını tanıt": bütün delikler kapalı sesi ölçüp akordu, en alt deliğin aralığına bakıp çalgı türünü bulur.
 import * as mik from "./mikrofon.js";
 import { midiAdi } from "./perde.js";
-import { h, mikrofonGerekli, calgiAdi } from "./ortak.js";
+import { h, mikrofonGerekli, calgiAdi, kaydirmaKatla } from "./ortak.js";
 import { ayar, ayarla } from "./depo.js";
 import { semaCiz } from "./parmak.js";
 import { CALGILAR } from "./parmak-tablosu.js";
@@ -52,7 +52,8 @@ export function tanitEkrani(kok) {
     govde.append(h("div", { class: "satir", style: "align-items:flex-start;gap:18px" }, h("div", { class: "parmak buyuk" }, semaCiz("●|●●●●●●●○")),
       h("div", { class: "ara yigin" }, h("h3", null, "2. En alt delik açık"), yazi, cubuk)));
     sesOlc(2, (o) => (cubuk.firstChild.style.width = o * 100 + "%")).then((m) => {
-      const aralik = (m - tumKapali) * 100;
+      let aralik = (m - tumKapali) * 100;
+      aralik = ((aralik % 1200) + 1800) % 1200 - 600; // ölçümlerden biri oktav şaşırdıysa aralığı katla
       yazi.textContent = `Aralık: ${Math.round(aralik)} cent.`;
       sonuc(aralik);
     });
@@ -61,7 +62,8 @@ export function tanitEkrani(kok) {
     let tur = null;
     if (aralik > 50 && aralik < 150) tur = "balaban";
     else if (aralik >= 150 && aralik < 260) tur = "duduk";
-    const kayma = Math.round(tumKapali) - 69; // yazılı La4 → duyulan
+    const kayma = kaydirmaKatla(Math.round(tumKapali) - 69); // yazılı La4 → duyulan; oktav hatasına karşı katlanır
+    tumKapali = 69 + kayma + (tumKapali - Math.round(tumKapali));
     const sapma = Math.round((tumKapali - Math.round(tumKapali)) * 100);
     if (!tur) {
       govde.append(h("div", { class: "degerlendirme orta" }, h("div", { class: "baslik" }, "Emin olamadım"),

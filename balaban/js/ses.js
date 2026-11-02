@@ -21,7 +21,7 @@ export function sesleriHazirla() { try { ac(); } catch (e) {} }
 let modelHazir = false, modelYukleniyor = null, modelBitti = false;
 function modelYukle(c) {
   if (!c.audioWorklet || modelYukleniyor) return;
-  modelYukleniyor = c.audioWorklet.addModule(new URL("./kamis-model.js", import.meta.url)).then(() => { modelHazir = true; }).catch(() => {}).finally(() => { modelBitti = true; });
+  modelYukleniyor = c.audioWorklet.addModule(new URL("./kamis-model.js", import.meta.url)).then(() => { modelHazir = true; console.log("[ses] model hazır"); }).catch((e) => console.warn("[ses] model yüklenemedi:", e && e.message)).finally(() => { modelBitti = true; });
 }
 export const modelYuklendi = () => (ac(), modelYukleniyor || Promise.resolve());
 export function sesMotoru() { try { return localStorage.getItem("bu:sesMotoru") || "kayit"; } catch (e) { return "kayit"; } }
@@ -31,7 +31,8 @@ export const modelKullan = (motor) => modelHazir && ["model", "kayit"].includes(
 
 // ---- Gerçek düdük kayıtları (ses/duduk): nota örnekleri, en yakın kayıttan perde düzeltmesiyle ----
 // Kaynak: arakedikian (Freesound) "escala1", "escala3" — CC BY 3.0. Atıf: Ayarlar › Kaynaklar.
-let ornekler = null, ornekYukleniyor = null, ornekBitti = false;
+let ornekler = null, ornekYukleniyor = null, ornekBitti = false, ornekHata = null;
+export const sesDurumu = () => ({ kayit: ornekler ? ornekler.length : 0, kayitBitti: ornekBitti, kayitHata: ornekHata, model: modelHazir, modelBitti, baglam: AC ? AC.state : "yok" });
 function ornekleriYukle(c) {
   if (ornekYukleniyor) return;
   ornekYukleniyor = (async () => {
@@ -40,7 +41,8 @@ function ornekleriYukle(c) {
       const m = await (await fetch(new URL("ornekler.json", yol))).json();
       const liste = await Promise.all(m.ornekler.map(async (o) => ({ ...o, tampon: await c.decodeAudioData(await (await fetch(new URL(o.dosya, yol))).arrayBuffer()) })));
       ornekler = liste.sort((a, b) => a.midi - b.midi);
-    } catch (e) { ornekler = null; }
+      console.log("[ses] düdük kayıtları yüklendi:", ornekler.length);
+    } catch (e) { ornekler = null; ornekHata = String(e && e.message || e); console.warn("[ses] kayıtlar yüklenemedi:", ornekHata); }
     ornekBitti = true;
   })();
 }
@@ -114,7 +116,9 @@ function ertele(olaylar, calistir) {
 // Seçili motora göre bir nefeslik ses: kayıt → model → basit
 export function nefesSesi(olaylar, secenek = {}) {
   if (!hazirMi(secenek.motor)) return ertele(olaylar, (o) => nefesSesi(o, secenek));
-  if (kayitKullan(secenek.motor, olaylar.map((o) => o.midi))) return ornekSesi(olaylar, secenek);
+  const midiler = olaylar.map((o) => o.midi);
+  if (kayitKullan(secenek.motor, midiler)) return ornekSesi(olaylar, secenek);
+  if ((secenek.motor || sesMotoru()) === "kayit") console.warn("[ses] kayıt aralığı dışında, model çalıyor", JSON.stringify({ motor: secenek.motor || sesMotoru(), ornek: ornekler && ornekler.length, min: Math.min(...midiler), max: Math.max(...midiler) }));
   if (modelKullan(secenek.motor)) return modelSesi(olaylar, secenek);
   const sesler = olaylar.map((o) => kamisSesi(o.midi, o.bas, isFinite(o.bit) && !secenek.sonsuz ? o.bit - o.bas : Infinity, { ...secenek, motor: "basit" }));
   return { dur: () => sesler.forEach((x) => x.dur()), perde: (m) => sesler.forEach((x) => x.perde(m)) };
@@ -145,6 +149,7 @@ export function kamisSesi(midi, t0, sure, { guc = 0.2, titresim = true, hedef = 
   const tek = [{ midi, bas: t0, bit: isFinite(sure) ? t0 + sure : 1e9 }];
   if (!hazirMi(motor)) return ertele(tek, (o) => kamisSesi(midi, o[0].bas, sure, { guc, titresim, hedef, motor }));
   if (kayitKullan(motor, [midi])) return ornekSesi(tek, { guc, titresim, sonsuz: !isFinite(sure), hedef });
+  if ((motor || sesMotoru()) === "kayit") console.warn("[ses] kayıt aralığı dışında, model çalıyor", JSON.stringify({ motor: motor || sesMotoru(), ornek: ornekler && ornekler.length, midi }));
   if (modelKullan(motor)) return modelSesi(tek, { guc, titresim, sonsuz: !isFinite(sure), hedef });
   const frek = midiHz(midi);
   const o1 = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain();

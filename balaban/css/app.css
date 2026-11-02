@@ -120,7 +120,7 @@ a.kart:hover { background: var(--paper-3); }
 .adim { display: grid; gap: 14px; padding-top: 6px; }
 .adim .metin p:last-child { margin-bottom: 0; }
 .adim .metin ul, .adim .metin ol { padding-left: 1.3rem; margin: 0 0 .8rem; }
-.ders-alt { display: flex; gap: 10px; position: sticky; bottom: calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 10px); padding-top: 10px; }
+.ders-alt { display: flex; gap: 10px; position: sticky; bottom: calc(var(--tab-h) + env(safe-area-inset-bottom, 0px)); padding-block: 10px; margin-top: 14px; background: var(--paper); box-shadow: 0 -10px 12px -8px var(--paper); z-index: 5; }
 .ders-alt button { flex: 1; }
 aside.not { border-radius: 12px; padding: 12px 14px; background: var(--reed-soft); }
 aside.not.dikkat { background: var(--warn-soft); }
