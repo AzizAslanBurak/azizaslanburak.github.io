@@ -1,5 +1,5 @@
 // Otomatik üretildi: araclar/sw-olustur.py — elle düzenleme.
-const SURUM = "balaban-8657f95216";
+const SURUM = "balaban-e7a8aff52b";
 const DOSYALAR = [
 "./",
 "index.html",

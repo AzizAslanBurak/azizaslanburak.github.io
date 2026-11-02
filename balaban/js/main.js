@@ -4,7 +4,7 @@ import { h, calismaSuresiTut } from "./ortak.js";
 import { bugunEkrani, derslerEkrani, dersEkrani } from "./ders-ekranlari.js";
 import { akortEkrani, ritimEkrani, araclarEkrani } from "./ekranlar.js";
 import { hepsiniDurdur } from "./nota.js";
-import { demDurdur } from "./ses.js";
+import { demDurdur, sesleriHazirla } from "./ses.js";
 import { baslangicGunu, ilkAy } from "./ilerleme.js";
 
 const ekran = document.getElementById("ekran");
@@ -70,6 +70,7 @@ document.addEventListener("visibilitychange", () => {
   else if (arkaPlandaKapandi) { arkaPlandaKapandi = false; mik.baslat(); }
 });
 
+sesleriHazirla(); // düdük kayıtları ve fiziksel model açılışta yüklensin; ilk "Dinle" basit sentezle çalmasın
 baslangicGunu();
 window.addEventListener("hashchange", yonlendir);
 yonlendir();
