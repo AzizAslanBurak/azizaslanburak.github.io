@@ -1,6 +1,6 @@
 // Ekranlar: Akort, Ritim, Araçlar. (Bugün ve Dersler ders-ekranlari.js içinde.)
 import * as mik from "./mikrofon.js";
-import { ac, metronom, saymaYukle, demBaslat, demDurdur, demAcik, notaCal, diziCal, sesMotoru, sesMotoruAyarla, modelYuklendi } from "./ses.js";
+import { ac, metronom, saymaYukle, demBaslat, demDurdur, demAcik, notaCal, diziCal, sesMotoru, sesMotoruAyarla, ornekYuklendi } from "./ses.js";
 import { notaMidi } from "./perde.js";
 import { h, mikrofonGerekli, calismaSuresiTut, kaydirma, notaYazisi, calgiAdi, calgiTuru } from "./ortak.js";
 import { tanitEkrani } from "./tanit.js";
@@ -173,10 +173,12 @@ export function araclarEkrani(kok, alt) {
   if (alt === "kayit") return kayitEkrani(kok);
   if (alt === "ayarlar") return ayarlarEkrani(kok);
   if (alt === "tanit") return tanitEkrani(kok);
+  if (alt === "ustalar") return ustalarEkrani(kok);
   kok.append(h("div", { class: "yigin" },
     h("div", null, h("div", { class: "ust-yazi" }, "Yardımcılar"), h("h1", null, "Araçlar")),
     h("a", { class: "kart", href: "#araclar-parmak" }, h("h3", null, "Parmak tablosu"), h("p", { class: "soluk", style: "margin:0" }, "Her notanın hangi deliklerle çalındığı. Dokun, sesini dinle.")),
     h("a", { class: "kart", href: "#araclar-kayit" }, h("h3", null, "Kendini kaydet"), h("p", { class: "soluk", style: "margin:0" }, "Çal, kaydet, dinle. Hocanın yokluğunda en güçlü geri bildirim kendi kulağın.")),
+    h("a", { class: "kart", href: "#araclar-ustalar" }, h("h3", null, "Ustaları dinle"), h("p", { class: "soluk", style: "margin:0" }, "Gerçek düdük çalışları: ton, nefes, süsleme. Öğrenmenin yarısı dinlemektir.")),
     h("a", { class: "kart", href: "#akort" }, h("h3", null, "Dem ve akort"), h("p", { class: "soluk", style: "margin:0" }, "Sürekli eşlik sesiyle uzun ses ve perde çalışması.")),
     h("a", { class: "kart", href: "#araclar-ayarlar" }, h("h3", null, "Ayarlar"), h("p", { class: "soluk", style: "margin:0" }, `Çalgın (${calgiAdi()}), mikrofon gecikmesi, sıfırlama.`)),
   ));
@@ -235,6 +237,7 @@ function ayarlarEkrani(kok) {
       h("p", { class: "soluk kucuk" }, "Ritim testlerinin adil olması için cihazının ses gecikmesini ölçerim. Kulaklık ya da hoparlör değiştirirsen yeniden ölç."),
       h("div", { class: "satir" }, h("span", null, "Şu anki: "), gecikmeEl, olcB), olcDurum, alan),
     sesKarti(),
+    kaynaklarKarti(),
     h("div", { class: "kart yigin" }, h("h3", null, "Deneme modu"),
       h("p", { class: "soluk kucuk" }, "Uygulamayı hızlıca gezmek için: bütün dersler açılır, \"Şimdilik atla\" ile sonraki derse geçebilirsin. Gerçek çalışmada kapalı tut; ilerleme kuralları (ertesi gün açılma, 3 gün ustalık) öğrenmeyi kalıcı yapar."),
       (() => { const b = h("button", { class: "ikincil", "aria-pressed": ayar("denemeModu") ? "true" : "false" }, ayar("denemeModu") ? "Açık — kapat" : "Kapalı — aç");
@@ -244,7 +247,7 @@ function ayarlarEkrani(kok) {
   ));
 }
 
-// Örnek ses: fiziksel model ile eski basit sentezi aynı ezgiyle karşılaştır
+// Örnek ses: gerçek düdük kaydı, fiziksel model ve basit sentezi aynı ezgiyle karşılaştır
 function sesKarti() {
   const k = kaydirma();
   // Fa–Sol–La–Sol–Fa–Mi–Fa, son nota uzun (yazılı; çalgının akordunda duyulur)
@@ -252,13 +255,51 @@ function sesKarti() {
   function cal(motor) {
     let t = 0;
     const notalar = ezgi.map(([n, d]) => { const x = { midi: notaMidi(n) + k, bas: t, sure: d - 0.012 }; t += d; return x; });
-    modelYuklendi().then(() => diziCal(notalar, { motor }));
+    ornekYuklendi().then(() => diziCal(notalar, { motor }));
   }
-  const secim = h("select", { id: "ayar-ses" }, h("option", { value: "model" }, "Fiziksel model (önerilen)"), h("option", { value: "basit" }, "Basit sentez (eski)"));
+  const secim = h("select", { id: "ayar-ses" }, h("option", { value: "kayit" }, "Gerçek düdük kaydı (önerilen)"), h("option", { value: "model" }, "Fiziksel model"), h("option", { value: "basit" }, "Basit sentez"));
   secim.value = sesMotoru();
   secim.addEventListener("change", () => sesMotoruAyarla(secim.value));
   return h("div", { class: "kart yigin" }, h("h3", null, "Örnek ses"),
-    h("p", { class: "soluk kucuk" }, "Derslerdeki örnek sesler ve dem bilgisayarda üretilir. Fiziksel model, kamışın titreşimini ve gövdedeki ses dalgasını hesaplayarak nefesli bir ses verir; ezgilerde notalar tek nefeste bağlanır. Gerçek bir ustanın kaydı değildir."),
-    h("div", { class: "satir" }, h("button", { class: "vurgu", onclick: () => cal("model") }, "▶︎ Yeni ses"), h("button", { class: "ikincil", onclick: () => cal("basit") }, "▶︎ Eski ses")),
+    h("p", { class: "soluk kucuk" }, "Derslerdeki örnekler ve dem için üç ses var. Gerçek kayıt: bir düdükçünün nota nota kaydedilmiş sesi; her nota kayda en yakın sesten senin çalgının perdesine ayarlanır. Fiziksel model: kamışın ve gövdenin bilgisayarda hesaplanan sesi. Basit sentez: ilk sürümdeki ses."),
+    h("div", { class: "satir" },
+      h("button", { class: "vurgu", onclick: () => cal("kayit") }, "▶\ufe0e Gerçek kayıt"),
+      h("button", { class: "ikincil", onclick: () => cal("model") }, "▶\ufe0e Model"),
+      h("button", { class: "ikincil", onclick: () => cal("basit") }, "▶\ufe0e Basit")),
     h("label", null, h("div", { class: "kucuk soluk" }, "Uygulamada kullanılacak"), secim));
+}
+
+// Kaynaklar ve lisanslar (CC BY atıfları zorunlu)
+export function kaynaklarKarti() {
+  return h("div", { class: "kart yigin" }, h("h3", null, "Kaynaklar ve lisanslar"),
+    h("p", { class: "soluk kucuk", html:
+      "<b>Düdük sesleri:</b> arakedikian, “escala1” ve “escala3” (Freesound), <a href=\"https://creativecommons.org/licenses/by/3.0/\" target=\"_blank\" rel=\"noopener\">CC BY 3.0</a>. Notalar kesildi, seviyesi eşitlendi, döngü eklendi; çalarken perdesi ayarlanır.<br>" +
+      "<b>Ustaları dinle kayıtları:</b> arakedikian “verunka” (CC BY 3.0); juskiddink “Duduk” ve “Duduk 3” (CC BY 4.0), Freesound. Biçim ve ses düzeyi değiştirildi.<br>" +
+      "<b>Yazı tipleri:</b> Alegreya, Alegreya Sans, IBM Plex Mono — SIL Open Font License.<br>" +
+      "<b>Nota çizimi:</b> abcjs (MIT lisansı).<br>" +
+      "<b>Sayma sesi:</b> macOS Türkçe ses sentezi.<br>" +
+      "<b>Parmak tablosu ve ilk ses sırası:</b> Eren, Z. (2020). Balaban Çalgısı İçin Bir Etüt Önerisi. <i>idil</i>, 9(67), 450–470." }));
+}
+
+// Gerçek düdük kayıtları (açık lisanslı). Atıf her kaydın altında.
+const USTA_KAYITLARI = [
+  { dosya: "verunka.m4a", baslik: "Verunka — Ermeni ezgisi", aciklama: "Kısa bir halk ezgisi. Notaların nefesle nasıl bağlandığına ve uzun seslerin sonundaki yumuşak bitişe kulak ver.",
+    atif: "arakedikian, “verunka” (Freesound)", lisans: "CC BY 3.0", lisansUrl: "https://creativecommons.org/licenses/by/3.0/", url: "https://freesound.org/people/arakedikian/sounds/380476/" },
+  { dosya: "juskiddink-c-duduk.m4a", baslik: "Do düdük ile çalış", aciklama: "İki dakikalık serbest çalış. Uzun seslerdeki sabitliği ve sesin içindeki hafif titreşimi (vibrato) dinle.",
+    atif: "juskiddink, “Duduk” (Freesound)", lisans: "CC BY 4.0", lisansUrl: "https://creativecommons.org/licenses/by/4.0/", url: "https://freesound.org/people/juskiddink/sounds/180004/" },
+  { dosya: "juskiddink-bb-duduk.m4a", baslik: "Si♭ düdük ile kısa çalış", aciklama: "Kırk saniyelik bir parça. Aynı çalgının farklı akordunda ton nasıl değişiyor?",
+    atif: "juskiddink, “Duduk 3” (Freesound)", lisans: "CC BY 4.0", lisansUrl: "https://creativecommons.org/licenses/by/4.0/", url: "https://freesound.org/people/juskiddink/sounds/184267/" },
+];
+function ustalarEkrani(kok) {
+  kok.append(h("div", { class: "yigin" },
+    h("a", { href: "#araclar", class: "kucuk" }, "‹ Araçlar"),
+    h("h1", null, "Ustaları dinle"),
+    h("p", { class: "soluk" }, "Bu kayıtlar açık lisanslı gerçek düdük çalışlarıdır. Balabanla aynı ailedendir; ton, nefes ve süsleme için örnek alabilirsin. Dinlerken bir şeye odaklan: bugün sadece nefes yerlerini, yarın sadece notaların bitişini dinle."),
+    ...USTA_KAYITLARI.map((k) => h("div", { class: "kart yigin" },
+      h("h3", null, k.baslik),
+      h("p", { class: "soluk kucuk", style: "margin:0" }, k.aciklama),
+      h("audio", { controls: true, preload: "none", src: "ses/ustalar/" + k.dosya, style: "width:100%" }),
+      h("p", { class: "kucuk soluk", style: "margin:0", html: `Kayıt: <a href="${k.url}" target="_blank" rel="noopener">${k.atif}</a> · <a href="${k.lisansUrl}" target="_blank" rel="noopener">${k.lisans}</a>. Ses düzeyi ve biçimi değiştirildi.` }))),
+    h("p", { class: "kucuk soluk" }, "Daha fazlası için: Djivan Gasparyan, Gevorg Dabağyan (düdük), Alihan Samedov ve Şirzad Fətəliyev (balaban) kayıtlarını müzik uygulamalarında ara."),
+  ));
 }

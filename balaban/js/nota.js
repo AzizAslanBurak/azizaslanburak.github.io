@@ -1,6 +1,6 @@
 // Nota kâğıdı: abcjs ile çizim, örnek çalma, "takip" (sen doğru notayı çalınca ilerler) ve "birlikte çal" (tempoda puanlama).
 import * as mik from "./mikrofon.js";
-import { ac, kamisSesi, modelSesi, modelKullan, onSayim, demBaslat, demDurdur } from "./ses.js";
+import { ac, kamisSesi, nefesSesi, onSayim, demBaslat, demDurdur } from "./ses.js";
 import { notaMidi } from "./perde.js";
 import { h, kaydirma, notaYazisi } from "./ortak.js";
 import { perdeBandi, bantIcinde } from "./ilerleme.js";
@@ -48,9 +48,7 @@ export function notaKagidi(abc, secenek = {}) {
     const c = ac(); const t0 = c.currentTime + 0.15; const k = kaydirma();
     const ols = olaylar(bpm);
     // model: ezgi tek nefeste, notalar parmakla bağlanır; basit sentez: her nota ayrı
-    const sesler = modelKullan()
-      ? [modelSesi(ols.map((o) => ({ midi: o.pitch + k, bas: t0 + o.ms / 1000, bit: t0 + (o.ms + o.sureMs) / 1000 - 0.012 })))]
-      : ols.map((o) => kamisSesi(o.pitch + k, t0 + o.ms / 1000, Math.max(0.08, o.sureMs / 1000 - 0.02)));
+    const sesler = [nefesSesi(ols.map((o) => ({ midi: o.pitch + k, bas: t0 + o.ms / 1000, bit: t0 + (o.ms + o.sureMs) / 1000 - 0.012 })))];
     const zamanlar = ols.map((o) => setTimeout(() => { temizle(); isaretle(o, "calan"); }, 150 + o.ms));
     const son = ols.length ? ols[ols.length - 1].ms + ols[ols.length - 1].sureMs : 0;
     zamanlar.push(setTimeout(() => { birak(); }, son + 400));

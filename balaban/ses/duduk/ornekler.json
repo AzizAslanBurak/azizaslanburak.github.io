@@ -1,0 +1,90 @@
+{
+ "aciklama": "Duduk nota örnekleri — arakedikian (Freesound) 'escala1' ve 'escala3', CC BY 3.0. Kesildi, seviyesi eşitlendi, döngü eklendi.",
+ "kaynaklar": [
+  "https://freesound.org/people/arakedikian/sounds/380473/",
+  "https://freesound.org/people/arakedikian/sounds/380478/"
+ ],
+ "lisans": "CC BY 3.0 — https://creativecommons.org/licenses/by/3.0/",
+ "ornekler": [
+  {
+   "dosya": "Fad3.wav",
+   "midi": 54.3,
+   "donguBas": 0.82,
+   "donguSon": 3.53,
+   "kaynak": "escala1",
+   "sabitlik": 2.7
+  },
+  {
+   "dosya": "Sold3.wav",
+   "midi": 56.17,
+   "donguBas": 0.82,
+   "donguSon": 3.91,
+   "kaynak": "escala1",
+   "sabitlik": 3.3
+  },
+  {
+   "dosya": "Sib3.wav",
+   "midi": 57.58,
+   "donguBas": 0.82,
+   "donguSon": 3.42,
+   "kaynak": "escala3",
+   "sabitlik": 5.6
+  },
+  {
+   "dosya": "Si3.wav",
+   "midi": 59.32,
+   "donguBas": 0.82,
+   "donguSon": 3.38,
+   "kaynak": "escala3",
+   "sabitlik": 4.4
+  },
+  {
+   "dosya": "Dod4.wav",
+   "midi": 61.16,
+   "donguBas": 0.82,
+   "donguSon": 3.44,
+   "kaynak": "escala3",
+   "sabitlik": 3.9
+  },
+  {
+   "dosya": "Re4.wav",
+   "midi": 62.47,
+   "donguBas": 0.82,
+   "donguSon": 3.48,
+   "kaynak": "escala3",
+   "sabitlik": 3.2
+  },
+  {
+   "dosya": "Mi4.wav",
+   "midi": 64.14,
+   "donguBas": 0.82,
+   "donguSon": 3.25,
+   "kaynak": "escala1",
+   "sabitlik": 3.8
+  },
+  {
+   "dosya": "Fad4.wav",
+   "midi": 66.14,
+   "donguBas": 0.82,
+   "donguSon": 2.87,
+   "kaynak": "escala1",
+   "sabitlik": 5.2
+  },
+  {
+   "dosya": "Sold4.wav",
+   "midi": 68.08,
+   "donguBas": 0.82,
+   "donguSon": 3.05,
+   "kaynak": "escala3",
+   "sabitlik": 3.9
+  },
+  {
+   "dosya": "La4.wav",
+   "midi": 69.2,
+   "donguBas": 0.82,
+   "donguSon": 3.32,
+   "kaynak": "escala3",
+   "sabitlik": 6.8
+  }
+ ]
+}

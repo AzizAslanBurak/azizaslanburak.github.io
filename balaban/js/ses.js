@@ -9,6 +9,7 @@ export function ac() {
     ANA = AC.createDynamicsCompressor();
     ANA.connect(AC.destination);
     modelYukle(AC);
+    ornekleriYukle(AC);
   }
   if (AC.state === "suspended") AC.resume();
   return AC;
@@ -22,9 +23,81 @@ function modelYukle(c) {
   modelYukleniyor = c.audioWorklet.addModule(new URL("./kamis-model.js", import.meta.url)).then(() => { modelHazir = true; }).catch(() => {});
 }
 export const modelYuklendi = () => (ac(), modelYukleniyor || Promise.resolve());
-export function sesMotoru() { try { return localStorage.getItem("bu:sesMotoru") || "model"; } catch (e) { return "model"; } }
+export function sesMotoru() { try { return localStorage.getItem("bu:sesMotoru") || "kayit"; } catch (e) { return "kayit"; } }
 export function sesMotoruAyarla(m) { try { localStorage.setItem("bu:sesMotoru", m); } catch (e) {} }
-export const modelKullan = (motor) => modelHazir && (motor || sesMotoru()) === "model";
+// "kayit" seçiliyken kayıtlar yüklenmemişse ya da nota kayıt aralığının dışındaysa model çalar
+export const modelKullan = (motor) => modelHazir && ["model", "kayit"].includes(motor || sesMotoru());
+
+// ---- Gerçek düdük kayıtları (ses/duduk): nota örnekleri, en yakın kayıttan perde düzeltmesiyle ----
+// Kaynak: arakedikian (Freesound) "escala1", "escala3" — CC BY 3.0. Atıf: Ayarlar › Kaynaklar.
+let ornekler = null, ornekYukleniyor = null;
+function ornekleriYukle(c) {
+  if (ornekYukleniyor) return;
+  ornekYukleniyor = (async () => {
+    try {
+      const yol = new URL("../ses/duduk/", import.meta.url);
+      const m = await (await fetch(new URL("ornekler.json", yol))).json();
+      const liste = await Promise.all(m.ornekler.map(async (o) => ({ ...o, tampon: await c.decodeAudioData(await (await fetch(new URL(o.dosya, yol))).arrayBuffer()) })));
+      ornekler = liste.sort((a, b) => a.midi - b.midi);
+    } catch (e) { ornekler = null; }
+  })();
+}
+export const ornekYuklendi = () => (ac(), Promise.all([ornekYukleniyor, modelYukleniyor].map((p) => p || Promise.resolve())));
+function enYakinOrnek(midi) {
+  if (!ornekler) return null;
+  let en = null; for (const o of ornekler) if (!en || Math.abs(o.midi - midi) < Math.abs(en.midi - midi)) en = o;
+  return en && Math.abs(en.midi - midi) <= 3.2 ? en : null; // 3 yarım sesten fazla kaydırma tınıyı bozar
+}
+export const kayitKullan = (motor, midiler) => (motor || sesMotoru()) === "kayit" && ornekler && midiler.every((m) => enYakinOrnek(m));
+
+export function ornekSesi(olaylar, { guc = 0.2, sonsuz = false, titresim = true, hedef = null } = {}) {
+  const c = ac();
+  const cikis = c.createGain(); cikis.gain.value = guc * 4.6; cikis.connect(hedef || ANA);
+  const kaynaklar = [];
+  let onceki = null;
+  olaylar.forEach((ev, i) => {
+    const o = enYakinOrnek(ev.midi); if (!o) return;
+    const bagli = onceki && ev.bas - onceki.bit < 0.03;
+    const src = c.createBufferSource(); src.buffer = o.tampon;
+    src.playbackRate.value = Math.pow(2, (ev.midi - o.midi) / 12);
+    src.loop = true; src.loopStart = o.donguBas; src.loopEnd = o.donguSon;
+    const g = c.createGain(); g.gain.value = 0;
+    src.connect(g); g.connect(cikis);
+    const bit = sonsuz && i === olaylar.length - 1 ? Infinity : ev.bit;
+    src.start(ev.bas, bagli ? Math.max(0, o.donguBas - 0.05) : 0);
+    // bağlı notada atak atlanır (parmak değişimi), 40 ms çapraz geçiş; yeni nefeste kaydın kendi atağı çalar
+    const gecis = bagli ? 0.04 : 0.012;
+    g.gain.setValueAtTime(0, ev.bas); g.gain.linearRampToValueAtTime(1, ev.bas + gecis);
+    if (isFinite(bit)) {
+      const sonraki = olaylar[i + 1]; const sonrakiBagli = sonraki && sonraki.bas - ev.bit < 0.03;
+      const birak = sonrakiBagli ? 0.04 : 0.09;
+      g.gain.setValueAtTime(1, Math.max(ev.bas + gecis, bit - (sonrakiBagli ? 0 : birak)));
+      g.gain.linearRampToValueAtTime(0, bit + (sonrakiBagli ? birak : 0));
+      src.stop(bit + birak + 0.05);
+    }
+    if (titresim && (!isFinite(bit) || bit - ev.bas > 0.8)) {
+      const lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 5.2; lg.gain.value = 0;
+      lfo.connect(lg); lg.connect(src.detune);
+      lg.gain.setValueAtTime(0, ev.bas + 0.45); lg.gain.linearRampToValueAtTime(9, ev.bas + 0.9);
+      lfo.start(ev.bas); if (isFinite(bit)) lfo.stop(bit + 0.2);
+      kaynaklar.push(lfo);
+    }
+    kaynaklar.push(src);
+    onceki = ev;
+  });
+  return {
+    dur() { const t = c.currentTime; cikis.gain.cancelScheduledValues(t); cikis.gain.setValueAtTime(cikis.gain.value, t); cikis.gain.linearRampToValueAtTime(0, t + 0.12); setTimeout(() => { kaynaklar.forEach((k) => { try { k.stop(); } catch (e) {} }); try { cikis.disconnect(); } catch (e) {} }, 250); },
+    perde(m) { const o = enYakinOrnek(m); kaynaklar.forEach((k) => { if (k.playbackRate && o) k.playbackRate.setTargetAtTime(Math.pow(2, (m - o.midi) / 12), c.currentTime, 0.02); }); },
+  };
+}
+
+// Seçili motora göre bir nefeslik ses: kayıt → model → basit
+export function nefesSesi(olaylar, secenek = {}) {
+  if (kayitKullan(secenek.motor, olaylar.map((o) => o.midi))) return ornekSesi(olaylar, secenek);
+  if (modelKullan(secenek.motor)) return modelSesi(olaylar, secenek);
+  const sesler = olaylar.map((o) => kamisSesi(o.midi, o.bas, isFinite(o.bit) && !secenek.sonsuz ? o.bit - o.bas : Infinity, { ...secenek, motor: "basit" }));
+  return { dur: () => sesler.forEach((x) => x.dur()), perde: (m) => sesler.forEach((x) => x.perde(m)) };
+}
 
 // Bir nefeste çalınan ses ya da ezgi: olaylar [{ midi, bas, bit }] (bağlam saati). Aralarında <30 ms boşluk olan
 // notalar bağlı (parmakla) geçer; daha uzun boşlukta nefes yeniden başlar.
@@ -48,7 +121,9 @@ export function modelSesi(olaylar, { guc = 0.2, titresim = true, sonsuz = false,
 // uzun seslerde gecikmeli hafif titreşim. sure = Infinity → durdurulana kadar çalar.
 export function kamisSesi(midi, t0, sure, { guc = 0.2, titresim = true, hedef = null, motor = null } = {}) {
   const c = ac();
-  if (modelKullan(motor)) return modelSesi([{ midi, bas: t0, bit: isFinite(sure) ? t0 + sure : 1e9 }], { guc, titresim, sonsuz: !isFinite(sure), hedef });
+  const tek = [{ midi, bas: t0, bit: isFinite(sure) ? t0 + sure : 1e9 }];
+  if (kayitKullan(motor, [midi])) return ornekSesi(tek, { guc, titresim, sonsuz: !isFinite(sure), hedef });
+  if (modelKullan(motor)) return modelSesi(tek, { guc, titresim, sonsuz: !isFinite(sure), hedef });
   const frek = midiHz(midi);
   const o1 = c.createOscillator(), o2 = c.createOscillator(), g2 = c.createGain();
   o1.type = "sawtooth"; o2.type = "square";
@@ -91,9 +166,7 @@ export function notaCal(midi, sure = 1.2) { const c = ac(); return kamisSesi(mid
 export function diziCal(notalar, { motor = null } = {}) {
   const c = ac(); const t0 = c.currentTime + 0.1;
   const n = notalar.filter((x) => x.midi != null);
-  const sesler = modelKullan(motor)
-    ? [modelSesi(n.map((x) => ({ midi: x.midi, bas: t0 + x.bas, bit: t0 + x.bas + x.sure })))]
-    : n.map((x) => kamisSesi(x.midi, t0 + x.bas, x.sure, { motor: "basit" }));
+  const sesler = [nefesSesi(n.map((x) => ({ midi: x.midi, bas: t0 + x.bas, bit: t0 + x.bas + x.sure })), { motor })];
   return { t0, dur: () => sesler.forEach((s) => s.dur()) };
 }
 

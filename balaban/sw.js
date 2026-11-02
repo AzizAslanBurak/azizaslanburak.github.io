@@ -1,5 +1,5 @@
 // Otomatik üretildi: araclar/sw-olustur.py — elle düzenleme.
-const SURUM = "balaban-7ef5024efb";
+const SURUM = "balaban-8657f95216";
 const DOSYALAR = [
 "./",
 "index.html",
@@ -58,6 +58,18 @@ const DOSYALAR = [
 "js/tanit.js",
 "js/zarf-islemci.js",
 "lib/abcjs-basic-min.js",
+"ses/LISANSLAR.md",
+"ses/duduk/Dod4.wav",
+"ses/duduk/Fad3.wav",
+"ses/duduk/Fad4.wav",
+"ses/duduk/La4.wav",
+"ses/duduk/Mi4.wav",
+"ses/duduk/Re4.wav",
+"ses/duduk/Si3.wav",
+"ses/duduk/Sib3.wav",
+"ses/duduk/Sold3.wav",
+"ses/duduk/Sold4.wav",
+"ses/duduk/ornekler.json",
 "ses/say-1.m4a",
 "ses/say-2.m4a",
 "ses/say-3.m4a",
@@ -69,6 +81,9 @@ const DOSYALAR = [
 "ses/say-9.m4a",
 "ses/say-hazir.m4a",
 "ses/say-ve.m4a",
+"ses/ustalar/juskiddink-bb-duduk.m4a",
+"ses/ustalar/juskiddink-c-duduk.m4a",
+"ses/ustalar/verunka.m4a",
 "ikon/ikon-180.png",
 "ikon/ikon-192.png",
 "ikon/ikon-512.png",
