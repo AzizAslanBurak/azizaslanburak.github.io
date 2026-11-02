@@ -10,6 +10,11 @@ import { oturumDurumu } from "./oturum.js";
 
 const SESLI = new Set(["uzun-ses", "nota-dizisi", "ritim", "eser", "kulak", "sureli", "kayit"]);
 
+function dinlemeYazisi(d) {
+  const n = (d.adimlar || []).filter((x) => SESLI.has(x.tur)).length;
+  return n ? `${n} adımda dinlerim` : "okuma ve hazırlık";
+}
+
 function siradakiDers() {
   for (let i = 0; i < TUM_DERSLER.length; i++) {
     const b = dersBilgisi(TUM_DERSLER[i].id, TUM_DERSLER[i]);
@@ -130,7 +135,7 @@ export function derslerEkrani(kok) {
           alt.append(c, b.durum === "ustalasti" ? "Ustalaştın" : b.tekrarVakti ? "Tekrar vakti" : `Ustalık ${b.gunSayisi}/3 gün`);
         }
       } else if (a.acik && !simdiBulundu) {
-        sinif += " simdi"; simdiBulundu = true; alt.append(`${(d.adimlar || []).filter((x) => SESLI.has(x.tur)).length} adımda dinlerim`);
+        sinif += " simdi"; simdiBulundu = true; alt.append(dinlemeYazisi(d));
       } else if (!a.acik) {
         sinif += " kilitli"; daire = h("span", { class: "daire" }, ikon("kilit"));
         alt.append(a.neden === "yarin" ? "Yarın açılır" : `Önce ${i}. ders`);
@@ -155,13 +160,21 @@ function dersOzeti(d, i) {
     h("h2", null, d.baslik),
     d.ozet ? h("p", { class: "soluk", style: "margin:0" }, d.ozet) : null,
     d.hedefler && d.hedefler.length ? h("ul", { class: "kucuk", style: "margin:0;padding-left:1.2rem;display:grid;gap:4px" }, d.hedefler.map((x) => h("li", null, x))) : null,
-    h("p", { class: "kucuk soluk mono", style: "margin:0" }, `${d.sure || 10} dk · ${dinlenen} dinlenen adım`),
+    h("p", { class: "kucuk soluk mono", style: "margin:0" }, `${d.sure || 10} dk · ${dinlenen ? dinlenen + " adımda dinlerim" : "okuma ve hazırlık"}`),
   ];
   let kapat;
-  if (a.acik || b.durum !== "yeni") icerik.push(h("a", { class: "dugme birincil genis", href: "#ders-" + d.id, onclick: () => kapat() }, ikon("oynat"), b.durum === "yeni" ? "Başla" : "Tekrar çalış"));
-  else if (a.neden === "yarin") icerik.push(h("p", { class: "kucuk", style: "margin:0" }, "Bugün bir ders geçtin; yeni ders yarın açılır. Uyku, bugün öğrendiğini kalıcı yapar."),
+  // Eylem alanı sayfanın altına yapışık: kısa pencerede de düğme hep görünür
+  const eylem = h("div", { class: "alt-sayfa-eylem" });
+  if (a.acik || b.durum !== "yeni") eylem.append(h("a", { class: "dugme birincil genis", href: "#ders-" + d.id, onclick: () => kapat() }, ikon("oynat"), b.durum === "yeni" ? "Başla" : "Tekrar çalış"));
+  else if (a.neden === "yarin") eylem.append(h("p", { class: "kucuk", style: "margin:0" }, "Bugün bir ders geçtin; yeni ders yarın açılır. Uyku, bugün öğrendiğini kalıcı yapar."),
     h("button", { class: "ikincil genis", onclick: () => { erkenAc(d.id); kapat(); location.hash = "#ders-" + d.id; } }, "Yine de şimdi aç"));
-  else icerik.push(h("p", { class: "kucuk", style: "margin:0" }, `Bu ders, ${i}. dersi geçince açılır.`));
+  else {
+    // Kilitli: sıradaki açık derse götüren düğme
+    const s = siradakiDers();
+    eylem.append(h("p", { class: "kucuk", style: "margin:0" }, ikon("kilit"), ` Bu ders, ${i}. dersi geçince açılır.`));
+    if (s && s.acik.acik) eylem.append(h("a", { class: "dugme birincil genis", href: "#ders-" + s.ders.id, onclick: () => kapat() }, ikon("oynat"), `Sıradaki derse başla: ${s.ders.baslik}`));
+  }
+  icerik.push(eylem);
   kapat = altSayfa(...icerik.filter(Boolean));
 }
 
@@ -268,7 +281,7 @@ function giris(ders) {
   const k = h("div", { class: "adim" },
     h("h1", null, ders.baslik),
     ders.ozet ? h("p", { class: "soluk", style: "font-size:1.1875rem;margin:0" }, ders.ozet) : null,
-    h("p", { class: "kucuk soluk mono", style: "margin:0" }, `${ders.sure || 10} dk · ${ders.adimlar.length} adım · ${dinlenen} adımda dinlerim`));
+    h("p", { class: "kucuk soluk mono", style: "margin:0" }, `${ders.sure || 10} dk · ${ders.adimlar.length} adım · ${dinlenen ? dinlenen + " adımda dinlerim" : "okuma ve hazırlık"}`));
   if (ders.hedefler && ders.hedefler.length) k.append(h("div", { class: "kart" }, h("h3", { style: "margin-bottom:8px" }, "Bu derste"), h("ul", { style: "margin:0;padding-left:1.2rem;display:grid;gap:6px" }, ders.hedefler.map((x) => h("li", null, x)))));
   if (ders.giris) k.append(h("div", { class: "metin", html: ders.giris }));
   return k;
