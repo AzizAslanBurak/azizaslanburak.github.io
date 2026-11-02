@@ -312,6 +312,25 @@ details.katlanir[open] > summary::after { content: "Gizle"; }
 @keyframes nota-bekle { 50% { opacity: .45; } }
 @media (prefers-reduced-motion: reduce) { .nota .kagit .bekliyor { animation: none; } }
 .nota .kagit .dogru, .nota .kagit .dogru path { fill: var(--iyi) !important; }
+/* Canlı parmak şeması (nota kâğıdıyla eşzamanlı) */
+.parmak-canli { display: grid; grid-template-columns: 5.2rem 1fr; align-items: center; gap: 8px; padding: 10px 12px 4px; border-bottom: 1px solid var(--cizgi); }
+.parmak-canli[hidden] { display: none; }
+.parmak-canli .pc-yazi { display: grid; gap: 1px; line-height: 1.15; }
+.parmak-canli .pc-yazi b { font-family: var(--font-baslik); font-size: 1.75rem; font-weight: 700; color: var(--oynayan); }
+.parmak-canli .pc-yazi span { font-size: .75rem; color: var(--murekkep-3); }
+.parmak-canli .pc-yazi .pc-not { color: var(--kayisi-murekkep); }
+.parmak-canli.yok .pc-yazi b { color: var(--murekkep-3); }
+.parmak-canli.yok .pc-sema { opacity: .35; }
+.pc-sema { width: 100%; max-width: 380px; height: auto; display: block; }
+@media (max-width: 420px) { .parmak-canli { grid-template-columns: 3.9rem 1fr; gap: 4px; padding-inline: 8px; } .parmak-canli .pc-yazi b { font-size: 1.5rem; } }
+.pc-sema .pc-etiket { font: 600 11px var(--font-govde); fill: var(--murekkep-3); }
+.pc-sema .pc-no { font: 500 10px var(--font-mono); fill: var(--murekkep-3); }
+.pc-dolu { fill: var(--ink); opacity: 0; transform: scale(.4); transition: opacity 90ms ease-out, transform 90ms ease-out; }
+.pc-dolu.acik { opacity: 1; transform: scale(1); }
+.pc-halka { fill: none; stroke: var(--oynayan); stroke-width: 2.2; opacity: 0; }
+.pc-delik.degisti .pc-halka { animation: pc-degisti 520ms ease-out; }
+@keyframes pc-degisti { 0% { opacity: 1; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .pc-dolu { transition: none; } .pc-delik.degisti .pc-halka { animation: none; } }
 .nota .durum-yazi { padding: 0 14px 12px; font-size: .9375rem; color: var(--murekkep-2); }
 .nota .durum-yazi:empty { display: none; }
 .nota .alt-denetim { padding: 0 14px 14px; display: grid; gap: 10px; }
