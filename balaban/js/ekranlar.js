@@ -173,10 +173,10 @@ function testPaneli(panel) {
   const bpm = +(ayar("bpm") || 70);
   const kagit = h("div", { class: "kagit" });
   const sonucAlan = h("div", { class: "yigin" });
-  function desenGoster() { const d = RITIM_DESENLERI[secili]; kagit.replaceChildren(); window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", staffwidth: 500, paddingtop: 0, paddingbottom: 0 }); }
+  function desenGoster() { const d = RITIM_DESENLERI[secili]; kagit.replaceChildren(); window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", add_classes: true, staffwidth: 500, paddingtop: 0, paddingbottom: 0 }); }
   const desenChip = chipler(RITIM_DESENLERI.map((d, i) => [i, `${d.seviye} · ${d.ad}`]), secili, (i) => { secili = i; ayarla("ritimDesen", i); desenGoster(); sonucAlan.replaceChildren(); });
   const dinleB = h("button", { class: "ikincil" }, ikon("oynat"), "Dinle");
-  dinleB.addEventListener("click", () => { const d = RITIM_DESENLERI[secili]; desenCal(d.desen, bpm); });
+  dinleB.addEventListener("click", () => { const d = RITIM_DESENLERI[secili]; desenCal(d.desen, bpm, "A4", kagit); });
   const testB = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Testi başlat"), h("span", { class: "sure" }, `${bpm} vuruş/dk`));
   testB.addEventListener("click", () => mikrofonGerekli(sonucAlan, async () => {
     const d = RITIM_DESENLERI[secili]; const o = OLCULER.find((x) => x.id === d.olcu);

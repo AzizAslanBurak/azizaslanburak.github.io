@@ -137,12 +137,20 @@ export function sonucYazisi(s) {
   return `${egilim} ${istikrar}` + (s.kacan ? ` ${s.kacan} notayı duyamadım.` : "") + (s.fazla ? ` ${s.fazla} fazladan başlangıç duydum.` : "");
 }
 
-// Örnek ritmi çal (çalgı sesiyle)
-export function desenCal(desen, bpm, yaziliNota = "A4") {
-  const c = ac(); const { olaylar } = desenCoz(desen); const v = 60 / bpm; const t0 = c.currentTime + 0.15;
+// Örnek ritmi çal (çalgı sesiyle); kagit verilirse çalınan nota kâğıtta yanar.
+let sonDesen = null;
+export function desenCal(desen, bpm, yaziliNota = "A4", kagit = null) {
+  if (sonDesen) sonDesen.dur();
+  const c = ac(); const { olaylar, toplam } = desenCoz(desen); const v = 60 / bpm; const t0 = c.currentTime + 0.15;
   const m = notaMidi(yaziliNota) + kaydirma();
   const sesler = olaylar.filter((o) => !o.es).map((o) => kamisSesi(m, t0 + o.bas * v, Math.max(0.1, o.sure * v * 0.85), { titresim: false }));
-  return { dur: () => sesler.forEach((s) => s.dur()) };
+  const elemanlar = kagit ? [...kagit.querySelectorAll(".abcjs-note, .abcjs-rest")] : [];
+  const sondur = () => elemanlar.forEach((n) => n.classList.remove("calan"));
+  const zamanlar = elemanlar.length === olaylar.length
+    ? [...olaylar.map((o, i) => setTimeout(() => { sondur(); elemanlar[i].classList.add("calan"); }, 150 + o.bas * v * 1000)), setTimeout(sondur, 150 + toplam * v * 1000)]
+    : [];
+  sonDesen = { dur: () => { sesler.forEach((s) => s.dur()); zamanlar.forEach(clearTimeout); sondur(); } };
+  return sonDesen;
 }
 
 // Gecikme ayarı: 8 vuruşta kısa notalar çal, ortalama sapmayı gecikmeye ekle

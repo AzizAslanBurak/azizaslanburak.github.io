@@ -91,10 +91,10 @@ export function adimCiz(adim, bildir) {
       metin(adim.html);
       const d = { desen: adim.desen, olcu: adim.olcu || "4/4", bpm: adim.bpm || 60 };
       const kagit = h("div", { class: "kagit" });
-      window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", staffwidth: 500, paddingtop: 0, paddingbottom: 0 });
+      window.ABCJS.renderAbc(kagit, desenAbc(d.desen, d.olcu), { responsive: "resize", add_classes: true, staffwidth: 500, paddingtop: 0, paddingbottom: 0 });
       const durumEl = h("div", { class: "kucuk soluk", "aria-live": "polite" });
       const sonucAlan = h("div");
-      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4") }, ikon("oynat"), "Dinle");
+      const dinle = h("button", { class: "ikincil", onclick: () => desenCal(d.desen, d.bpm, adim.nota || "A4", kagit) }, ikon("oynat"), "Dinle");
       const test = h("button", { class: "cal-dugme" }, h("span", { class: "sol" }, ikon("mikrofon"), "Ritmi çal"), h("span", { class: "sure" }, `${d.bpm} vuruş/dk`));
       test.addEventListener("click", () => mikrofonGerekli(sonucAlan, async () => {
         test.disabled = true; sonucAlan.replaceChildren(); await saymaYukle();

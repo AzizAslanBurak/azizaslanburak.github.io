@@ -36,7 +36,13 @@ export function notaKagidi(abc, secenek = {}) {
       .map((e) => ({ ms: e.milliseconds, sureMs: (e.midiPitches[0].duration * (e.millisecondsPerMeasure || 240000 / bpm)) / olcuBirlik, pitch: e.midiPitches[0].pitch + (e.midiPitches[0].cents || 0) / 100, elemanlar: (e.elements || []).flat() }));
   }
   const temizle = () => kagit.querySelectorAll(".calan,.dogru,.bekliyor").forEach((n) => n.classList.remove("calan", "dogru", "bekliyor"));
-  const isaretle = (ol, sinif) => ol.elemanlar.forEach((n) => n.classList.add(sinif));
+  // Çalınan notayı boya; uzun ezgide kâğıdı yatayda ona kaydır.
+  const isaretle = (ol, sinif) => {
+    ol.elemanlar.forEach((n) => n.classList.add(sinif));
+    const ilk = ol.elemanlar[0]; if (!ilk || kagit.scrollWidth <= kagit.clientWidth) return;
+    const k = kagit.getBoundingClientRect(), n = ilk.getBoundingClientRect();
+    if (n.left < k.left + 24 || n.right > k.right - 24) kagit.scrollTo({ left: kagit.scrollLeft + n.left - k.left - k.width / 3, behavior: "smooth" });
+  };
   function birak() { hepsiniDurdur(); }
   function dugmeleriSifirla() { [dinle, takipB, birlikteB].forEach((b) => b && b.setAttribute("aria-pressed", "false")); dinle.textContent = "▶︎ Dinle"; }
 

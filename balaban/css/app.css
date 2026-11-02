@@ -6,6 +6,7 @@
   --civit: #2F4E8A; --civit-ustu: #FFFFFF; --civit-soluk: #DCE4F3;
   --kayisi: #B9742A; --kayisi-murekkep: #8C541A; --kayisi-soluk: #F4E3CF;
   --kamis: #7B8C4A; --kamis-soluk: #E6EAD6;
+  --oynayan: #D7381E; /* nota kâğıdında çalınan nota: mürekkepten ayrışan canlı kırmızı */
   --iyi: #176B56; --iyi-soluk: #DDF0E8; --orta: #8F5612; --orta-soluk: #F8EBD3; --kotu: #A83A22; --kotu-soluk: #F9E0D9;
   --golge: 0 8px 24px -12px rgb(0 0 0 / .35);
   /* eski adlar (çizimler ve ders içerikleri bunları kullanır) */
@@ -31,6 +32,7 @@
     --civit: #9DB6EE; --civit-ustu: #0F1E3A; --civit-soluk: #243555;
     --kayisi: #E0A663; --kayisi-murekkep: #E8B577; --kayisi-soluk: #3B2C1B;
     --kamis: #A9BB72; --kamis-soluk: #27301A;
+    --oynayan: #FF6B4A;
     --iyi: #5FCBA8; --iyi-soluk: #1A3A31; --orta: #E7B35A; --orta-soluk: #3D2E14; --kotu: #F08A72; --kotu-soluk: #4A241B;
     color-scheme: dark;
   }
@@ -41,6 +43,7 @@
   --civit: #9DB6EE; --civit-ustu: #0F1E3A; --civit-soluk: #243555;
   --kayisi: #E0A663; --kayisi-murekkep: #E8B577; --kayisi-soluk: #3B2C1B;
   --kamis: #A9BB72; --kamis-soluk: #27301A;
+  --oynayan: #FF6B4A;
   --iyi: #5FCBA8; --iyi-soluk: #1A3A31; --orta: #E7B35A; --orta-soluk: #3D2E14; --kotu: #F08A72; --kotu-soluk: #4A241B;
   color-scheme: dark;
 }
@@ -303,9 +306,12 @@ details.katlanir[open] > summary::after { content: "Gizle"; }
 .nota .bas .baslik { font-family: var(--font-baslik); font-weight: 650; font-size: 1.0625rem; }
 .nota .kagit { padding: 8px 10px; overflow-x: auto; color: var(--murekkep); }
 .nota .kagit svg path, .nota .kagit svg text, .nota .kagit svg tspan { fill: currentColor; }
-.nota .kagit .calan, .nota .kagit .calan path { fill: var(--civit) !important; }
+.nota .kagit .calan, .nota .kagit .calan path, .nota .kagit .bekliyor, .nota .kagit .bekliyor path { fill: var(--oynayan) !important; stroke: var(--oynayan); }
+.nota .kagit .calan, .nota .kagit .bekliyor { filter: drop-shadow(0 0 3px color-mix(in srgb, var(--oynayan) 55%, transparent)); }
+.nota .kagit .bekliyor { animation: nota-bekle 1s ease-in-out infinite; }
+@keyframes nota-bekle { 50% { opacity: .45; } }
+@media (prefers-reduced-motion: reduce) { .nota .kagit .bekliyor { animation: none; } }
 .nota .kagit .dogru, .nota .kagit .dogru path { fill: var(--iyi) !important; }
-.nota .kagit .bekliyor, .nota .kagit .bekliyor path { fill: var(--kayisi) !important; }
 .nota .durum-yazi { padding: 0 14px 12px; font-size: .9375rem; color: var(--murekkep-2); }
 .nota .durum-yazi:empty { display: none; }
 .nota .alt-denetim { padding: 0 14px 14px; display: grid; gap: 10px; }
