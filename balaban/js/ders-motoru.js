@@ -13,7 +13,8 @@ import { sonucKutusu } from "./ekranlar.js";
 import { kaydedici } from "./kayit.js";
 import { CIZIMLER } from "./cizimler.js";
 import { ikon, segment, sahneAc, durumEl, halka } from "./arayuz.js";
-import { perdeBandi, bantIcinde, ritimBandi, tahminKaydet } from "./ilerleme.js";
+import { perdeBandi, bantIcinde, ritimBandi, tahminKaydet, gucBandi } from "./ilerleme.js";
+import { uzunSesAnaliz } from "./uzun-ses-analiz.js";
 
 export const DENETIMLI = new Set(["uzun-ses", "nota-dizisi", "ritim", "eser", "kulak", "kontrol", "sureli", "kayit"]);
 
@@ -231,6 +232,11 @@ function uzunSes(adim, bildir, temizlik) {
   const hedef = notaMidi(adim.nota), saniye = adim.saniye || 4, tekrar = adim.tekrar || 3;
   const bant = adim.tolerans || perdeBandi();
   const korMu = adim.kor !== false;
+  const kisAc = adim.gurluk === "kis-ac";
+  const sikiOlcum = adim.kor !== false; // "garanti başarı" adımlarında yalnız perde puanlanır
+  const sdSinir = Math.max(8, Math.round(bant * 0.6)); // bant içinde yalpalama sınırı (cent); ±15 bantta 9, araştırma hedefi 8–12
+  const gucSinir = adim.gucSinir || gucBandi();
+  const gurlukFarki = adim.gurlukFarki || 6, kisAcFarki = adim.gurlukFarki || 5; // dB
   let kip = korMu ? "sinav" : "alistirma", gecenTekrar = 0, deneme = 0, aktifSahne = null;
   temizlik.push(() => { if (aktifSahne) aktifSahne.kapat("temizlik"); });
 
@@ -246,7 +252,7 @@ function uzunSes(adim, bildir, temizlik) {
   kok.append(h("div", { class: "hazirlik" }, parmakKarti(adim.nota, { aciklama: false }),
     h("div", { class: "bilgi" },
       h("div", { class: "hedef" }, h("b", null, notaYazisi(adim.nota)), ` notasını ${saniye} sn tut, ${tekrar} kez.`),
-      h("div", { class: "kucuk soluk" }, `Bant ±${bant} cent`),
+      h("div", { class: "kucuk soluk" }, kisAc ? `Aç–kıs: en az +${kisAcFarki} dB, perde ±${bant} cent` : adim.gurluk === "f" ? `Bant ±${bant} cent · fısıltıdan en az +${gurlukFarki} dB` : `Bant ±${bant} cent · gürlük ±${String(gucSinir).replace(".", ",")} dB`),
       dugmeler)));
 
   const ipucu = h("span", null);
@@ -267,22 +273,28 @@ function uzunSes(adim, bildir, temizlik) {
     deneme++;
     const halkaEl = halka(); halkaEl.ayarla(0, String(saniye));
     const durum = durumEl(); durum.ayarla("bos", "Dinliyorum");
-    let gosterge = null;
+    let gosterge = null, serit = null;
+    const yonEl = kisAc ? h("div", { class: "sahne-yon" }, "Aç ↗") : null;
     const icerik = [];
     if (kip === "sinav") icerik.push(h("div", { class: "sahne-nota" }, notaYazisi(adim.nota)), halkaEl, durum);
-    else { gosterge = new AkortGostergesi({ hedef: akortBiliniyor() ? hedef : null, tolerans: bant, parmak: false, iz: false, sahne: true }); icerik.push(gosterge.kok, halkaEl); }
+    else {
+      gosterge = new AkortGostergesi({ hedef: akortBiliniyor() ? hedef : null, tolerans: bant, parmak: false, iz: false, sahne: true });
+      serit = gurlukSeridi(kisAc ? null : gucSinir);
+      icerik.push(gosterge.kok, serit.kok, halkaEl);
+    }
+    if (yonEl) icerik.push(yonEl);
     let bitti = false;
     const s = sahneAc({ ust: `Tekrar ${Math.min(gecenTekrar + 1, tekrar)} / ${tekrar}`, sagUst: h("span", { class: "kayit" }, "DİNLİYORUM"), icerik, bitince: () => { if (!bitti) bitir(); } });
     aktifSahne = s;
-    let sure = 0, kopma = 0, sonZ = null; const centler = [], hamlar = [];
-    const tum = [];
+    let sure = 0, kopma = 0, sonZ = null; const hamlar = [], ornekler = [];
     const dinle = mik.abone((o) => {
       const dt = sonZ == null ? 0 : Math.min(0.1, o.zaman - sonZ); sonZ = o.zaman;
       const biliniyor = akortBiliniyor();
       const yakin = o.midi != null && (biliniyor ? Math.abs(o.midi - kaydirma() - hedef) < 1.5 : (!hamlar.length || Math.abs(o.midi - ortanca(hamlar)) < 1.5));
-      if (yakin) { sure += dt; kopma = 0; hamlar.push(o.midi); if (biliniyor) centler.push((o.midi - kaydirma() - hedef) * 100); }
-      else if (sure > 0) { kopma += dt; if (kopma > 0.5 && sure < saniye) { sure = 0; centler.length = 0; hamlar.length = 0; } }
+      if (yakin) { sure += dt; kopma = 0; hamlar.push(o.midi); ornekler.push({ t: o.zaman, m: o.midi, db: o.db }); if (serit) serit.guncelle(o.db, sure); }
+      else if (sure > 0) { kopma += dt; if (kopma > 0.5 && sure < saniye) { sure = 0; hamlar.length = 0; ornekler.length = 0; if (serit) serit.sifirla(); } }
       if (kip === "sinav") durum.ayarla("bos", o.midi != null ? "Ses geliyor" : o.sesli ? "Ses var, perdesi net değil" : "Dinliyorum");
+      if (yonEl) yonEl.textContent = sure / saniye < 0.5 ? "Aç ↗" : "Kıs ↘";
       halkaEl.ayarla(sure / saniye, String(Math.max(0, Math.ceil(saniye - sure))));
       if (sure >= saniye && !bitti) { bitti = true; s.kapat("tamam"); bitir(true); }
     });
@@ -291,55 +303,166 @@ function uzunSes(adim, bildir, temizlik) {
       dinle(); if (gosterge) gosterge.durdur(); aktifSahne = null;
       if (!tamam) { sonuc.replaceChildren(h("p", { class: "kucuk soluk", style: "margin:0" }, "Durdurdun. Hazır olunca yeniden \"Çal\"a dokun.")); return; }
       let not = null;
-      if (!akortBiliniyor()) { not = akortOgren(ortanca(hamlar), hedef); hamlar.forEach((m) => centler.push((m - kaydirma() - hedef) * 100)); }
-      if (kip === "sinav") tahminSor(centler, not); else goster(centler, null, not);
+      if (!akortBiliniyor()) not = akortOgren(ortanca(hamlar), hedef);
+      const k = kaydirma();
+      const a = uzunSesAnaliz(ornekler.map((o) => ({ t: o.t, c: (o.m - k - hedef) * 100, db: o.db })), { bant, gurluk: adim.gurluk });
+      if (kip === "sinav") tahminSor(a, not); else goster(a, null, not);
     }
   }
 
-  function tahminSor(centler, not) {
+  function tahminSor(a, not) {
     sonuc.replaceChildren(h("div", { class: "kart yigin-s" },
       h("h3", null, "Sence nasıldı?"),
       h("p", { class: "kucuk soluk", style: "margin:0" }, "Önce sen söyle, sonra ben göstereyim. Tahminlerin kulak puanına yazılır."),
-      h("div", { class: "segment" }, ...[["pes", "Pes kaldı"], ["tam", "Tam yerinde"], ["tiz", "Tiz kaçtı"]].map(([k, ad]) => h("button", { onclick: () => goster(centler, k, not) }, ad)))));
+      h("div", { class: "segment" }, ...[["pes", "Pes kaldı"], ["tam", "Tam yerinde"], ["tiz", "Tiz kaçtı"]].map(([k, ad]) => h("button", { onclick: () => goster(a, k, not) }, ad)))));
   }
 
-  function goster(centler, tahmin, not) {
-    const ort = centler.reduce((a, b) => a + b, 0) / Math.max(1, centler.length);
-    const sd = Math.sqrt(centler.reduce((a, b) => a + (b - ort) ** 2, 0) / Math.max(1, centler.length));
-    const oran = centler.filter((c) => bantIcinde(c, bant)).length / Math.max(1, centler.length);
-    const gercek = Math.abs(ort) <= bant / 2 ? "tam" : ort > 0 ? "tiz" : "pes";
+  // Geçişi engelleyen sorunlar, önem sırasıyla: perde → kararlılık → gürlük → dinamik
+  function sorunlar(a, pKayit) {
+    const l = [], cent = (x) => `${x > 0 ? "+" : ""}${Math.round(x)} c`;
+    if (kisAc) {
+      const ka = a.kisAc;
+      if (!ka) l.push("Ses çok kısa kesildi; aç–kıs eğrisini çizemedim. Sesi baştan sona tut.");
+      else {
+        if (a.oran < 0.7) l.push(ka.perdeKaymasi > 10 ? `Gür yerde ses tizleşti (${cent(ka.perdeKaymasi)}): açarken dudağı birazcık gevşet.` : ka.perdeKaymasi < -10 ? `Kısık uçlarda ses pesleşti (${cent(-ka.perdeKaymasi)} fark): kısarken karın desteğini bırakma, dudağı birazcık sık.` : "Perde bantta kalmadı: gürlük değişirken dudakla perdeyi yerinde tut.");
+        if (ka.acma < kisAcFarki) l.push(`Sesi yeterince açmadın (+${ondalik(ka.acma)} dB): ortaya doğru havayı hızlandır, en az +${kisAcFarki} dB.`);
+        if (ka.kisma < kisAcFarki) l.push(`Sonda yeterince kısmadın (−${ondalik(Math.max(0, ka.kisma))} dB): sona doğru havayı yavaşça azalt, desteği bırakmadan.`);
+        if (ka.tepeYeri < 0.3) l.push("Tepeye çok erken vardın: açmayı sürenin yarısına yay.");
+        else if (ka.tepeYeri > 0.7) l.push("Tepeye geç vardın: yarıda en gür ol, sonra kıs.");
+      }
+      return l;
+    }
+    if (a.oran < 0.8) l.push(a.sd > 20 ? "Ses dalgalanıyor: nefesi eşit akıt, dudak basıncını değiştirme." : a.ort > 0 ? "Ses tiz kaldı: kamışı daha az sık, dudakları gevşet." : "Ses pes kaldı: nefes desteğini artır, kamışı çok az daha sık.");
+    if (!sikiOlcum) return l; // ilk derslerin göstergeli adımları: kararlılık ve gürlük yalnız bilgi
+    if (a.sd > sdSinir) l.push(`Ses bantta ama yalpalıyor (±${Math.round(a.sd)} c, sınır ±${sdSinir}): dudak basıncını sabit tut, nefesi karından eşit ver.`);
+    if (a.gucSd > gucSinir) l.push(a.gucDusus < -4 ? `Sona doğru ses zayıfladı (${ondalik(a.gucDusus)} dB): nefes azaldıkça karın desteğini artır.` : `Gürlük dalgalandı (±${ondalik(a.gucSd)} dB, sınır ±${String(gucSinir).replace(".", ",")}): havayı sabit hızda ver, karnı yavaş ve eşit içeri çek.`);
+    if (adim.gurluk === "f" && pKayit && a.gucOrt - pKayit.db < gurlukFarki) l.push(`Forte fısıltıdan yalnız ${isaretli(a.gucOrt - pKayit.db)} dB gür: en az +${gurlukFarki} dB hedefle. Sesi odanın dışına gönder, karın daha çok itsin.`);
+    return l;
+  }
+
+  // Geçtiyse bir sonraki küçük adım
+  function oneri(a, pKayit) {
+    if (kisAc) return Math.abs(a.kisAc.perdeKaymasi) > 10 ? (a.kisAc.perdeKaymasi > 0 ? "Gür yerde ses hafif tizleşiyor; açarken dudağı birazcık daha bırak." : "Kısık uçlarda ses hafif pesleşiyor; kısarken desteği koru.") : "Böyle devam; bir dahakine eğriyi daha geniş çiz.";
+    if (adim.gurluk === "f" && pKayit && Math.abs(a.ort - pKayit.ort) > 10) return a.ort > pKayit.ort ? `Forte'de ses fısıltıdan ${Math.round(a.ort - pKayit.ort)} cent tiz: dudağı birazcık gevşet.` : `Forte'de ses fısıltıdan ${Math.round(pKayit.ort - a.ort)} cent pes: dudağı birazcık sık.`;
+    if (a.oturma != null && a.oturma >= 0.4) return a.basSapma < 0 ? `Ses alttan kayarak oturdu (${Math.round(a.oturma * 1000)} ms): "hu"dan önce dudağı ve karın desteğini hazırla, havayı ilk anda tam hızıyla bırak.` : `Ses tiz başlayıp indi (${Math.round(a.oturma * 1000)} ms): başta dudağı sıkma, "hu"yu yumuşak bırak.`;
+    if (a.gucDusus < -4) return "Sona doğru ses biraz zayıflıyor; son saniyelerde karın desteğini artır.";
+    if (a.gucSd > gucSinir * 0.7) return "Gürlük hafif dalgalanıyor; havayı sabit hızda ver.";
+    if (Math.abs(a.ort) > bant / 2) return a.ort > 0 ? "Ses hafif tiz; kamışı biraz daha az sık." : "Ses hafif pes; nefes desteğini biraz artır.";
+    if (a.sd > sdSinir * 0.7) return "Nefesi karından eşit ver; ses daha da sabitlenir.";
+    return "Böyle devam.";
+  }
+
+  function goster(a, tahmin, not) {
+    const gercek = Math.abs(a.ort) <= bant / 2 ? "tam" : a.ort > 0 ? "tiz" : "pes";
     if (tahmin) tahminKaydet(tahmin === gercek);
+    const pKayit = adim.gurluk === "f" ? fisiltiKaydi.get(adim.nota) : null;
+    if (adim.gurluk === "p") fisiltiKaydi.set(adim.nota, { db: a.gucOrt, ort: a.ort });
     const puanli = kip === "sinav" || !korMu;
-    const gecti = puanli && oran >= 0.8;
+    const engeller = sorunlar(a, pKayit);
+    const gecti = puanli && !engeller.length;
     if (gecti) gecenTekrar++;
     sayac.textContent = `${gecenTekrar}/${tekrar}`;
-    const enIyi = sd < 10 ? `Ses çok sabitti (±${Math.round(sd)} cent).` : oran >= 0.8 ? `Sürenin %${Math.round(oran * 100)}'i bantta kaldı.` : "Sesi sonuna kadar götürdün.";
-    const duzeltme = gecti
-      ? (Math.abs(ort) > bant / 2 ? (ort > 0 ? "Ses hafif tiz; kamışı biraz daha az sık." : "Ses hafif pes; nefes desteğini biraz artır.") : sd > 15 ? "Nefesi karından eşit ver; ses daha da sabitlenir." : "Böyle devam.")
-      : (sd > 20 ? "Ses dalgalanıyor: nefesi eşit akıt, dudak basıncını değiştirme." : ort > 0 ? "Ses tiz kaldı: kamışı daha az sık, dudakları gevşet." : "Ses pes kaldı: nefes desteğini artır, kamışı çok az daha sık.");
-    const harita = h("div", { style: "display:flex;align-items:flex-end;gap:2px;height:36px", "aria-hidden": "true" });
-    const parca = Math.max(1, Math.floor(centler.length / 24));
-    for (let i = 0; i < centler.length; i += parca) {
-      const c = centler.slice(i, i + parca).reduce((a, b) => a + b, 0) / Math.min(parca, centler.length - i);
-      const a = Math.abs(c);
-      harita.append(h("i", { style: `flex:1;border-radius:2px;height:${Math.min(100, 20 + a * 1.6)}%;background:var(--${bantIcinde(c, bant) ? "iyi" : a <= bant * 2 ? "orta" : "kotu"})` }));
-    }
-    const kart = h("div", { class: "degerlendirme " + (gecti ? "iyi" : !puanli ? "" : oran >= 0.5 ? "orta" : "kotu") },
+    const enIyi = kisAc && a.kisAc && a.kisAc.acma >= kisAcFarki ? `Sesi +${ondalik(a.kisAc.acma)} dB açtın.`
+      : a.sd < 10 ? `Perde çok sabitti (±${Math.round(a.sd)} cent).`
+      : !kisAc && a.gucSd < 2 ? `Gürlük çok düzgündü (±${ondalik(a.gucSd)} dB).`
+      : a.oturma != null && a.oturma <= 0.25 ? "Ses ilk anda yerine oturdu."
+      : a.oran >= 0.8 ? `Sürenin %${Math.round(a.oran * 100)}'i bantta kaldı.` : "Sesi sonuna kadar götürdün.";
+    const duzeltme = !puanli ? (engeller[0] || oneri(a, pKayit)) : gecti ? oneri(a, pKayit) : engeller[0];
+    const kutu = (b, s) => h("div", null, h("b", null, b), h("span", null, s));
+    const olcumler = [
+      kutu(`%${Math.round(a.oran * 100)}`, `bantta (±${bant})`),
+      kutu(`±${Math.round(a.sd)} c`, `kararlılık (≤${sdSinir})`),
+      kutu(`${a.ort > 0 ? "+" : ""}${Math.round(a.ort)} c`, "ortalama"),
+      kisAc && a.kisAc ? kutu(`+${Math.round(a.kisAc.acma)} / −${Math.max(0, Math.round(a.kisAc.kisma))}`, `aç / kıs dB (≥${kisAcFarki})`)
+        : adim.gurluk === "f" && pKayit ? kutu(`${isaretli(a.gucOrt - pKayit.db)} dB`, `fısıltıya göre (≥${gurlukFarki})`)
+        : kutu(`±${ondalik(a.gucSd)} dB`, `gürlük (≤${String(gucSinir).replace(".", ",")})`),
+      kutu(a.oturma == null ? "—" : `${Math.round(a.oturma * 1000)} ms`, "başlangıç"),
+    ];
+    const kart = h("div", { class: "degerlendirme " + (gecti ? "iyi" : !puanli ? "" : a.oran >= 0.5 ? "orta" : "kotu") },
       h("div", { class: "baslik" }, gecti ? ikon("onay") : null, !puanli ? "Alıştırma bitti" : gecti ? `Geçtin · ${gecenTekrar}/${tekrar}` : "Bir daha"),
       tahmin ? h("p", { style: "margin:0" }, `Tahminin ${tahmin === gercek ? "doğru" : "yanlış"}: ses ${gercek === "tam" ? "tam yerindeydi" : gercek === "tiz" ? "tizdi" : "pesti"}.`) : null,
       h("div", { class: "satir-bilgi" }, h("b", null, "En iyi"), h("span", null, enIyi)),
       h("div", { class: "satir-bilgi" }, h("b", null, "Tek düzeltme"), h("span", null, duzeltme)),
-      h("div", { class: "olcum" },
-        h("div", null, h("b", null, `%${Math.round(oran * 100)}`), h("span", null, `bantta (±${bant})`)),
-        h("div", null, h("b", null, `±${Math.round(sd)} c`), h("span", null, "kararlılık")),
-        h("div", null, h("b", null, `${ort > 0 ? "+" : ""}${Math.round(ort)} c`), h("span", null, "ortalama"))),
-      harita);
+      h("div", { class: "olcum" }, ...olcumler),
+      h("div", { class: "harita-ad" }, "Perde"), perdeHaritasi(a),
+      h("div", { class: "harita-ad" }, "Gürlük"), gurlukHaritasi(a.egri, kisAc ? null : { orta: a.gucOrt, sinir: gucSinir }));
+    if (adim.gurluk === "f" && !pKayit) kart.append(h("p", { class: "kucuk soluk", style: "margin:0" }, "Gürlük farkını ölçmem için önce bir önceki adımda fısıltıyı çal."));
     if (not) kart.append(h("p", { class: "kucuk", style: "margin:0" }, not));
     sonuc.replaceChildren(kart);
     if (puanli && gecenTekrar >= tekrar) { sonuc.append(h("p", { class: "kucuk soluk", style: "margin:0" }, "Adımı geçtin. Kamışı dudaktan ayır, biraz dinlen.")); bildir(100, true); }
     else { calB.firstChild.lastChild.textContent = puanli ? "Sonraki tekrar" : "Yeniden çal"; if (puanli) bildir(Math.round((gecenTekrar / tekrar) * 100), false); else bildir(0, false); }
   }
+
+  function perdeHaritasi(a) {
+    const harita = h("div", { class: "harita", "aria-hidden": "true" });
+    const c = a.centler;
+    const parca = Math.max(1, Math.floor(c.length / 24));
+    for (let i = 0; i < c.length; i += parca) {
+      const v = c.slice(i, i + parca).reduce((x, y) => x + y, 0) / Math.min(parca, c.length - i);
+      const m = Math.abs(v);
+      harita.append(h("i", { style: `height:${Math.min(100, 20 + m * 1.6)}%;background:var(--${bantIcinde(v, bant) ? "iyi" : m <= bant * 2 ? "orta" : "kotu"})` }));
+    }
+    return harita;
+  }
+
   return kok;
+}
+
+const ondalik = (x) => x.toFixed(1).replace(".", ",").replace("-", "−");
+const isaretli = (x) => (x >= 0 ? "+" : "") + ondalik(x);
+
+// Fısıltı (p) adımında ölçülen gürlük ve perde; hemen ardından gelen forte (f) adımı buna göre ölçülür.
+const fisiltiKaydi = new Map();
+
+// Alıştırma kipinde canlı gürlük şeridi. sinir verilirse ilk 1 sn'nin ortalaması merkez olur ve
+// ±sinir dB bölgesi gösterilir (nokta bölgeden çıkarsa uyarı rengi); verilmezse mutlak düzey.
+function gurlukSeridi(sinir) {
+  const bolge = h("span", { class: "gs-bolge" }), nokta = h("i", { class: "gs-nokta" });
+  const kok = h("div", { class: "gurluk-serit", "aria-hidden": "true" }, h("span", { class: "gs-ad" }, "Gürlük"), h("div", { class: "gs-iz" }, bolge, nokta));
+  const olcek = sinir ? sinir * 2.5 : 0; // şeridin yarı genişliği (dB)
+  if (sinir) { bolge.style.left = `${50 - (sinir / olcek) * 50}%`; bolge.style.width = `${(sinir / olcek) * 100}%`; } else bolge.hidden = true;
+  let yum = null, ref = null, refT = [], son = 0;
+  return {
+    kok,
+    guncelle(db, sure) {
+      yum = yum == null ? db : yum * 0.8 + db * 0.2;
+      if (sinir && ref == null) { refT.push(yum); if (sure >= 1) ref = refT.reduce((a, b) => a + b, 0) / refT.length; }
+      const t = performance.now(); if (t - son < 50) return; son = t;
+      let x;
+      if (!sinir) x = ((yum + 60) / 50) * 100;
+      else if (ref == null) x = 50;
+      else x = 50 + ((yum - ref) / olcek) * 50;
+      nokta.style.left = `${Math.max(0, Math.min(100, x))}%`;
+      nokta.classList.toggle("disarida", !!sinir && ref != null && Math.abs(yum - ref) > sinir);
+    },
+    sifirla() { yum = null; ref = null; refT = []; },
+  };
+}
+
+// Sonuç kartında gürlük eğrisi; bant verilirse ortanca ±sinir dB bölgesi taranır.
+function gurlukHaritasi(egri, bant) {
+  const NS = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(NS, "svg");
+  svg.setAttribute("viewBox", "0 0 100 36"); svg.setAttribute("preserveAspectRatio", "none");
+  svg.setAttribute("class", "gurluk-harita"); svg.setAttribute("aria-hidden", "true");
+  if (egri.length < 2) return svg;
+  const dbler = egri.map((k) => k.db);
+  let alt = Math.min(...dbler), ust = Math.max(...dbler);
+  if (bant) { alt = Math.min(alt, bant.orta - bant.sinir * 1.6); ust = Math.max(ust, bant.orta + bant.sinir * 1.6); }
+  if (ust - alt < 6) { const o = (ust + alt) / 2; alt = o - 3; ust = o + 3; }
+  const y = (db) => 34 - ((db - alt) / (ust - alt)) * 32;
+  const son = egri[egri.length - 1].t || 1;
+  if (bant) {
+    const r = document.createElementNS(NS, "rect");
+    r.setAttribute("x", "0"); r.setAttribute("width", "100");
+    r.setAttribute("y", String(y(bant.orta + bant.sinir))); r.setAttribute("height", String(y(bant.orta - bant.sinir) - y(bant.orta + bant.sinir)));
+    r.setAttribute("class", "gh-bolge"); svg.append(r);
+  }
+  const cizgi = document.createElementNS(NS, "polyline");
+  cizgi.setAttribute("points", egri.map((k) => `${((k.t / son) * 100).toFixed(2)},${y(k.db).toFixed(2)}`).join(" "));
+  cizgi.setAttribute("class", "gh-cizgi"); cizgi.setAttribute("vector-effect", "non-scaling-stroke");
+  svg.append(cizgi);
+  return svg;
 }
 
 // Akort bilgisi: "Çalgını tanıt" ölçümü ya da ilk derslerde öğrenilen tahmin

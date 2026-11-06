@@ -366,6 +366,20 @@ details.katlanir[open] > summary::after { content: "Gizle"; }
 .olcum > div { background: var(--yuzey); border-radius: 10px; padding: 10px 12px; }
 .olcum b { display: block; font-family: var(--font-mono); font-size: 1.125rem; font-weight: 500; font-variant-numeric: tabular-nums; }
 .olcum span { font-size: .8125rem; color: var(--murekkep-3); }
+.degerlendirme .harita-ad { font-size: .75rem; color: var(--murekkep-3); margin-bottom: -6px; }
+.degerlendirme .harita { display: flex; align-items: flex-end; gap: 2px; height: 36px; }
+.degerlendirme .harita i { flex: 1; border-radius: 2px; }
+.gurluk-harita { display: block; width: 100%; height: 36px; }
+.gurluk-harita .gh-bolge { fill: color-mix(in srgb, var(--iyi) 18%, transparent); }
+.gurluk-harita .gh-cizgi { fill: none; stroke: var(--murekkep-2, currentColor); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+/* Canlı gürlük şeridi (alıştırma kipi) */
+.gurluk-serit { display: flex; align-items: center; gap: 10px; width: min(320px, 100%); justify-self: center; }
+.gurluk-serit .gs-ad { font-size: .8125rem; color: var(--murekkep-3); }
+.gurluk-serit .gs-iz { position: relative; flex: 1; height: 12px; border-radius: 6px; background: var(--paper-3, var(--yuzey)); }
+.gurluk-serit .gs-bolge { position: absolute; top: 0; bottom: 0; border-radius: 6px; background: color-mix(in srgb, var(--iyi) 28%, transparent); }
+.gurluk-serit .gs-nokta { position: absolute; top: 50%; left: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; background: var(--iyi); transition: left .06s linear; }
+.gurluk-serit .gs-nokta.disarida { background: var(--orta); }
+.sahne .sahne-yon { font-family: var(--font-baslik); font-weight: 700; font-size: clamp(2rem, 9vw, 3rem); text-align: center; }
 
 /* ---- Çizimler ---- */
 figure.cizim { margin: 0; background: var(--yuzey); border-radius: var(--r-m); padding: 12px; }

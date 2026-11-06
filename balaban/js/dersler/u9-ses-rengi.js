@@ -105,6 +105,11 @@ export default {
           sonra: "<p>1 dakika dinlen. Baş dönmesi olursa otur, normal nefes al.</p>",
         },
         {
+          tur: "uzun-ses", baslik: "Serpiştirme: La'da aç–kıs, 10 saniye",
+          html: "<p>Ünite 8'deki aç–kıs, bu kez karar La'da ve daha uzun: 5 saniye aç, 5 saniye kıs. Uzun nefes, gürlüğü <i>yavaş</i> değiştirmeyi ister; ani açılış eğride basamak olarak görünür. Kısarken perde düşmesin: desteği bırakma.</p>",
+          nota: "A4", saniye: 10, tekrar: 2, dem: true, tolerans: 25, gurluk: "kis-ac",
+        },
+        {
           tur: "metin", baslik: "Glissando: iki araç",
           html: "<p><b>Dudak glissandosu</b>: yarım–bir ses içinde, 'O' dudağından (pes) 'İ' dudağına (tiz) kayarak. <b>Parmak glissandosu</b>: daha geniş aralıkta, parmakları delikten <i>sırayla ve yavaşça</i> kaydırarak; her delik kapanırken yarım delikten geçer, ses basamaksız iner. Karara iniş Re→La için: 6, 7, 8. parmaklar sırayla kayar, son anda dudak hafif gevşer ve La'ya 'oturur'.</p>",
         },

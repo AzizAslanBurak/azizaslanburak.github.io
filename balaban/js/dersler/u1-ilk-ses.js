@@ -143,7 +143,8 @@ export default {
           tur: "metin",
           baslik: "Dudak molası ve kulak puanı",
           html: `<p>45 saniye kamış ağızda değil. Bu arada şunu oku: bir sonraki adım ilk <b>kör sınav</b>. Çalarken perde göstergesi kapalı; bitince sana "pes mi, tam mı, tiz mi?" diye sorar, sonra gerçeği gösterir. Tahminin ayrı bir "kulak puanı" olarak tutulur.</p>
-<p>Neden? Çalarken ekrana bakmak dikkati kulağından çalar. Hoca da öyle yapar: önce "sen ne duydun?" diye sorar.</p>`,
+<p>Neden? Çalarken ekrana bakmak dikkati kulağından çalar. Hoca da öyle yapar: önce "sen ne duydun?" diye sorar.</p>
+<p>Sınavda uygulama üç şeye bakar: <b>perde</b> bantta mı ve yalpalamıyor mu, <b>gürlük</b> baştan sona aynı mı (sonda sönmüyor mu), <b>başlangıç</b> ilk anda yerine oturuyor mu (alttan kayarak değil). Sonuç kartında üçünün ölçüsü ve çizgisi var; düzeltmeyi yine tek tek, sırayla söyler.</p>`,
           not: `<p>Pardue (2019), Blanco (2021): çalarken sürekli görsel perde göstergesi dikkati böler; deneme sonu bilgi (KR) daha iyi öğretir. Öz-tahmin, "yeterlilik yanılsaması"nı önler.</p>`,
         },
         {

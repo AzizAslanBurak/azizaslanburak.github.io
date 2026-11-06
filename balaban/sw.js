@@ -1,5 +1,5 @@
 // Otomatik üretildi: araclar/sw-olustur.py — elle düzenleme.
-const SURUM = "balaban-354d2d8e35";
+const SURUM = "balaban-2026531c1a";
 const DOSYALAR = [
 "./",
 "index.html",
@@ -50,6 +50,7 @@ const DOSYALAR = [
 "js/ritim.js",
 "js/ses.js",
 "js/tanit.js",
+"js/uzun-ses-analiz.js",
 "js/zarf-islemci.js",
 "lib/abcjs-basic-min.js",
 "ses/LISANSLAR.md",

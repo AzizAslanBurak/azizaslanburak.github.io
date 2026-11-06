@@ -15,6 +15,8 @@ export const hafta = () => Math.floor(gunFarki(baslangicGunu(), bugun()) / 7) + 
 
 export function perdeBandi() { const w = hafta(); return w <= 4 ? 35 : w <= 12 ? 25 : 15; }
 export function bantIcinde(cent, bant) { return cent >= 0 ? cent <= bant : -cent <= Math.max(5, bant - 5); }
+// Uzun seste gürlük sabitliği sınırı (100 ms kutuların dB sapması). Hoşgörülü başlar; gerçek cihazda ayarlanacak.
+export function gucBandi() { const w = hafta(); return w <= 4 ? 4 : w <= 12 ? 3.5 : 3; }
 export function ritimBandi() { const w = hafta(); return w <= 4 ? 0.08 : w <= 8 ? 0.06 : 0.04; }
 export const ilkAy = () => hafta() <= 4;
 

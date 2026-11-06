@@ -249,7 +249,8 @@ export default {
       ozet: "p'den f'ye karın desteğiyle; gürlük değişince perde kayar, dudakla düzelt. Sonra Hicaz sınavı, model ve kayıt.",
       sure: 20,
       hedefler: [
-        "Aynı notayı p ve f'de perdeyi ±20 cent içinde tutarak çalmak",
+        "Aynı notayı p ve f'de perdeyi ±20 cent içinde tutarak çalmak; forte fısıltıdan en az 6 dB gür",
+        "Tek nefeste aç–kıs: gürlük tepesi ortada, perde bantta",
         "Kör Do♯ ve Sol♯ uzun seslerinden en az birini bantta tutmak",
         "Hicaz cümleyi tempoda ≥70 puanla çalmak ve kaydı modelle karşılaştırmak",
       ],
@@ -267,13 +268,20 @@ export default {
         {
           tur: "uzun-ses", baslik: "Re — piyano (fısıltı)",
           html: "<p>Odanın karşısına değil, önündeki masaya gönder. Az hava, destek tam, dudak hafif sıkı. Perde bantta kalsın.</p>",
-          nota: "D5", saniye: 6, tekrar: 2, dem: "A4", tolerans: 20,
+          nota: "D5", saniye: 6, tekrar: 2, dem: "A4", tolerans: 20, gurluk: "p",
         },
         {
           tur: "uzun-ses", baslik: "Re — forte (tam ses)",
-          html: "<p>Şimdi odanın dışına gönder. Karın iter, dudak hafif gevşer. Aynı notayı, aynı cent'te. Tiz çıkıyorsa dudağı biraz daha bırak.</p>",
-          nota: "D5", saniye: 6, tekrar: 2, dem: "A4", tolerans: 20,
+          html: "<p>Şimdi odanın dışına gönder. Karın iter, dudak hafif gevşer. Aynı notayı, aynı cent'te. Tiz çıkıyorsa dudağı biraz daha bırak. Uygulama bu kez gürlüğü de ölçer: forte, az önceki fısıltından en az 6 dB gür olmalı. Telefonu iki adımda da aynı yerde tut.</p>",
+          nota: "D5", saniye: 6, tekrar: 2, dem: "A4", tolerans: 20, gurluk: "f",
           sonra: "<p>45 sn dinlen: forte dudağı yorar.</p>",
+        },
+        {
+          tur: "uzun-ses", baslik: "Re — aç ve kıs (tek nefeste)",
+          html: "<p>Şimdi ikisini tek seste birleştir: fısıltıyla başla, 4 saniyede yavaşça tam sese aç, sonraki 4 saniyede yine fısıltıya kıs. Ekranda \"Aç\" ve \"Kıs\" yazar. Zor olan gürlük değil, <b>perdeyi yerinde tutmak</b>: açarken dudak birazcık gevşer, kısarken birazcık sıkılır. Sonuç kartındaki gürlük çizgisi bir tepe gibi olmalı; tepe ortada.</p>",
+          not: "<p>Bu klasik nefes çalışmasının adı <i>messa di voce</i>'dir: üflemeli çalgı ve şan eğitiminde nefes desteğiyle perde kontrolünü birlikte geliştiren temel alıştırma. Uygulama açma ve kısmayı ayrı ayrı (dB) ve gür yerdeki perde kaymasını (cent) ölçer.</p>",
+          nota: "D5", saniye: 8, tekrar: 2, dem: "A4", tolerans: 25, gurluk: "kis-ac",
+          sonra: "<p>Dudağını dinlendir; 30 sn kamış ağızda değil.</p>",
         },
         {
           tur: "dinle", baslik: "Dinamikli Hicaz (model)",

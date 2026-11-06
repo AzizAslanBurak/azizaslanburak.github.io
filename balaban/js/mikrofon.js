@@ -62,7 +62,8 @@ export const acikMi = () => calisiyor;
 
 // Test için: mikrofon yerine sentetik ses (geliştirici konsolundan veya otomatik testten).
 // testSes(440) → 440 Hz kamış benzeri ses; testSes(0) → sessizlik; testSes(null) → test kapalı.
-export function testSes(hz) {
+// guc: kazanç (vars. 0,25); gürlük ölçümünü sınamak için.
+export function testSes(hz, guc = 0.25) {
   const c = ac();
   if (hz === null) { if (testOsc) { testOsc.disconnect(); testOsc = null; } return; }
   if (!testOsc) {
@@ -73,7 +74,7 @@ export function testSes(hz) {
     if (calisiyor && analiz) testOsc.connect(analiz);
     if (calisiyor && zarfDugum) testOsc.connect(zarfDugum);
   }
-  if (hz > 0) { testOsc._osc.frequency.setValueAtTime(hz, c.currentTime); testOsc.gain.setTargetAtTime(0.25, c.currentTime, 0.01); }
+  if (hz > 0) { testOsc._osc.frequency.setValueAtTime(hz, c.currentTime); testOsc.gain.setTargetAtTime(guc, c.currentTime, 0.01); }
   else testOsc.gain.setTargetAtTime(0, c.currentTime, 0.01);
 }
 
