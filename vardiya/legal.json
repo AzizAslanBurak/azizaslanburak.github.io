@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "updated": "2026-10-29",
+  "severance": {
+    "TR_KIDEM_CAP": [{ "from": "2026-07-01", "value": 73729.84 }, { "from": "2026-01-01", "value": 64948.77 }],
+    "GB_WEEK_CAP": [{ "from": "2026-04-06", "value": 751 }],
+    "NL_TRANSITIE_CAP": [{ "from": "2026-01-01", "value": 102000 }],
+    "PL_ODPRAWA_CAP": [{ "from": "2026-01-01", "value": 72090 }],
+    "MX_MIN_DAILY": [{ "from": "2026-01-01", "value": 315.04 }]
+  },
+  "holidays": { "add": {}, "remove": {} }
+}
